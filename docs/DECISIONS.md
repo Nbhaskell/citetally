@@ -123,3 +123,8 @@ The schema document says an applied migration must never be edited but gives no 
 
 ### D-027. Phase 2 branch workflow
 From Phase 2 each phase is built on its own branch (`phase-2-data-layer`), pushed to GitHub, and merged to `main` through a pull request when its acceptance check passes. Phases 0 and 1 were built directly on `main` before this was decided.
+
+### D-028. Models, enums and what the sync tests compare
+`citetally/models.py` defines every enumeration once, as `StrEnum`s in the document's order, plus `EditField` (the header and line fields with `category` and `entry_type`, matching the `field_edits` constraint), `EventType` (audit event names, which the schema leaves unconstrained), the blocking-check set and `required_fields()`. One row model per table (all 17), with the table's exact columns; a test checks fields against `PRAGMA table_info` and nullable columns against optional fields, so a column added to a migration without a model fails the suite. `0/1` columns are `bool` in the models. `Word`, `ExtractedLine` and `ExtractedFields` validate the JSON shapes: extracted values must be text or null (a number such as `23.11` is rejected, because the model copies printed text and never reformats) and unknown keys are rejected.
+
+`tests/test_models.py` compares three things: the enumeration table and the severity table parsed out of `docs/BACKEND_SCHEMA.md`, the enums in code, and every `CHECK (column IN (...))` in the migrated database (all 15 are mapped, and an unmapped new one fails). It was checked by hand: a one-letter typo in an enum value fails two tests. The provider list in `config.py` is checked against the `Provider` enum too.
