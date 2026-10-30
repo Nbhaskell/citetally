@@ -24,3 +24,8 @@ python_version = "3.13"
 strict = true
 files = ["citetally", "tools", "tests"]
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+# reportlab and pypdfium2 ship no type information; they are used only by the test-data tools.
+module = ["reportlab.*", "pypdfium2.*"]
+ignore_missing_imports = true
