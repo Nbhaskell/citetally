@@ -79,6 +79,7 @@ class Facts(_Strict):
     business: Business
     categories: list[str]
     vendors: list[Vendor]
+    unlisted_vendors: list[Vendor] = []
 
 
 def load_facts(path: Path = FACTS_FILE) -> Facts:

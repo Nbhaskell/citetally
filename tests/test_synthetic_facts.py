@@ -123,3 +123,13 @@ def test_vendors_make_sense_for_a_plumbing_business(facts: Facts) -> None:
     supplies = {v.name for v in facts.vendors if v.category == "SUPPLIES"}
     assert any("plumbing" in name.lower() for name in supplies)
     assert any("water heater" in name.lower() for name in supplies)
+
+
+def test_unlisted_vendors_are_invented_strangers_not_in_the_vendor_list(facts: Facts) -> None:
+    """They give UNKNOWN_VENDOR documents a vendor the system has never been told about."""
+    listed = {v.name.lower() for v in facts.vendors}
+    assert len(facts.unlisted_vendors) >= 3
+    for vendor in facts.unlisted_vendors:
+        assert vendor.name.lower() not in listed
+        assert vendor.id.startswith("X")
+        assert re.search(r"555-01\d\d$", vendor.phone)

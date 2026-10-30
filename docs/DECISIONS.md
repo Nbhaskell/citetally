@@ -85,3 +85,9 @@ Documents are made by code under `tools/synthetic/` from `universe/facts.json`. 
 
 ### D-017. Truth is computed by the generator, not by the product's code
 The generator has its own small exact-decimal arithmetic (`Decimal`, round half up) and its own date formatting, and does not import `citetally.money` or `citetally.dates` (Phase 3). If it did, a bug in the product's arithmetic would also corrupt the answer key and the evaluation could not see it.
+
+### D-018. Printed values: unambiguous dates, several money styles, unlisted vendors
+Generated documents print dates only as `2026-03-04`, `March 4, 2026`, `4 Mar 2026` or `Mar 4, 2026`. Numeric slash dates (`03/04/2026`) are never generated, because they can be read two ways and the answer key would have to guess which was meant; the `AMBIGUOUS_FORMAT` check is covered by unit tests on the date code in Phase 3 instead, not by the golden set. Money prints in six styles (`$1,234.56`, `1,234.56`, `USD 1,234.56`, `$1234.56`, `($45.00)` for credit notes, and the European `1.234,56 €` used by the euro vendor). `facts.json` also holds three `unlisted_vendors` that are not in the vendor list, to make `UNKNOWN_VENDOR` documents.
+
+### D-019. `CURRENCY_CHECK` wording is ambiguous in the docs
+`TRD.md` section 4.6 and `BACKEND_SCHEMA.md` say the check fires when the currency "differs from the default **or** from the vendor's default". Read literally, every euro invoice from the euro vendor would fire it, even though euros are that vendor's usual currency. The golden set therefore marks `CURRENCY_CHECK` as expected only for planted `currency_mismatch` documents (an invoice in a currency other than the vendor's usual), and does not count it as a false alarm on the euro vendor's own documents. Decide the exact rule when Phase 5 builds the check, and tell the owner which reading was chosen.

@@ -2,274 +2,1173 @@
   "schema": 1,
   "note": "SYNTHETIC TEST DATA. Every name, address, phone number and email below is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range. The business identity (name, street, town, phone, email, currency, parts sales tax) is a snapshot of the citedesk project's invented business, copied from its universe/facts.json at commit 7389323; this file does not read or depend on that project.",
   "as_of": "2026-10-31",
-  "date_range": ["2026-01-05", "2026-10-28"],
+  "date_range": [
+    "2026-01-05",
+    "2026-10-28"
+  ],
   "business": {
     "name": "Kestrel Hollow Plumbing",
     "kind": "residential plumbing service",
-    "address": {"street": "22 Millrace Lane", "city": "Alderbrook", "state": "OR", "zip": "00171"},
+    "address": {
+      "street": "22 Millrace Lane",
+      "city": "Alderbrook",
+      "state": "OR",
+      "zip": "00171"
+    },
     "phone": "555-0171",
     "email": "kestrelhollow@example.com",
     "default_currency": "USD",
     "locale": "en-US",
     "sales_tax_rate": "0.07"
   },
-  "categories": ["SUPPLIES", "FOOD", "CLEANING", "UTILITIES", "REPAIRS", "INSURANCE", "SOFTWARE", "PROFESSIONAL", "VEHICLE", "MARKETING", "OTHER"],
+  "categories": [
+    "SUPPLIES",
+    "FOOD",
+    "CLEANING",
+    "UTILITIES",
+    "REPAIRS",
+    "INSURANCE",
+    "SOFTWARE",
+    "PROFESSIONAL",
+    "VEHICLE",
+    "MARKETING",
+    "OTHER"
+  ],
   "vendors": [
     {
       "id": "V01",
       "name": "Millrace Plumbing Supply Co.",
-      "aliases": ["Millrace Plumbing Supply", "MILLRACE PLUMBING SUPPLY CO", "Millrace Plumb. Supply Co"],
-      "category": "SUPPLIES", "currency": "USD", "entry_type": "invoice", "terms_days": 30,
+      "aliases": [
+        "Millrace Plumbing Supply",
+        "MILLRACE PLUMBING SUPPLY CO",
+        "Millrace Plumb. Supply Co"
+      ],
+      "category": "SUPPLIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
       "credit_notes": true,
-      "invoice_prefix": "INV-", "invoice_start": 20100,
-      "address": {"street": "400 Mill Road", "city": "Millrace", "state": "OR", "zip": "00211"},
-      "phone": "555-0111", "email": "billing@millraceplumbing.example.com",
+      "invoice_prefix": "INV-",
+      "invoice_start": 20100,
+      "address": {
+        "street": "400 Mill Road",
+        "city": "Millrace",
+        "state": "OR",
+        "zip": "00211"
+      },
+      "phone": "555-0111",
+      "email": "billing@millraceplumbing.example.com",
       "items": [
-        {"description": "Copper pipe, 1/2 in. x 10 ft", "unit_price": "18.40", "qty": [4, 30], "taxable": true},
-        {"description": "Copper pipe, 3/4 in. x 10 ft", "unit_price": "31.25", "qty": [2, 20], "taxable": true},
-        {"description": "Push-to-connect coupling, 1/2 in.", "unit_price": "7.85", "qty": [6, 40], "taxable": true},
-        {"description": "PVC pipe, 2 in. x 10 ft", "unit_price": "9.60", "qty": [2, 16], "taxable": true},
-        {"description": "Ball valve, 3/4 in.", "unit_price": "14.20", "qty": [2, 20], "taxable": true},
-        {"description": "Lead-free solder, 1 lb", "unit_price": "29.50", "qty": [1, 4], "taxable": true},
-        {"description": "Wax ring with bolts", "unit_price": "5.40", "qty": [2, 12], "taxable": true},
-        {"description": "PTFE thread tape", "unit_price": "1.35", "qty": [10, 50], "taxable": true}
+        {
+          "description": "Copper pipe, 1/2 in. x 10 ft",
+          "unit_price": "18.40",
+          "qty": [
+            4,
+            30
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Copper pipe, 3/4 in. x 10 ft",
+          "unit_price": "31.25",
+          "qty": [
+            2,
+            20
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Push-to-connect coupling, 1/2 in.",
+          "unit_price": "7.85",
+          "qty": [
+            6,
+            40
+          ],
+          "taxable": true
+        },
+        {
+          "description": "PVC pipe, 2 in. x 10 ft",
+          "unit_price": "9.60",
+          "qty": [
+            2,
+            16
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Ball valve, 3/4 in.",
+          "unit_price": "14.20",
+          "qty": [
+            2,
+            20
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Lead-free solder, 1 lb",
+          "unit_price": "29.50",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Wax ring with bolts",
+          "unit_price": "5.40",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": true
+        },
+        {
+          "description": "PTFE thread tape",
+          "unit_price": "1.35",
+          "qty": [
+            10,
+            50
+          ],
+          "taxable": true
+        }
       ]
     },
     {
       "id": "V02",
       "name": "Brightwash Uniform Service",
-      "aliases": ["Brightwash Uniforms", "BRIGHTWASH UNIFORM SVC", "Bright Wash Uniform Service"],
-      "category": "CLEANING", "currency": "USD", "entry_type": "invoice", "terms_days": 15,
+      "aliases": [
+        "Brightwash Uniforms",
+        "BRIGHTWASH UNIFORM SVC",
+        "Bright Wash Uniform Service"
+      ],
+      "category": "CLEANING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 15,
       "credit_notes": false,
-      "invoice_prefix": "BW", "invoice_start": 7300,
-      "address": {"street": "92 Cedar Court", "city": "Tamarind Park", "state": "OR", "zip": "00188"},
-      "phone": "555-0112", "email": "accounts@brightwash.example.com",
+      "invoice_prefix": "BW",
+      "invoice_start": 7300,
+      "address": {
+        "street": "92 Cedar Court",
+        "city": "Tamarind Park",
+        "state": "OR",
+        "zip": "00188"
+      },
+      "phone": "555-0112",
+      "email": "accounts@brightwash.example.com",
       "items": [
-        {"description": "Uniform rental, weekly, per set", "unit_price": "6.25", "qty": [8, 24], "taxable": false},
-        {"description": "Shop towel service, weekly", "unit_price": "22.00", "qty": [1, 4], "taxable": false},
-        {"description": "Floor mat rental", "unit_price": "3.75", "qty": [2, 8], "taxable": false},
-        {"description": "Pickup and delivery", "unit_price": "18.00", "qty": [1, 4], "taxable": false}
+        {
+          "description": "Uniform rental, weekly, per set",
+          "unit_price": "6.25",
+          "qty": [
+            8,
+            24
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Shop towel service, weekly",
+          "unit_price": "22.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Floor mat rental",
+          "unit_price": "3.75",
+          "qty": [
+            2,
+            8
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Pickup and delivery",
+          "unit_price": "18.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V03",
       "name": "Alderbrook Electric Cooperative",
-      "aliases": ["Alderbrook Electric Co-op", "ALDERBROOK ELECTRIC COOP", "Alderbrook Electric"],
-      "category": "UTILITIES", "currency": "USD", "entry_type": "invoice", "terms_days": 21,
+      "aliases": [
+        "Alderbrook Electric Co-op",
+        "ALDERBROOK ELECTRIC COOP",
+        "Alderbrook Electric"
+      ],
+      "category": "UTILITIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 21,
       "credit_notes": false,
-      "invoice_prefix": "", "invoice_start": 5510023,
+      "invoice_prefix": "",
+      "invoice_start": 5510023,
       "tax_rate": "0.03",
-      "address": {"street": "1 Turbine Plaza", "city": "Alderbrook Heights", "state": "OR", "zip": "00305"},
-      "phone": "555-0113", "email": "service@alderbrookelectric.example.com",
+      "address": {
+        "street": "1 Turbine Plaza",
+        "city": "Alderbrook Heights",
+        "state": "OR",
+        "zip": "00305"
+      },
+      "phone": "555-0113",
+      "email": "service@alderbrookelectric.example.com",
       "items": [
-        {"description": "Electricity, kWh", "unit_price": "0.1475", "qty": [900, 2600], "taxable": true},
-        {"description": "Basic service charge", "unit_price": "24.50", "qty": [1, 1], "taxable": true},
-        {"description": "Demand charge, kW", "unit_price": "9.80", "qty": [4, 12], "taxable": true}
+        {
+          "description": "Electricity, kWh",
+          "unit_price": "0.1475",
+          "qty": [
+            900,
+            2600
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Basic service charge",
+          "unit_price": "24.50",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Demand charge, kW",
+          "unit_price": "9.80",
+          "qty": [
+            4,
+            12
+          ],
+          "taxable": true
+        }
       ]
     },
     {
       "id": "V04",
       "name": "Tamarind Park Water Works",
-      "aliases": ["Tamarind Park Water", "TAMARIND PARK WATER WORKS", "Tamarind Pk Water Works"],
-      "category": "UTILITIES", "currency": "USD", "entry_type": "invoice", "terms_days": 20,
+      "aliases": [
+        "Tamarind Park Water",
+        "TAMARIND PARK WATER WORKS",
+        "Tamarind Pk Water Works"
+      ],
+      "category": "UTILITIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 20,
       "credit_notes": false,
-      "invoice_prefix": "WW-", "invoice_start": 88120,
-      "address": {"street": "7 Reservoir Way", "city": "Tamarind Park", "state": "OR", "zip": "00277"},
-      "phone": "555-0114", "email": "billing@tamarindwater.example.com",
+      "invoice_prefix": "WW-",
+      "invoice_start": 88120,
+      "address": {
+        "street": "7 Reservoir Way",
+        "city": "Tamarind Park",
+        "state": "OR",
+        "zip": "00277"
+      },
+      "phone": "555-0114",
+      "email": "billing@tamarindwater.example.com",
       "items": [
-        {"description": "Water usage, per 100 cu ft", "unit_price": "3.92", "qty": [20, 80], "taxable": false},
-        {"description": "Sewer usage, per 100 cu ft", "unit_price": "5.18", "qty": [20, 80], "taxable": false},
-        {"description": "Service fee", "unit_price": "12.00", "qty": [1, 1], "taxable": false}
+        {
+          "description": "Water usage, per 100 cu ft",
+          "unit_price": "3.92",
+          "qty": [
+            20,
+            80
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sewer usage, per 100 cu ft",
+          "unit_price": "5.18",
+          "qty": [
+            20,
+            80
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Service fee",
+          "unit_price": "12.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V05",
       "name": "Old Quarry Tool & Equipment Repair",
-      "aliases": ["Old Quarry Tool and Equipment Repair", "OLD QUARRY TOOL & EQUIP REPAIR", "Old Quarry Tool Repair"],
-      "category": "REPAIRS", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "aliases": [
+        "Old Quarry Tool and Equipment Repair",
+        "OLD QUARRY TOOL & EQUIP REPAIR",
+        "Old Quarry Tool Repair"
+      ],
+      "category": "REPAIRS",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
       "credit_notes": false,
-      "invoice_prefix": "OQ-", "invoice_start": 3041,
-      "address": {"street": "55 Anvil Street", "city": "Old Quarry", "state": "OR", "zip": "00340"},
-      "phone": "555-0115", "email": "office@oldquarrytool.example.com",
+      "invoice_prefix": "OQ-",
+      "invoice_start": 3041,
+      "address": {
+        "street": "55 Anvil Street",
+        "city": "Old Quarry",
+        "state": "OR",
+        "zip": "00340"
+      },
+      "phone": "555-0115",
+      "email": "office@oldquarrytool.example.com",
       "items": [
-        {"description": "Bench labor, hour", "unit_price": "72.00", "qty": [1, 6], "taxable": false},
-        {"description": "Drain machine cable, 50 ft", "unit_price": "189.00", "qty": [1, 2], "taxable": true},
-        {"description": "Pipe wrench rebuild kit", "unit_price": "14.25", "qty": [2, 8], "taxable": true},
-        {"description": "Pickup and return", "unit_price": "35.00", "qty": [1, 1], "taxable": false}
+        {
+          "description": "Bench labor, hour",
+          "unit_price": "72.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Drain machine cable, 50 ft",
+          "unit_price": "189.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Pipe wrench rebuild kit",
+          "unit_price": "14.25",
+          "qty": [
+            2,
+            8
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Pickup and return",
+          "unit_price": "35.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V06",
       "name": "Saltmarsh Mutual Insurance",
-      "aliases": ["Saltmarsh Mutual Ins.", "SALTMARSH MUTUAL INS", "Saltmarsh Mutual Insurance Co"],
-      "category": "INSURANCE", "currency": "USD", "entry_type": "invoice", "terms_days": 10,
+      "aliases": [
+        "Saltmarsh Mutual Ins.",
+        "SALTMARSH MUTUAL INS",
+        "Saltmarsh Mutual Insurance Co"
+      ],
+      "category": "INSURANCE",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 10,
       "credit_notes": false,
-      "invoice_prefix": "PRM-", "invoice_start": 150200,
-      "address": {"street": "300 Harbor Row, Suite 4", "city": "Saltmarsh", "state": "OR", "zip": "00412"},
-      "phone": "555-0116", "email": "premiums@saltmarshmutual.example.com",
+      "invoice_prefix": "PRM-",
+      "invoice_start": 150200,
+      "address": {
+        "street": "300 Harbor Row, Suite 4",
+        "city": "Saltmarsh",
+        "state": "OR",
+        "zip": "00412"
+      },
+      "phone": "555-0116",
+      "email": "premiums@saltmarshmutual.example.com",
       "items": [
-        {"description": "General liability premium, monthly", "unit_price": "412.00", "qty": [1, 1], "taxable": false},
-        {"description": "Commercial auto premium, monthly", "unit_price": "238.50", "qty": [1, 1], "taxable": false},
-        {"description": "Policy fee", "unit_price": "15.00", "qty": [1, 1], "taxable": false}
+        {
+          "description": "General liability premium, monthly",
+          "unit_price": "412.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Commercial auto premium, monthly",
+          "unit_price": "238.50",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Policy fee",
+          "unit_price": "15.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V07",
       "name": "Wrenwork Dispatch Software",
-      "aliases": ["Wrenwork Dispatch", "WRENWORK DISPATCH SOFTWARE", "Wren Work Dispatch"],
-      "category": "SOFTWARE", "currency": "USD", "entry_type": "invoice", "terms_days": 7,
+      "aliases": [
+        "Wrenwork Dispatch",
+        "WRENWORK DISPATCH SOFTWARE",
+        "Wren Work Dispatch"
+      ],
+      "category": "SOFTWARE",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 7,
       "credit_notes": false,
-      "invoice_prefix": "WD-", "invoice_start": 610400,
-      "address": {"street": "2 Signal Park", "city": "Wren Common", "state": "OR", "zip": "00143"},
-      "phone": "555-0117", "email": "billing@wrenwork.example.com",
+      "invoice_prefix": "WD-",
+      "invoice_start": 610400,
+      "address": {
+        "street": "2 Signal Park",
+        "city": "Wren Common",
+        "state": "OR",
+        "zip": "00143"
+      },
+      "phone": "555-0117",
+      "email": "billing@wrenwork.example.com",
       "items": [
-        {"description": "Dispatch platform, monthly", "unit_price": "79.00", "qty": [1, 1], "taxable": false},
-        {"description": "Additional technician seats", "unit_price": "9.00", "qty": [1, 4], "taxable": false},
-        {"description": "SMS arrival reminders, per 100", "unit_price": "6.50", "qty": [1, 15], "taxable": false}
+        {
+          "description": "Dispatch platform, monthly",
+          "unit_price": "79.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Additional technician seats",
+          "unit_price": "9.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "SMS arrival reminders, per 100",
+          "unit_price": "6.50",
+          "qty": [
+            1,
+            15
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V08",
       "name": "Lumen Pipe Imaging GmbH",
-      "aliases": ["Lumen Pipe Imaging", "LUMEN PIPE IMAGING GMBH", "Lumen Pipe Img. GmbH"],
-      "category": "SOFTWARE", "currency": "EUR", "entry_type": "invoice", "terms_days": 30,
+      "aliases": [
+        "Lumen Pipe Imaging",
+        "LUMEN PIPE IMAGING GMBH",
+        "Lumen Pipe Img. GmbH"
+      ],
+      "category": "SOFTWARE",
+      "currency": "EUR",
+      "entry_type": "invoice",
+      "terms_days": 30,
       "credit_notes": false,
-      "invoice_prefix": "LPI-2026-", "invoice_start": 1180,
+      "invoice_prefix": "LPI-2026-",
+      "invoice_start": 1180,
       "tax_rate": "0.19",
-      "address": {"street": "Musterweg 5", "city": "Alderfeld", "state": "", "zip": "00000", "country": "Germany"},
-      "phone": "+49 30 555-0118", "email": "rechnung@lumenpipe.example.com",
+      "address": {
+        "street": "Musterweg 5",
+        "city": "Alderfeld",
+        "state": "",
+        "zip": "00000",
+        "country": "Germany"
+      },
+      "phone": "+49 30 555-0118",
+      "email": "rechnung@lumenpipe.example.com",
       "items": [
-        {"description": "Camera inspection report software, monthly", "unit_price": "64.00", "qty": [1, 1], "taxable": true},
-        {"description": "Cloud report storage", "unit_price": "20.00", "qty": [1, 1], "taxable": true},
-        {"description": "Extra technician licence", "unit_price": "29.00", "qty": [1, 2], "taxable": true}
+        {
+          "description": "Camera inspection report software, monthly",
+          "unit_price": "64.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Cloud report storage",
+          "unit_price": "20.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Extra technician licence",
+          "unit_price": "29.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        }
       ]
     },
     {
       "id": "V09",
       "name": "Ledgerwell Bookkeeping",
-      "aliases": ["Ledgerwell Bookkeeping Services", "LEDGERWELL BOOKKEEPING", "Ledger Well Bookkeeping"],
-      "category": "PROFESSIONAL", "currency": "USD", "entry_type": "invoice", "terms_days": 15,
+      "aliases": [
+        "Ledgerwell Bookkeeping Services",
+        "LEDGERWELL BOOKKEEPING",
+        "Ledger Well Bookkeeping"
+      ],
+      "category": "PROFESSIONAL",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 15,
       "credit_notes": false,
-      "invoice_prefix": "LW", "invoice_start": 2610,
-      "address": {"street": "12 Quill Street, Floor 2", "city": "Alderbrook Heights", "state": "OR", "zip": "00255"},
-      "phone": "555-0119", "email": "hello@ledgerwell.example.com",
+      "invoice_prefix": "LW",
+      "invoice_start": 2610,
+      "address": {
+        "street": "12 Quill Street, Floor 2",
+        "city": "Alderbrook Heights",
+        "state": "OR",
+        "zip": "00255"
+      },
+      "phone": "555-0119",
+      "email": "hello@ledgerwell.example.com",
       "items": [
-        {"description": "Monthly bookkeeping", "unit_price": "350.00", "qty": [1, 1], "taxable": false},
-        {"description": "Payroll processing, per run", "unit_price": "45.00", "qty": [1, 2], "taxable": false},
-        {"description": "Advisory time, hour", "unit_price": "95.00", "qty": [1, 3], "taxable": false}
+        {
+          "description": "Monthly bookkeeping",
+          "unit_price": "350.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Payroll processing, per run",
+          "unit_price": "45.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Advisory time, hour",
+          "unit_price": "95.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V10",
       "name": "Tanager Fuel & Convenience",
-      "aliases": ["Tanager Fuel and Convenience", "TANAGER FUEL & CONV", "Tanager Fuel"],
-      "category": "VEHICLE", "currency": "USD", "entry_type": "receipt", "terms_days": 0,
+      "aliases": [
+        "Tanager Fuel and Convenience",
+        "TANAGER FUEL & CONV",
+        "Tanager Fuel"
+      ],
+      "category": "VEHICLE",
+      "currency": "USD",
+      "entry_type": "receipt",
+      "terms_days": 0,
       "credit_notes": false,
-      "invoice_prefix": "", "invoice_start": 0,
-      "address": {"street": "910 Route 9", "city": "Dunmore Flats", "state": "OR", "zip": "00144"},
-      "phone": "555-0120", "email": "",
+      "invoice_prefix": "",
+      "invoice_start": 0,
+      "address": {
+        "street": "910 Route 9",
+        "city": "Dunmore Flats",
+        "state": "OR",
+        "zip": "00144"
+      },
+      "phone": "555-0120",
+      "email": "",
       "items": [
-        {"description": "Diesel, gal", "unit_price": "4.159", "qty": [10, 28], "taxable": false},
-        {"description": "Unleaded, gal", "unit_price": "3.789", "qty": [8, 19], "taxable": false},
-        {"description": "Windshield washer fluid", "unit_price": "3.49", "qty": [1, 2], "taxable": true},
-        {"description": "Bottled water", "unit_price": "1.79", "qty": [1, 3], "taxable": true}
+        {
+          "description": "Diesel, gal",
+          "unit_price": "4.159",
+          "qty": [
+            10,
+            28
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Unleaded, gal",
+          "unit_price": "3.789",
+          "qty": [
+            8,
+            19
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Windshield washer fluid",
+          "unit_price": "3.49",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Bottled water",
+          "unit_price": "1.79",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        }
       ]
     },
     {
       "id": "V11",
       "name": "Marlow Auto Care",
-      "aliases": ["Marlow Auto Care LLC", "MARLOW AUTO CARE", "Marlow Autocare"],
-      "category": "VEHICLE", "currency": "USD", "entry_type": "invoice", "terms_days": 0,
+      "aliases": [
+        "Marlow Auto Care LLC",
+        "MARLOW AUTO CARE",
+        "Marlow Autocare"
+      ],
+      "category": "VEHICLE",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 0,
       "credit_notes": false,
-      "invoice_prefix": "RO-", "invoice_start": 40120,
-      "address": {"street": "230 Marlow Falls Road", "city": "Millrace", "state": "OR", "zip": "00390"},
-      "phone": "555-0121", "email": "service@marlowauto.example.com",
+      "invoice_prefix": "RO-",
+      "invoice_start": 40120,
+      "address": {
+        "street": "230 Marlow Falls Road",
+        "city": "Millrace",
+        "state": "OR",
+        "zip": "00390"
+      },
+      "phone": "555-0121",
+      "email": "service@marlowauto.example.com",
       "items": [
-        {"description": "Oil and filter service, van", "unit_price": "89.95", "qty": [1, 1], "taxable": true},
-        {"description": "Tire rotation", "unit_price": "25.00", "qty": [1, 1], "taxable": false},
-        {"description": "Brake pads, front set", "unit_price": "142.00", "qty": [1, 1], "taxable": true},
-        {"description": "Labor, hour", "unit_price": "98.00", "qty": [1, 4], "taxable": false}
+        {
+          "description": "Oil and filter service, van",
+          "unit_price": "89.95",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Tire rotation",
+          "unit_price": "25.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Brake pads, front set",
+          "unit_price": "142.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Labor, hour",
+          "unit_price": "98.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V12",
       "name": "Sunbeam Print & Sign",
-      "aliases": ["Sunbeam Print and Sign", "SUNBEAM PRINT & SIGN", "Sunbeam Printing"],
-      "category": "MARKETING", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "aliases": [
+        "Sunbeam Print and Sign",
+        "SUNBEAM PRINT & SIGN",
+        "Sunbeam Printing"
+      ],
+      "category": "MARKETING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
       "credit_notes": false,
-      "invoice_prefix": "SPS-", "invoice_start": 9015,
-      "address": {"street": "61 Dawn Avenue", "city": "Wren Common", "state": "OR", "zip": "00189"},
-      "phone": "555-0122", "email": "orders@sunbeamprint.example.com",
+      "invoice_prefix": "SPS-",
+      "invoice_start": 9015,
+      "address": {
+        "street": "61 Dawn Avenue",
+        "city": "Wren Common",
+        "state": "OR",
+        "zip": "00189"
+      },
+      "phone": "555-0122",
+      "email": "orders@sunbeamprint.example.com",
       "items": [
-        {"description": "Door hangers, per 100", "unit_price": "14.00", "qty": [2, 10], "taxable": true},
-        {"description": "Van lettering, per side", "unit_price": "162.00", "qty": [1, 2], "taxable": true},
-        {"description": "Yard signs", "unit_price": "9.50", "qty": [4, 20], "taxable": true},
-        {"description": "Design proof", "unit_price": "25.00", "qty": [1, 1], "taxable": false}
+        {
+          "description": "Door hangers, per 100",
+          "unit_price": "14.00",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Van lettering, per side",
+          "unit_price": "162.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Yard signs",
+          "unit_price": "9.50",
+          "qty": [
+            4,
+            20
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Design proof",
+          "unit_price": "25.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V13",
       "name": "Wren Common Local Directory",
-      "aliases": ["Wren Common Directory", "WREN COMMON LOCAL DIRECTORY", "Wren Cmn Local Directory"],
-      "category": "MARKETING", "currency": "USD", "entry_type": "invoice", "terms_days": 10,
+      "aliases": [
+        "Wren Common Directory",
+        "WREN COMMON LOCAL DIRECTORY",
+        "Wren Cmn Local Directory"
+      ],
+      "category": "MARKETING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 10,
       "credit_notes": false,
-      "invoice_prefix": "WC", "invoice_start": 1204,
-      "address": {"street": "5 Bright Lane", "city": "Wren Common", "state": "OR", "zip": "00145"},
-      "phone": "555-0123", "email": "ads@wrencommondirectory.example.com",
+      "invoice_prefix": "WC",
+      "invoice_start": 1204,
+      "address": {
+        "street": "5 Bright Lane",
+        "city": "Wren Common",
+        "state": "OR",
+        "zip": "00145"
+      },
+      "phone": "555-0123",
+      "email": "ads@wrencommondirectory.example.com",
       "items": [
-        {"description": "Directory listing, monthly", "unit_price": "95.00", "qty": [1, 1], "taxable": false},
-        {"description": "Featured placement, monthly", "unit_price": "60.00", "qty": [1, 1], "taxable": false},
-        {"description": "Call tracking line", "unit_price": "25.00", "qty": [1, 2], "taxable": false}
+        {
+          "description": "Directory listing, monthly",
+          "unit_price": "95.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Featured placement, monthly",
+          "unit_price": "60.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Call tracking line",
+          "unit_price": "25.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V14",
       "name": "Alderbrook County Building Department",
-      "aliases": ["Alderbrook County Bldg Dept", "ALDERBROOK COUNTY BUILDING DEPT", "Alderbrook County Building Dept."],
-      "category": "OTHER", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "aliases": [
+        "Alderbrook County Bldg Dept",
+        "ALDERBROOK COUNTY BUILDING DEPT",
+        "Alderbrook County Building Dept."
+      ],
+      "category": "OTHER",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
       "credit_notes": true,
-      "invoice_prefix": "PMT-", "invoice_start": 12050,
+      "invoice_prefix": "PMT-",
+      "invoice_start": 12050,
       "tax_rate": "0",
-      "address": {"street": "1 Civic Plaza", "city": "Alderbrook Heights", "state": "OR", "zip": "00306"},
-      "phone": "555-0124", "email": "permits@alderbrookcounty.example.com",
+      "address": {
+        "street": "1 Civic Plaza",
+        "city": "Alderbrook Heights",
+        "state": "OR",
+        "zip": "00306"
+      },
+      "phone": "555-0124",
+      "email": "permits@alderbrookcounty.example.com",
       "items": [
-        {"description": "Water heater replacement permit", "unit_price": "85.00", "qty": [1, 3], "taxable": false},
-        {"description": "Plumbing permit, fixture", "unit_price": "45.00", "qty": [1, 6], "taxable": false},
-        {"description": "Inspection fee", "unit_price": "60.00", "qty": [1, 4], "taxable": false}
+        {
+          "description": "Water heater replacement permit",
+          "unit_price": "85.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Plumbing permit, fixture",
+          "unit_price": "45.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Inspection fee",
+          "unit_price": "60.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        }
       ]
     },
     {
       "id": "V15",
       "name": "Wren Common Deli & Market",
-      "aliases": ["Wren Common Deli and Market", "WREN COMMON DELI & MKT", "The Wren Common Deli"],
-      "category": "FOOD", "currency": "USD", "entry_type": "receipt", "terms_days": 0,
+      "aliases": [
+        "Wren Common Deli and Market",
+        "WREN COMMON DELI & MKT",
+        "The Wren Common Deli"
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "receipt",
+      "terms_days": 0,
       "credit_notes": false,
-      "invoice_prefix": "", "invoice_start": 0,
-      "address": {"street": "3 Main Street", "city": "Wren Common", "state": "OR", "zip": "00146"},
-      "phone": "555-0125", "email": "",
+      "invoice_prefix": "",
+      "invoice_start": 0,
+      "address": {
+        "street": "3 Main Street",
+        "city": "Wren Common",
+        "state": "OR",
+        "zip": "00146"
+      },
+      "phone": "555-0125",
+      "email": "",
       "items": [
-        {"description": "Coffee, 12 oz", "unit_price": "3.49", "qty": [2, 4], "taxable": false},
-        {"description": "Sandwich, turkey", "unit_price": "8.99", "qty": [1, 4], "taxable": false},
-        {"description": "Sandwich, veggie", "unit_price": "7.99", "qty": [1, 3], "taxable": false},
-        {"description": "Bottled water, 24 pk", "unit_price": "5.49", "qty": [1, 3], "taxable": false},
-        {"description": "Paper towels, 6 roll", "unit_price": "7.99", "qty": [1, 2], "taxable": true}
+        {
+          "description": "Coffee, 12 oz",
+          "unit_price": "3.49",
+          "qty": [
+            2,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sandwich, turkey",
+          "unit_price": "8.99",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sandwich, veggie",
+          "unit_price": "7.99",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Bottled water, 24 pk",
+          "unit_price": "5.49",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Paper towels, 6 roll",
+          "unit_price": "7.99",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        }
       ]
     },
     {
       "id": "V16",
       "name": "Saltmarsh Water Heater Wholesale",
-      "aliases": ["Saltmarsh Water Heater Whsle", "SALTMARSH WATER HEATER WHOLESALE", "Saltmarsh Water Heaters"],
-      "category": "SUPPLIES", "currency": "USD", "entry_type": "invoice", "terms_days": 30,
+      "aliases": [
+        "Saltmarsh Water Heater Whsle",
+        "SALTMARSH WATER HEATER WHOLESALE",
+        "Saltmarsh Water Heaters"
+      ],
+      "category": "SUPPLIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
       "credit_notes": true,
-      "invoice_prefix": "SWH-", "invoice_start": 770,
-      "address": {"street": "44 Wharf Boulevard", "city": "Saltmarsh", "state": "OR", "zip": "00413"},
-      "phone": "555-0126", "email": "sales@saltmarshheaters.example.com",
+      "invoice_prefix": "SWH-",
+      "invoice_start": 770,
+      "address": {
+        "street": "44 Wharf Boulevard",
+        "city": "Saltmarsh",
+        "state": "OR",
+        "zip": "00413"
+      },
+      "phone": "555-0126",
+      "email": "sales@saltmarshheaters.example.com",
       "items": [
-        {"description": "Water heater, 40 gal tank", "unit_price": "612.00", "qty": [1, 3], "taxable": true},
-        {"description": "Water heater, 50 gal tank", "unit_price": "698.00", "qty": [1, 3], "taxable": true},
-        {"description": "Expansion tank, 2 gal", "unit_price": "54.00", "qty": [1, 4], "taxable": true},
-        {"description": "Flex connector, 18 in.", "unit_price": "11.50", "qty": [2, 12], "taxable": true},
-        {"description": "Anode rod", "unit_price": "38.00", "qty": [1, 4], "taxable": true}
+        {
+          "description": "Water heater, 40 gal tank",
+          "unit_price": "612.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Water heater, 50 gal tank",
+          "unit_price": "698.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Expansion tank, 2 gal",
+          "unit_price": "54.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Flex connector, 18 in.",
+          "unit_price": "11.50",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Anode rod",
+          "unit_price": "38.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        }
+      ]
+    }
+  ],
+  "unlisted_vendors": [
+    {
+      "id": "X01",
+      "name": "Dunmore Pipe & Drain Depot",
+      "aliases": [
+        "Dunmore Pipe and Drain Depot",
+        "DUNMORE PIPE & DRAIN"
+      ],
+      "category": "SUPPLIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": false,
+      "invoice_prefix": "DPD-",
+      "invoice_start": 4400,
+      "address": {
+        "street": "17 Flats Road",
+        "city": "Dunmore Flats",
+        "state": "OR",
+        "zip": "00421"
+      },
+      "phone": "555-0151",
+      "email": "orders@dunmorepipe.example.com",
+      "items": [
+        {
+          "description": "Drain snake, 25 ft",
+          "unit_price": "46.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "P-trap, 1-1/2 in.",
+          "unit_price": "6.90",
+          "qty": [
+            3,
+            15
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Pipe cleaner, 1 qt",
+          "unit_price": "12.40",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "X02",
+      "name": "Harborlight Signs",
+      "aliases": [
+        "Harborlight Sign Co.",
+        "HARBORLIGHT SIGNS"
+      ],
+      "category": "MARKETING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
+      "credit_notes": false,
+      "invoice_prefix": "HS",
+      "invoice_start": 310,
+      "address": {
+        "street": "3 Pier Street",
+        "city": "Saltmarsh",
+        "state": "OR",
+        "zip": "00414"
+      },
+      "phone": "555-0152",
+      "email": "studio@harborlightsigns.example.com",
+      "items": [
+        {
+          "description": "Truck magnet sign, pair",
+          "unit_price": "84.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Vinyl banner, 2x8 ft",
+          "unit_price": "58.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Design time, hour",
+          "unit_price": "60.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "X03",
+      "name": "Quillfield Equipment Rental",
+      "aliases": [
+        "Quillfield Equip. Rental",
+        "QUILLFIELD EQUIPMENT RENTAL"
+      ],
+      "category": "OTHER",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 7,
+      "credit_notes": false,
+      "invoice_prefix": "QR-",
+      "invoice_start": 8800,
+      "address": {
+        "street": "88 Depot Lane",
+        "city": "Old Quarry",
+        "state": "OR",
+        "zip": "00341"
+      },
+      "phone": "555-0153",
+      "email": "rentals@quillfieldrental.example.com",
+      "items": [
+        {
+          "description": "Trencher rental, day",
+          "unit_price": "195.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Pipe camera rental, day",
+          "unit_price": "85.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Delivery",
+          "unit_price": "40.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
       ]
     }
   ]
