@@ -45,3 +45,9 @@ React 19, Vite 8, TypeScript, Vitest with Testing Library and jsdom, ESLint with
 - **Generated types.** `python -m tools.export_openapi` writes `web/openapi.json` from the FastAPI app; `npm run gen:api` in `web/` turns it into `web/src/api/schema.d.ts`. Both files are committed. A pytest test fails if `openapi.json` is out of date, and CI fails if `schema.d.ts` is out of date with `openapi.json`.
 - **Licenses.** All npm packages installed are MIT, ISC, BSD, Apache-2.0 or similar, with these exceptions, all build-time only and not shipped in the repository: `lightningcss` (MPL-2.0, weak file-level copyleft, a dependency of Vite) and `caniuse-lite` (CC-BY-4.0, browser-support data). No AGPL or GPL. Flagged with D-005 for the owner to accept.
 - The status page renders every value as text. The hosted-mode banner is already wired to `hosted_mode`; its wording ("a hosted provider") becomes the provider's name when hosted mode exists.
+
+## D-009: `tools/check_env.py` design
+
+Standard library only, so it runs before the virtual environment exists. It reads `.env` (real environment variables win) and reports Python 3.13, Node.js, Tesseract (including the `eng` language data), Ollama reachability and which models are pulled, and whether the configured text model (and vision model, if set) are among them. Tesseract is looked up from `TESSERACT_CMD`, then `PATH`, then the default Windows install folders. It prints Windows install hints (`winget install ...`) but never installs anything. It exits 0 whatever it finds; `--strict` exits 1 if anything is missing. Machine access goes through an injected `Probes` object, so its tests need no Tesseract, no Ollama and no network. It only accepts `http://` or `https://` for `OLLAMA_URL`.
+
+Node.js is included because the web app needs it; this goes slightly beyond the plan's "Tesseract and Ollama".

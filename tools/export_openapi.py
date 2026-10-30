@@ -14,7 +14,8 @@ OPENAPI_FILE = Path(__file__).resolve().parent.parent / "web" / "openapi.json"
 
 def main() -> None:
     schema = create_app(Settings(_env_file=None)).openapi()
-    OPENAPI_FILE.write_text(json.dumps(schema, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    text = json.dumps(schema, indent=2, sort_keys=True) + "\n"
+    OPENAPI_FILE.write_text(text, encoding="utf-8", newline="\n")
     print(f"Wrote {OPENAPI_FILE}")
 
 
