@@ -119,8 +119,8 @@ def flatten_light(gray: Image.Image) -> Image.Image:
     return _img(np.minimum(_arr(gray) / background, 1.0) * 255.0)
 
 
-def remove_speckle(gray: Image.Image) -> Image.Image:
-    return gray.filter(ImageFilter.MedianFilter(3))
+def remove_speckle(gray: Image.Image, size: int = 3) -> Image.Image:
+    return gray.filter(ImageFilter.MedianFilter(size)) if size > 1 else gray
 
 
 def stretch_contrast(gray: Image.Image) -> Image.Image:
@@ -132,7 +132,7 @@ def stretch_contrast(gray: Image.Image) -> Image.Image:
     return _img((data - low) / (high - low) * 255.0)
 
 
-def page_mask(gray: Image.Image) -> Image.Image:
+def page_mask(gray: Image.Image, *, grow: bool = False) -> Image.Image:
     """255 where there is paper, 0 on a desk or other dark surround, from the unflattened image.
 
     Paper is much brighter than what it lies on, so a pixel (judged on a small blurred copy)
@@ -146,7 +146,8 @@ def page_mask(gray: Image.Image) -> Image.Image:
     ).filter(ImageFilter.GaussianBlur(2))
     data = _arr(small)
     bright = float(np.percentile(data, 90))
-    mask = _img(np.where(data > _PAPER_SHARE * bright, 255.0, 0.0)).filter(ImageFilter.MinFilter(7))
+    mask = _img(np.where(data > _PAPER_SHARE * bright, 255.0, 0.0))
+    mask = mask.filter(ImageFilter.MaxFilter(9) if grow else ImageFilter.MinFilter(7))
     return mask.resize(gray.size, Image.Resampling.NEAREST)
 
 
@@ -247,11 +248,18 @@ def upside_down_evidence(ink: Image.Image) -> float:
     return total / weight if weight else 0.0
 
 
-def preprocess(image: Image.Image) -> Preprocessed:
+def preprocess(
+    image: Image.Image,
+    *,
+    whiten_outside: bool = True,
+    median_size: int = 3,
+) -> Preprocessed:
     """Clean one page image for OCR and record how it was turned."""
     working = to_working_size(image)
     mask = page_mask(working)
-    gray = remove_speckle(flatten_light(working))
+    gray = remove_speckle(flatten_light(working), median_size)
+    if whiten_outside:  # a desk around a photographed page becomes plain white
+        gray = Image.composite(gray, Image.new("L", gray.size, 255), page_mask(working, grow=True))
     turns: list[Turn] = []
 
     def turn_by(degrees: float) -> None:

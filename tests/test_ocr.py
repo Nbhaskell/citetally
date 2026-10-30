@@ -121,6 +121,47 @@ def test_the_command_reads_english_as_tsv_and_the_page_file_is_removed_afterward
     assert [w.t for w in page.words] == ["ok"]
 
 
+def test_a_timeout_is_retried_once_in_the_fallback_mode_and_then_reported(fake_exe: str) -> None:
+    modes: list[str] = []
+
+    def slow_then_ok(args: Sequence[str], timeout_s: float) -> str:
+        modes.append(args[args.index("--psm") + 1])
+        if len(modes) == 1:
+            raise ocr.OcrTimeout("Tesseract took too long to read the page.")
+        return tsv(row("later"))
+
+    engine = ocr.TesseractOcr(fake_exe, runner=slow_then_ok)
+    page = engine.read_page(Image.new("L", (50, 50), 255))
+    assert modes == ["11", "6"] and [w.t for w in page.words] == ["later"]
+
+    def always_slow(args: Sequence[str], timeout_s: float) -> str:
+        modes.append(args[args.index("--psm") + 1])
+        raise ocr.OcrTimeout("Tesseract took too long to read the page.")
+
+    modes.clear()
+    with pytest.raises(ocr.OcrTimeout):
+        ocr.TesseractOcr(fake_exe, runner=always_slow).read_page(Image.new("L", (50, 50), 255))
+    assert modes == ["11", "6"]  # one retry, not a loop
+    modes.clear()
+    with pytest.raises(ocr.OcrTimeout):
+        ocr.TesseractOcr(fake_exe, fallback_psm=None, runner=always_slow).read_page(
+            Image.new("L", (50, 50), 255)
+        )
+    assert modes == ["11"]
+
+
+def test_other_failures_are_not_retried(fake_exe: str) -> None:
+    calls: list[int] = []
+
+    def crash(args: Sequence[str], timeout_s: float) -> str:
+        calls.append(1)
+        raise ocr.OcrError("Tesseract failed (exit code 1).")
+
+    with pytest.raises(ocr.OcrError):
+        ocr.TesseractOcr(fake_exe, runner=crash).read_page(Image.new("L", (50, 50), 255))
+    assert calls == [1]
+
+
 def test_the_file_is_removed_even_when_the_run_fails(fake_exe: str) -> None:
     seen: list[str] = []
 

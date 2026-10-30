@@ -35,6 +35,10 @@ class OcrError(Exception):
     """The page could not be read. The message never holds page content."""
 
 
+class OcrTimeout(OcrError):
+    """The OCR program did not finish in time."""
+
+
 class OcrUnavailable(OcrError):
     """The OCR program is not installed or would not start."""
 
@@ -117,13 +121,20 @@ def _run(args: Sequence[str], timeout_s: float) -> str:
     except PermissionError as error:
         raise OcrUnavailable("Tesseract would not start.") from error
     except subprocess.TimeoutExpired as error:
-        raise OcrError("Tesseract took too long to read the page.") from error
+        raise OcrTimeout("Tesseract took too long to read the page.") from error
     if done.returncode != 0:
         raise OcrError(f"Tesseract failed (exit code {done.returncode}).")
     return done.stdout
 
 
 class TesseractOcr:
+    """Tesseract with one page mode and, if that takes too long, a second try with another.
+
+    Sparse-text mode (11) read the development scans best (D-040) but, on one heavy scan, ran
+    for more than two minutes where mode 6 finished in six seconds. A timeout therefore tries
+    `fallback_psm` once before the page is reported as failed.
+    """
+
     name = "tesseract"
 
     def __init__(
@@ -131,17 +142,26 @@ class TesseractOcr:
         command: str = "",
         *,
         language: str = "eng",
-        psm: int = 4,
+        psm: int = 11,
+        fallback_psm: int | None = 6,
         dpi: int = 200,
-        timeout_s: float = 120.0,
+        timeout_s: float = 60.0,
         runner: Runner | None = None,
     ) -> None:
         self._command = command
         self._language = language
         self._psm = psm
+        self._fallback_psm = fallback_psm if fallback_psm != psm else None
         self._dpi = dpi
         self._timeout_s = timeout_s
         self._runner = runner or _run
+
+    def _read(self, exe: str, path: Path, psm: int) -> str:
+        args = [
+            exe, str(path), "stdout", "-l", self._language,
+            "--psm", str(psm), "--dpi", str(self._dpi), "tsv",
+        ]  # fmt: skip
+        return self._runner(args, self._timeout_s)
 
     def read_page(self, image: Image.Image) -> OcrPage:
         exe = find_tesseract(self._command)
@@ -150,11 +170,12 @@ class TesseractOcr:
         with tempfile.TemporaryDirectory(prefix="citetally-ocr-") as folder:
             path = Path(folder) / "page.png"
             image.convert("L").save(path, "PNG")
-            args = [
-                exe, str(path), "stdout", "-l", self._language,
-                "--psm", str(self._psm), "--dpi", str(self._dpi), "tsv",
-            ]  # fmt: skip
-            output = self._runner(args, self._timeout_s)
+            try:
+                output = self._read(exe, path, self._psm)
+            except OcrTimeout:
+                if self._fallback_psm is None:
+                    raise
+                output = self._read(exe, path, self._fallback_psm)
         return parse_tsv(output, image.width, image.height)
 
 
