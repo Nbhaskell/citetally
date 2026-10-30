@@ -59,3 +59,7 @@ Node.js is included because the web app needs it; this goes slightly beyond the 
 ## D-011: MPL-2.0 development tools accepted
 
 The owner accepted the weak-copyleft (MPL-2.0) development-only tools flagged in D-005 (`pathspec`, via `mypy`) and D-008 (`lightningcss`, via Vite), and the CC-BY-4.0 `caniuse-lite` data. Reason: file-level copyleft, unmodified, build and test time only, not part of the shipped code. This is a narrow exception to `CLAUDE.md` rule 10. AGPL and GPL remain banned, and any new copyleft dependency, or any MPL dependency used at runtime, still needs a fresh decision.
+
+## D-012: `CLAUDE.md` is not tracked
+
+Aligned with the sister projects: `citedesk`, `rag-project` and `citewise-markets` all git-ignore `CLAUDE.md` (and `CLAUDE.local.md`), and `citecheck` tracks no assistant-instruction file. `CLAUDE.md` is read from the local working folder by Claude Code, so GitHub and CI do not need it. It was committed by mistake in the first commit; it is now untracked and listed in `.gitignore`, and the file stays on disk. The planning documents in `docs/` stay tracked, as in `citedesk`. Earlier commits on the private remote still contain the file; its content holds no secrets, and the history check belongs in the `pre-publish-checklist` run before the repository goes public.

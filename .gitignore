@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.example
+# Assistant-instruction and local notes files: untracked, same as citedesk, rag-project, citewise-markets
+CLAUDE.md
 CLAUDE.local.md
 .claude/
 
