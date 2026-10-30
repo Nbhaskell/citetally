@@ -1,0 +1,35 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Data, databases, evaluation runs (never commit real or generated data)
+data/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+eval/runs/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+
+# Web
+node_modules/
+web/dist/
+*.tsbuildinfo
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
