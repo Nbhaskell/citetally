@@ -14,7 +14,7 @@ addopts = "-ra"
 [tool.ruff]
 line-length = 100
 target-version = "py313"
-extend-exclude = ["web"]
+extend-exclude = ["web", "docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
@@ -23,3 +23,4 @@ select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 python_version = "3.13"
 strict = true
 files = ["citetally", "tools", "tests"]
+plugins = ["pydantic.mypy"]
