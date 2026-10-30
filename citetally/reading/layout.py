@@ -17,6 +17,7 @@ from collections.abc import Sequence
 from citetally.models import Word
 
 MAX_COLUMNS = 160
+MAX_WORD_CHARS = 200  # nothing a person would print as one word is longer than this
 _SAME_LINE = 0.6  # a word joins a line if its centre is within this many word heights
 _BLANK_LINE = 1.8  # a gap this many line pitches tall leaves one blank line
 _DROP_CATEGORIES = {"Cc", "Cf", "Cs", "Co", "Cn"}
@@ -29,7 +30,7 @@ def clean_token(text: str) -> str:
         for ch in text
         if ch.isspace() or (ch != "\ufffd" and unicodedata.category(ch) not in _DROP_CATEGORIES)
     )
-    return " ".join(kept.split())
+    return " ".join(kept.split())[:MAX_WORD_CHARS]
 
 
 def _centre(word: Word) -> float:

@@ -156,6 +156,13 @@ def _ink_image(gray: Image.Image, mask: Image.Image) -> Image.Image:
     return _img(ink * 255.0)
 
 
+def _search_copy(ink: Image.Image) -> Image.Image:
+    """A copy about 700 pixels wide to search on, never taller than twice that, however thin."""
+    scale = min(_SEARCH_WIDTH / max(ink.width, 1), 2 * _SEARCH_WIDTH / max(ink.height, 1))
+    size = (max(round(ink.width * scale), 1), max(round(ink.height * scale), 1))
+    return ink.resize(size, Image.Resampling.BOX)
+
+
 def _stripes(ink: Gray, axis: int) -> float:
     """How strongly ink gathers into rows (axis 1) or columns (axis 0): sum of squared profile."""
     profile = ink.sum(axis=axis)
@@ -180,8 +187,7 @@ def is_sideways(ink: Image.Image) -> bool:
 
     A tilt blurs both profiles, so each axis is scored at its own best tilt.
     """
-    scale = _SEARCH_WIDTH / max(ink.width, 1)
-    small = ink.resize((_SEARCH_WIDTH, max(round(ink.height * scale), 1)), Image.Resampling.BOX)
+    small = _search_copy(ink)
     scores = []
     for axis in (1, 0):
         _, coarse = _best_stripes(small, axis, 0.0, MAX_TILT_DEGREES, 2.0)
@@ -197,8 +203,7 @@ def _tilt_score(small: Image.Image, degrees: float) -> float:
 
 def measure_tilt(ink: Image.Image) -> float:
     """The tilt in degrees, positive when lines of text rise to the right; 0 when it is unclear."""
-    scale = _SEARCH_WIDTH / max(ink.width, 1)
-    small = ink.resize((_SEARCH_WIDTH, max(round(ink.height * scale), 1)), Image.Resampling.BOX)
+    small = _search_copy(ink)
     if _stripes(_arr(small) / 255.0, 1) <= 0:
         return 0.0
     best = 0.0

@@ -7,6 +7,7 @@ logs or raises with page text: errors name the kind of failure and nothing from 
 
 from __future__ import annotations
 
+import math
 import os
 import shutil
 import subprocess
@@ -84,7 +85,7 @@ def parse_tsv(tsv: str, width: int, height: int) -> OcrPage:
             confidence = float(cells[10])
         except ValueError:
             continue
-        if not text or confidence < 0 or box_w <= 0 or box_h <= 0:
+        if not text or math.isnan(confidence) or confidence < 0 or box_w <= 0 or box_h <= 0:
             continue
         words.append(
             Word(

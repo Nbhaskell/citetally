@@ -69,11 +69,12 @@ def luhn_valid(digits: str) -> bool:
 
 def is_card_number(digits: str) -> bool:
     """Digits that pass the Luhn check and have a card network's starting digits and length."""
-    if not luhn_valid(digits) or not _MIN_DIGITS <= len(digits) <= _MAX_DIGITS:
+    if not _MIN_DIGITS <= len(digits) <= _MAX_DIGITS:
         return False
-    return any(
+    on_network = any(
         len(digits) in lengths and digits.startswith(prefixes) for prefixes, lengths in _NETWORKS
     )
+    return on_network and luhn_valid(digits)
 
 
 def _card_windows(groups: Sequence[str]) -> list[tuple[int, int]]:
