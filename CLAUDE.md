@@ -57,17 +57,34 @@ The developer works on Windows 11 (PowerShell). Give Windows-friendly commands f
 
 ## Commands
 
-Fill these in at the end of Phase 0, then keep them current:
+Keep these current. Run from the repository root in PowerShell:
 
 ```
-# setup:
-# run API:
-# run web:
-# run tests:
-# lint / typecheck:
-# environment check:
-# generate synthetic data:
-# run evaluation:
+# setup (Python 3.13 and Node 20.19+; creates .venv and web/node_modules):
+py -3.13 -m venv .venv; .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt; npm --prefix web ci
+
+# run API (http://127.0.0.1:8200/api/status):
+.\.venv\Scripts\python.exe -m citetally
+
+# run web (http://127.0.0.1:5175, proxies /api to the API):
+npm --prefix web run dev
+
+# run tests (Python, then web):
+.\.venv\Scripts\python.exe -m pytest
+npm --prefix web test
+
+# lint / typecheck (CI runs all of these):
+.\.venv\Scripts\python.exe -m ruff check .; .\.venv\Scripts\python.exe -m ruff format --check .; .\.venv\Scripts\python.exe -m mypy
+npm --prefix web run lint; npm --prefix web run typecheck
+
+# environment check (always exits 0; add --strict to exit 1 when something is missing):
+.\.venv\Scripts\python.exe tools\check_env.py
+
+# regenerate API types after changing the API (then commit both files):
+.\.venv\Scripts\python.exe -m tools.export_openapi; npm --prefix web run gen:api
+
+# generate synthetic data: (Phase 1, not built yet)
+# run evaluation: (Phase 8, not built yet)
 ```
 
 ## Skills that help (if installed)
