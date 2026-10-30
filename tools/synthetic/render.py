@@ -267,7 +267,7 @@ def _header(pen: Pen, doc: Doc, family: Family, width: float, top: float) -> flo
     pen.text(width - margin, top - 26, title, 22, bold=True, align="r", color=pen.accent)
     y = top - 46
     for label, value in meta:
-        pen.text(width - margin - 120, y, f"{label}:", 9, bold=True)
+        pen.text(width - margin - 175, y, f"{label}:", 9, bold=True)
         pen.text(width - margin, y, value, 9, align="r")
         y -= 13
     return min(y, top - 40 - len(vendor_lines) * 10) - 16

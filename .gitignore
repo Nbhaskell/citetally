@@ -8,7 +8,11 @@ CLAUDE.local.md
 .claude/
 
 # Data, databases, evaluation runs (never commit real or generated data)
-data/
+data/*
+# The only generated files that are committed: the small labelled demo set
+!data/synthetic/
+data/synthetic/*
+!data/synthetic/demo/
 *.db
 *.db-wal
 *.db-shm
