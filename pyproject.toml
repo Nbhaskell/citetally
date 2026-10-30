@@ -1,0 +1,25 @@
+[project]
+name = "citetally"
+version = "0.1.0"
+description = "An AI review desk for invoices and receipts. Nothing is paid, posted or sent automatically."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+license = "MIT"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["citetally", "tools", "tests"]
