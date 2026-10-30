@@ -83,3 +83,11 @@ def check_transition(
             raise IllegalTransition("Marking a duplicate needs duplicate_of, the original's id.")
     elif duplicate_of is not None:
         raise IllegalTransition("duplicate_of is only allowed when the status becomes duplicate.")
+
+
+# Every value `trigger_for` can return: the closed list of causes that events may record.
+TRIGGERS: frozenset[str] = frozenset(
+    {trigger_for(source, target) for source, target in EDGES if target is not S.FAILED}
+    | {trigger_for(S.RECEIVED, S.FAILED, stage) for stage in Stage}
+    | {"failed"}
+)
