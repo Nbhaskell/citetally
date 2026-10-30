@@ -40,10 +40,11 @@ Run the checks:
 npm --prefix web test
 ```
 
-Turn on the commit guard that blocks personal information (once per clone):
+Turn on the commit guard that blocks personal information and committed secrets (once per clone; the second command downloads a checksum-verified copy of gitleaks into the git-ignored `.tools/` folder):
 
 ```powershell
 git config core.hooksPath .githooks
+.\.venv\Scripts\python.exe tools\secret_scan.py --fetch
 ```
 
 ## Documentation

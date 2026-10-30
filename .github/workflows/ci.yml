@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the secret scan reads the whole history
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
@@ -25,6 +27,8 @@ jobs:
       - run: mypy
       - run: pytest
       - run: python tools/check_personal_info.py --all
+      - run: python tools/secret_scan.py --fetch
+      - run: python tools/secret_scan.py --history
 
   web:
     runs-on: ubuntu-latest
