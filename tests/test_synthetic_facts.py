@@ -100,6 +100,26 @@ def test_one_vendor_bills_in_another_currency(facts: Facts) -> None:
 
 
 def test_tax_rates_are_exact_decimals(facts: Facts) -> None:
-    assert facts.business.sales_tax_rate == Decimal("0.0825")
+    assert facts.business.sales_tax_rate == Decimal("0.07")
     for vendor in facts.vendors:
         assert Decimal("0") <= vendor.tax_rate(facts.business) <= Decimal("0.25")
+
+
+def test_the_business_is_the_same_invented_plumbing_company_as_citedesk(facts: Facts) -> None:
+    """A snapshot of the citedesk business identity; this project never reads that project."""
+    business = facts.business
+    assert business.name == "Kestrel Hollow Plumbing"
+    assert business.kind == "residential plumbing service"
+    assert business.address.street == "22 Millrace Lane" and business.address.city == "Alderbrook"
+    assert (business.phone, business.email) == ("555-0171", "kestrelhollow@example.com")
+    assert "citedesk" in facts.note and "does not read or depend on" in facts.note
+
+
+def test_vendors_make_sense_for_a_plumbing_business(facts: Facts) -> None:
+    """No leftovers from the earlier pet-business draft."""
+    text = (FACTS_FILE.read_text(encoding="utf-8")).lower()
+    for leftover in ("kibble", "kennel", "groom", "pet supply", "barkery", "treat"):
+        assert leftover not in text, leftover
+    supplies = {v.name for v in facts.vendors if v.category == "SUPPLIES"}
+    assert any("plumbing" in name.lower() for name in supplies)
+    assert any("water heater" in name.lower() for name in supplies)
