@@ -24,6 +24,7 @@ jobs:
       - run: ruff format --check .
       - run: mypy
       - run: pytest
+      - run: python tools/check_personal_info.py --all
 
   web:
     runs-on: ubuntu-latest
