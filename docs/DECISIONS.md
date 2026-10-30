@@ -248,3 +248,20 @@ Tests include round trips against the independent test-data printers (every mone
 **What it shows.** Clean PDFs forced through OCR read at 98% (so the text layer remains the better source), light scans at 96%, phone photos at 87%, and heavy scans at 64%: money 64%, dates 67%, identifiers 68%, descriptions and names 43%. By type of value over all conditions: quantities 97%, dates 90%, amounts 88%, text 78%, identifiers (invoice and order numbers) 75%. By template, the weakest are T03 (69%) and T04 (79%). Mean OCR confidence is 92 on clean pages, 90 on light scans, 79 on photos and 60 on heavy scans, so the confidence signal separates the conditions that fail. Heavy scans will need the reviewer; `LOW_READ_QUALITY` has to fire on them.
 
 **Still open for task 8.** The alternative engine. Nothing is added to the dependencies until it is chosen and its license checked (rule 10).
+
+### D-041. OCR bake-off, part 2: the alternative engine, and the choice
+The alternative is the OCR that ships with Windows 11 (`Windows.Media.Ocr`), reached through the MIT-licensed `winrt-*` Python packages. It was picked over RapidOCR because RapidOCR pulls in an `opencv-python` wheel with bundled LGPL FFmpeg, which rule 10 treats as copyleft, even for a tool that is never shipped. The seven `winrt-*` packages are pinned in `requirements-dev.txt` for Windows only (`sys_platform == "win32"`), so CI on Linux does not try to install them; the adapter is `tools/windows_ocr.py` and is used only by `tools.ocr_bakeoff`. It gives word boxes but no confidence, so a page read with it could not feed `LOW_READ_QUALITY`.
+
+Same 140 development documents, same scoring as D-040 (values found / numbers found):
+
+| Engine and input | All values | Numbers | clean_pdf | scan_light | scan_heavy | phone_photo | s/page |
+|---|---|---|---|---|---|---|---|
+| **Tesseract, cleaned, mode 11** | **86.4%** | **89.8%** | 98.2% | 96.3% | **64.0%** | **86.5%** | 0.58 |
+| Windows OCR, raw page | 77.3% | 80.8% | 97.6% | 95.8% | 41.3% | 73.3% | 0.27 |
+| Windows OCR, cleaned page | 61.2% | 64.4% | 81.8% | 85.7% | 32.9% | 43.3% | 0.21 |
+
+**Choice: Tesseract, cleaned pages, sparse-text mode (11), 60-second timeout with a retry in mode 6.** It is nine points ahead of Windows OCR overall and far ahead where reading is hard (heavy scans 64% against 41%, phone photos 87% against 73%); the two are level on clean pages and light scans, where Windows OCR is twice as fast. Windows OCR was worse on the cleaned page than on the raw one (the clean-up was built and tuned for Tesseract), and gives no confidence. It is Windows-only and needs an OCR language pack, which the product could not assume. `OcrEngine` stays: a stronger engine can be added behind it later. `CITETALLY_OCR_ENGINE` stays `tesseract` only.
+
+**What this does not settle.** Only two engines were compared; RapidOCR, EasyOCR or a vision model might read heavy scans better, and the question stays open for the vision experiment in Phase 4. The numbers are on the development split that the settings were chosen on, so they are optimistic; the held-out templates (T11 to T15) have not been read. Heavy scans at 64% mean most of them will reach the reviewer with values the page cannot confirm. That is the intended behaviour (`VALUE_IN_DOCUMENT`, `LOW_READ_QUALITY`) and Phase 8 reports it by condition.
+
+**Phase 3 acceptance.** All 140 development documents read without crashing in every configuration; the report with accuracy by condition is `eval/reports/ocr_bakeoff.json` and the table above; the security tests pass.

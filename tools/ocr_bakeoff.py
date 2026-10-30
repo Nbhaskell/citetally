@@ -156,24 +156,35 @@ PREPS: dict[str, dict[str, Any] | None] = {  # None means no pre-processing
 class Config:
     name: str
     prep: str
-    psm: int
+    engine: str  # "tesseract" or "windows"
+    psm: int = 11
 
     def make(self) -> ocr.OcrEngine:
+        if self.engine == "windows":
+            from tools.windows_ocr import WindowsOcrEngine
+
+            return WindowsOcrEngine()
         return ocr.TesseractOcr(psm=self.psm)  # with the default timeout and fallback
 
 
 def configs_from(specs: Sequence[str]) -> list[Config]:
-    """Specs look like `whiten/11`: a pre-processing variant and a Tesseract page mode."""
+    """Specs look like `clean/11` (Tesseract page mode 11) or `raw/windows`."""
     out = []
     for spec in specs:
-        prep, _, psm = spec.partition("/")
+        prep, _, engine = spec.partition("/")
         if prep not in PREPS:
             raise SystemExit(f"unknown pre-processing {prep!r}; choose from {sorted(PREPS)}")
-        out.append(Config(f"tesseract-{prep}-psm{psm}", prep, int(psm)))
+        if engine == "windows":
+            out.append(Config(f"windows-{prep}", prep, "windows"))
+        else:
+            out.append(Config(f"tesseract-{prep}-psm{engine}", prep, "tesseract", int(engine)))
     return out
 
 
-DEFAULT_SPECS = ["raw/4", "raw/11", "nowhiten/11", "clean/3", "clean/4", "clean/6", "clean/11"]
+DEFAULT_SPECS = [
+    "raw/4", "raw/11", "nowhiten/11", "clean/3", "clean/4", "clean/6", "clean/11",
+    "raw/windows", "clean/windows",
+]  # fmt: skip
 
 
 # ---- one document ------------------------------------------------------------------------------

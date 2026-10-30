@@ -83,6 +83,8 @@ def test_only_the_development_split_can_be_loaded_by_default() -> None:
 def test_specs_name_a_preprocessing_variant_and_a_page_mode() -> None:
     (config,) = bake.configs_from(["clean/11"])
     assert (config.name, config.prep, config.psm) == ("tesseract-clean-psm11", "clean", 11)
+    (windows,) = bake.configs_from(["raw/windows"])
+    assert (windows.name, windows.prep, windows.engine) == ("windows-raw", "raw", "windows")
     with pytest.raises(SystemExit):
         bake.configs_from(["nonsense/4"])
 

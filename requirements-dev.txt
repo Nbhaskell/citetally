@@ -16,3 +16,10 @@ pytest==9.2.0
 reportlab==5.1.0
 ruff==0.17.3
 truststore==0.10.5
+winrt-runtime==4.0.3; sys_platform == "win32"
+winrt-Windows.Foundation.Collections==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Foundation==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Globalization==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Graphics.Imaging==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Media.Ocr==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Storage.Streams==4!10.0.28000.2705; sys_platform == "win32"
