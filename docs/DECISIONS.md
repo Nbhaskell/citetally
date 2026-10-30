@@ -110,3 +110,16 @@ About a quarter of documents (55 of 210) carry exactly one of the 12 kinds, four
 
 ### D-024. Phase 1 acceptance results
 Checked 2026-10-30. Generation is deterministic: two full builds from seed 20261031 produced the same digest over all 210 files. A script (`python -m tools.synthetic.report`) prints counts by split, condition, family and planted kind: 140 tuned and 70 held-out documents, 55 with one planted problem (42 tuned, 13 held out), all four conditions in both splits, 15 families. Documents of every layout and condition were looked at by eye (contact sheets of all 15 families, and the four conditions in tuned and held-out damage). Findings fixed: the tax rate was in the answer key but not drawn on the per-line-tax layout; phone photos had black wedges around the page; the held-out fax-style scan turned shadowed areas into noise; a long date touched its label on the left-header layout. The golden file validates against its schema (`problems()` returns nothing), and held-out families appear in no tuned document. Known limit: these documents are cleaner and more regular than real ones, there is no handwriting, and the same author wrote the generator and the layouts, so results on them show the pipeline works, not how it behaves on a real business's files.
+
+## Phase 2
+
+### D-025. Migrations and the database module
+`db/migrations/0001_init.sql` is the SQL block of `docs/BACKEND_SCHEMA.md` section 2, extracted unchanged (17 tables, 9 indexes). `citetally/db.py` applies pending migrations in order, each in its own transaction, and records them in `schema_migrations`. A migration that fails rolls back completely, leaves earlier ones applied, and can be run again once fixed. It refuses a folder with a bad file name, a duplicated number, a gap, or an applied migration whose file has gone missing. Connections run in autocommit mode (so transactions are explicit: `transaction(conn)`), with foreign keys on, a 5-second busy timeout, and WAL for file databases. Timestamps come from one helper (`now()`), ISO 8601 UTC to the millisecond. `python -m citetally.db migrate` migrates and seeds the database at `CITETALLY_DB_PATH` (default `data/citetally.db`, git-ignored). Seeding inserts only categories that are missing and never renames one the user has edited.
+
+The schema document says an applied migration must never be edited but gives no way to detect an edit. None is added: `schema_migrations` has no checksum column and changing it is outside the schema. Review keeps this rule for now.
+
+### D-026. The food category is labelled "Food and drinks"
+`BACKEND_SCHEMA.md` labelled `FOOD` "Food and treats", which belongs to a pet business. The demo business is a plumbing company (D-015), so the label in `db/seed/categories.json` and in the schema document is "Food and drinks". The code `FOOD` is unchanged. The sample JSON in the schema document still mentions a pet vendor; those are illustrations only.
+
+### D-027. Phase 2 branch workflow
+From Phase 2 each phase is built on its own branch (`phase-2-data-layer`), pushed to GitHub, and merged to `main` through a pull request when its acceptance check passes. Phases 0 and 1 were built directly on `main` before this was decided.
