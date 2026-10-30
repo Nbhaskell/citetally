@@ -15,7 +15,7 @@ import sqlite3
 import sys
 from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from citetally.config import Settings
@@ -30,9 +30,22 @@ class MigrationError(Exception):
     """A migration file is malformed, missing, or failed to apply."""
 
 
+_last_tick = datetime.min.replace(tzinfo=UTC)
+
+
 def now() -> str:
-    """The current time as an ISO 8601 UTC string, to the millisecond."""
-    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    """The current time as an ISO 8601 UTC string, to the millisecond.
+
+    Strictly increasing within a process, so rows written one after the other always sort in the
+    order they were written (the review queue and the "edits since the last review" rule need it).
+    """
+    global _last_tick
+    tick = datetime.now(UTC)
+    tick = tick.replace(microsecond=tick.microsecond // 1000 * 1000)
+    if tick <= _last_tick:
+        tick = _last_tick + timedelta(milliseconds=1)
+    _last_tick = tick
+    return tick.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
 def connect(path: str | Path) -> sqlite3.Connection:

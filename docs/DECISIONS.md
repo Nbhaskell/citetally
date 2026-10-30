@@ -136,3 +136,18 @@ From Phase 2 each phase is built on its own branch (`phase-2-data-layer`), pushe
 
 ### D-030. Order of Phase 2 tasks 3 and 4
 The state machine (task 3) was built before the audit helper (task 4), but the repository's status-change function (the rest of task 3) must record an audit event in the same transaction as the status change, so the audit helper was built first and the repository last.
+
+### D-031. Repositories and the rules they enforce
+`citetally/repository.py` (not listed in `docs/TRD.md` section 3; added for the "repository functions" task) is the only place that writes to the database. Rules enforced there, each with a test:
+
+- **Status changes** (`change_status`) follow the state machine, run in one transaction, and write an audit event. A failure needs a stage from the allowed list and a plain written reason. A duplicate needs an existing, different document. A document needs an entry before it becomes extracted, needs review or approved. Approval needs every one of the eight blocking checks recorded and either passed or overridden with a written reason (a check that has not run counts as unresolved). A refused change leaves no row and no event.
+- **Reprocessing** (needs review, rejected or failed back to received or read) clears what the re-run stages produce: checks and the entry with its lines, evidence and edit history, and the pages too when starting from received. Extraction attempts stay as history, and the next attempt gets the next number. `field_edits` is deleted with its entry because the schema says so.
+- **Overrides** apply only to failed blocking checks, need a written reason, and are cleared whenever the check runs again, so an override always matches the values the reviewer saw.
+- **Reviews** (`record_review`) change the status, store the review row (counting overrides, and whether anything was edited since the previous review of that document) and log a `review_recorded` event, all together. Rejecting needs a reason; marking a duplicate needs the original's id.
+- **Values.** Amounts must be whole integers (a float, a bool or a string is refused), quantities, unit prices and tax rates must be exact decimal strings (`"2.5"`, never `"7%"`, `NaN` or a float), dates must be real `YYYY-MM-DD` dates, currencies three capital letters, and page boxes fractions of the page in order.
+- **Queries** from `BACKEND_SCHEMA.md` section 5 (review queue, duplicate lookups by number and by content, vendor history) are implemented as written.
+
+`db.now()` is now strictly increasing inside a process, so rows written one after another always sort in write order. Not built yet because their phases need them: exports and export items (Phase 6), vendor-name normalisation and matching (Phase 4; `create_vendor` takes the normalised name as an argument), and the `approved` to `exported` change, which `change_status` already allows.
+
+### D-032. A small mismatch in the schema document
+`BACKEND_SCHEMA.md` says every table has `created_at`, but `schema_migrations` has `applied_at`, `settings` has `updated_at`, and `export_items` has no timestamp. The tables are built as written; only the sentence is inexact.

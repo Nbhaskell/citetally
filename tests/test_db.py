@@ -1,6 +1,7 @@
 """Migrations and connection setup: from an empty database, idempotent, atomic, constraints on."""
 
 import json
+import re
 import sqlite3
 from pathlib import Path
 
@@ -191,3 +192,9 @@ def test_cli_migrates_and_seeds_the_configured_database(
 def test_cli_rejects_unknown_commands(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit):
         db.main(["explode"])
+
+
+def test_timestamps_are_iso_utc_and_strictly_increasing() -> None:
+    stamps = [db.now() for _ in range(200)]
+    assert stamps == sorted(stamps) and len(set(stamps)) == 200
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", stamps[0])
