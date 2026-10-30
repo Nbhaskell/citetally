@@ -55,3 +55,7 @@ Node.js is included because the web app needs it; this goes slightly beyond the 
 ## D-010: CI
 
 `.github/workflows/ci.yml` has two jobs on `ubuntu-latest`, Python 3.13 and Node 24, running on pushes to `main` and on pull requests with read-only permissions. The Python job runs `ruff check`, `ruff format --check`, `mypy` and `pytest`. The web job runs `npm ci`, ESLint, `tsc`, Vitest, and regenerates the API types to confirm `web/src/api/schema.d.ts` matches `web/openapi.json`. Nothing needs a model, an OCR binary or network access, and nothing deploys. Action versions are pinned to the latest major releases at the time of writing (checkout v7, setup-python v7, setup-node v7). The workflow has not run yet because there is no GitHub remote; the same commands were run locally, and the pinned requirements were installed into a fresh virtual environment to confirm they resolve.
+
+## D-011: MPL-2.0 development tools accepted
+
+The owner accepted the weak-copyleft (MPL-2.0) development-only tools flagged in D-005 (`pathspec`, via `mypy`) and D-008 (`lightningcss`, via Vite), and the CC-BY-4.0 `caniuse-lite` data. Reason: file-level copyleft, unmodified, build and test time only, not part of the shipped code. This is a narrow exception to `CLAUDE.md` rule 10. AGPL and GPL remain banned, and any new copyleft dependency, or any MPL dependency used at runtime, still needs a fresh decision.
