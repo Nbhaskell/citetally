@@ -168,3 +168,16 @@ The state machine (task 3) was built before the audit helper (task 4), but the r
 **Locales** are a small fixed table in each module; an unknown locale is an error rather than a default.
 
 Tests include round trips against the independent test-data printers (every money style and every date style, thousands of random values), and a cross-check that the product's line and tax arithmetic agrees with the separate arithmetic that made the golden set.
+
+### D-034. Ingest: what it accepts, stores and refuses
+`citetally/ingest.py` judges a file by its leading bytes only. The PDF marker must be the first bytes of the file (real readers tolerate junk before it; this does not, because a file whose first bytes are not a PDF header is more likely disguised than old). The upload limits (`CITETALLY_MAX_FILE_MB`, `MAX_PAGES`, `MAX_IMAGE_PIXELS`, `TEXT_LAYER_MIN_CHARS`) are settings, and an image's size is read from its header before any pixel is decoded, so a small file that claims to be huge is refused quickly (tested with a 256-megapixel PNG of under a megabyte). PDF pages are measured before they are rendered, so a tiny PDF with an enormous page box cannot allocate gigabytes. Pages are rendered at 200 dpi to PNG in `data/pages/<document id>/<n>.png`; images get their EXIF orientation applied and are flattened to plain RGB.
+
+**Parsing runs in a separate process.** `isolated_call` starts a fresh process, kills it at the timeout (60 seconds) and reports a crash or exception by kind only, never with a message that could hold file content. A hung or crashing PDF library therefore fails one document, not the server. Starting a process costs about a second, so tests mostly run the same code in-process (`isolate=False`) and a few run the real worker.
+
+**Storage.** The original is written to `data/files/<sha256>` through a temporary file and renamed, never overwritten, never named from the upload. The uploaded name is kept only as display text with folders, control characters and direction overrides removed. A file larger than the size limit is not stored at all.
+
+**Duplicates.** A file whose hash matches an earlier document that has not failed becomes a new `duplicate` document pointing at the earliest one; nothing is stored or rendered again. A matching document that failed is not counted, so re-uploading after raising a limit works. `source_kind` is `digital_pdf` when at least half the pages have the minimum amount of printable text, otherwise `scanned_pdf`.
+
+**A gap between two documents.** `docs/TRD.md` section 14 says a wrong-type file is `failed` at `ingest`, and the state machine allows `received` to `failed` for it, but `documents.mime_type` has a `CHECK` that allows only the three supported types, so no row can describe a file of another type. Followed the schema: an unsupported file raises `IngestRejected` with a plain reason and creates no row (the API will answer with an error, Phase 5). Files that are a supported type but too large, too long, too big in pixels or damaged do get a `failed` row with a plain reason.
+
+`pillow`, `numpy` and `pypdfium2` moved from the development requirements to the runtime requirements, because the product now uses them.

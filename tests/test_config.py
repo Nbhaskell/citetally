@@ -15,6 +15,10 @@ def clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
         "CITETALLY_PORT",
         "CITETALLY_MODEL_PROVIDER",
         "CITETALLY_ALLOW_HOSTED",
+        "CITETALLY_MAX_FILE_MB",
+        "CITETALLY_MAX_PAGES",
+        "CITETALLY_MAX_IMAGE_PIXELS",
+        "CITETALLY_TEXT_LAYER_MIN_CHARS",
         "CITETALLY_SYNTHETIC_DATA",
         "CITETALLY_TEXT_MODEL",
         "CITETALLY_VISION_MODEL",
@@ -69,5 +73,17 @@ def test_hosted_provider_starts_when_allowed(monkeypatch: pytest.MonkeyPatch) ->
 
 def test_unknown_provider_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("CITETALLY_MODEL_PROVIDER", "mystery")
+    with pytest.raises(ValidationError):
+        make()
+
+
+def test_upload_limits_default_to_the_documented_values() -> None:
+    s = make()
+    assert (s.max_file_mb, s.max_pages, s.text_layer_min_chars) == (20, 10, 80)
+    assert s.max_image_pixels == 40_000_000
+
+
+def test_upload_limits_must_be_positive(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CITETALLY_MAX_FILE_MB", "0")
     with pytest.raises(ValidationError):
         make()
