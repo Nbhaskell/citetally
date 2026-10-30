@@ -43,7 +43,7 @@ def test_rows_that_are_not_words_are_ignored() -> None:
         row("   ", conf="95"),  # blank text
         row("noconf", conf="-1"),
         row("flat", width=0),
-        "5	1	1	1	1	1	1	2	x	4	90	garbled",
+        "5\t1\t1\t1\t1\t1\t1\t2\tx\t4\t90\tgarbled",
         "5\t1\t1\t1\t1\t1\t1\t2",  # too short to be a row
     ]
     page = ocr.parse_tsv(tsv(*rows), 1700, 2200)
