@@ -36,21 +36,10 @@ def _centre(word: Word) -> float:
     return (word.y0 + word.y1) / 2
 
 
-def build_text(words: Sequence[Word]) -> str:
-    tokens = [(clean_token(word.t), word) for word in words]
-    tokens = [(text, word) for text, word in tokens if text]
-    if not tokens:
-        return ""
-
+def _group_lines(tokens: list[tuple[str, Word]]) -> list[list[tuple[str, Word]]]:
+    """Tokens grouped into lines, top to bottom; each line's order is left to the caller."""
     heights = [max(word.y1 - word.y0, 1e-6) for _, word in tokens]
-    long_enough = [(t, w) for t, w in tokens if len(t) >= 3] or tokens
-    char_width = max(
-        statistics.median((w.x1 - w.x0) / len(t) for t, w in long_enough), 1 / MAX_COLUMNS
-    )
     same_line = _SAME_LINE * statistics.median(heights)
-
-    margin = min(word.x0 for _, word in tokens)  # the page's own left margin is not text
-
     ordered = sorted(tokens, key=lambda item: (_centre(item[1]), item[1].x0, item[0]))
     lines: list[list[tuple[str, Word]]] = []
     for item in ordered:
@@ -59,6 +48,32 @@ def build_text(words: Sequence[Word]) -> str:
             lines[-1].append(item)
         else:
             lines.append([item])
+    return lines
+
+
+def line_indices(words: Sequence[Word]) -> list[list[int]]:
+    """Positions in `words` grouped into lines, top to bottom, each line left to right."""
+    if not words:
+        return []
+    tokens = [(f"{index:09d}", word) for index, word in enumerate(words)]
+    return [
+        [int(key) for key, _ in sorted(line, key=lambda item: (item[1].x0, item[0]))]
+        for line in _group_lines(tokens)
+    ]
+
+
+def build_text(words: Sequence[Word]) -> str:
+    tokens = [(clean_token(word.t), word) for word in words]
+    tokens = [(text, word) for text, word in tokens if text]
+    if not tokens:
+        return ""
+
+    long_enough = [(t, w) for t, w in tokens if len(t) >= 3] or tokens
+    char_width = max(
+        statistics.median((w.x1 - w.x0) / len(t) for t, w in long_enough), 1 / MAX_COLUMNS
+    )
+    margin = min(word.x0 for _, word in tokens)  # the page's own left margin is not text
+    lines = _group_lines(tokens)
     centres = [statistics.fmean(_centre(w) for _, w in line) for line in lines]
 
     steps = [b - a for a, b in itertools.pairwise(centres) if b > a]
