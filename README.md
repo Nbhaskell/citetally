@@ -10,7 +10,7 @@ Citetally is an AI review desk for invoices and receipts at a small business. PD
 
 ## Status
 
-Phases 0 and 1 are built: repository and tooling, and the invented business with 210 labelled invoices, receipts and credit notes in four conditions (the golden set). The API answers `/api/status` and a React page shows it. Nothing reads a document yet. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
+Phases 0 to 2 are built: repository and tooling, the invented business with 210 labelled invoices, receipts and credit notes in four conditions (the golden set), and the data layer (SQL migrations, enums and models kept in step with the schema document, the document state machine, repositories and audit events). The API answers `/api/status` and a React page shows it. Nothing reads a document yet. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
 
 ## Run it (Windows, PowerShell)
 

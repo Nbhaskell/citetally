@@ -1,0 +1,13 @@
+[
+  {"code": "SUPPLIES", "name": "Supplies"},
+  {"code": "FOOD", "name": "Food and drinks"},
+  {"code": "CLEANING", "name": "Cleaning and laundry"},
+  {"code": "UTILITIES", "name": "Utilities"},
+  {"code": "REPAIRS", "name": "Repairs and maintenance"},
+  {"code": "INSURANCE", "name": "Insurance"},
+  {"code": "SOFTWARE", "name": "Software and subscriptions"},
+  {"code": "PROFESSIONAL", "name": "Professional services"},
+  {"code": "VEHICLE", "name": "Vehicle and fuel"},
+  {"code": "MARKETING", "name": "Marketing"},
+  {"code": "OTHER", "name": "Other"}
+]

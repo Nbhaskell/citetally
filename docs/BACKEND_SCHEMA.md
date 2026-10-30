@@ -62,7 +62,7 @@ Blocking checks must pass, or be overridden by the reviewer with a written reaso
 
 ### Seed categories (editable, invented chart for the demo business)
 
-`SUPPLIES` Supplies, `FOOD` Food and treats, `CLEANING` Cleaning and laundry, `UTILITIES` Utilities, `REPAIRS` Repairs and maintenance, `INSURANCE` Insurance, `SOFTWARE` Software and subscriptions, `PROFESSIONAL` Professional services, `VEHICLE` Vehicle and fuel, `MARKETING` Marketing, `OTHER` Other.
+`SUPPLIES` Supplies, `FOOD` Food and drinks, `CLEANING` Cleaning and laundry, `UTILITIES` Utilities, `REPAIRS` Repairs and maintenance, `INSURANCE` Insurance, `SOFTWARE` Software and subscriptions, `PROFESSIONAL` Professional services, `VEHICLE` Vehicle and fuel, `MARKETING` Marketing, `OTHER` Other.
 
 ## 2. Tables
 

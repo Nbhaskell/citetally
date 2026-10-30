@@ -110,3 +110,44 @@ About a quarter of documents (55 of 210) carry exactly one of the 12 kinds, four
 
 ### D-024. Phase 1 acceptance results
 Checked 2026-10-30. Generation is deterministic: two full builds from seed 20261031 produced the same digest over all 210 files. A script (`python -m tools.synthetic.report`) prints counts by split, condition, family and planted kind: 140 tuned and 70 held-out documents, 55 with one planted problem (42 tuned, 13 held out), all four conditions in both splits, 15 families. Documents of every layout and condition were looked at by eye (contact sheets of all 15 families, and the four conditions in tuned and held-out damage). Findings fixed: the tax rate was in the answer key but not drawn on the per-line-tax layout; phone photos had black wedges around the page; the held-out fax-style scan turned shadowed areas into noise; a long date touched its label on the left-header layout. The golden file validates against its schema (`problems()` returns nothing), and held-out families appear in no tuned document. Known limit: these documents are cleaner and more regular than real ones, there is no handwriting, and the same author wrote the generator and the layouts, so results on them show the pipeline works, not how it behaves on a real business's files.
+
+## Phase 2
+
+### D-025. Migrations and the database module
+`db/migrations/0001_init.sql` is the SQL block of `docs/BACKEND_SCHEMA.md` section 2, extracted unchanged (17 tables, 9 indexes). `citetally/db.py` applies pending migrations in order, each in its own transaction, and records them in `schema_migrations`. A migration that fails rolls back completely, leaves earlier ones applied, and can be run again once fixed. It refuses a folder with a bad file name, a duplicated number, a gap, or an applied migration whose file has gone missing. Connections run in autocommit mode (so transactions are explicit: `transaction(conn)`), with foreign keys on, a 5-second busy timeout, and WAL for file databases. Timestamps come from one helper (`now()`), ISO 8601 UTC to the millisecond. `python -m citetally.db migrate` migrates and seeds the database at `CITETALLY_DB_PATH` (default `data/citetally.db`, git-ignored). Seeding inserts only categories that are missing and never renames one the user has edited.
+
+The schema document says an applied migration must never be edited but gives no way to detect an edit. None is added: `schema_migrations` has no checksum column and changing it is outside the schema. Review keeps this rule for now.
+
+### D-026. The food category is labelled "Food and drinks"
+`BACKEND_SCHEMA.md` labelled `FOOD` "Food and treats", which belongs to a pet business. The demo business is a plumbing company (D-015), so the label in `db/seed/categories.json` and in the schema document is "Food and drinks". The code `FOOD` is unchanged. The sample JSON in the schema document still mentions a pet vendor; those are illustrations only.
+
+### D-027. Phase 2 branch workflow
+From Phase 2 each phase is built on its own branch (`phase-2-data-layer`), pushed to GitHub, and merged to `main` through a pull request when its acceptance check passes. Phases 0 and 1 were built directly on `main` before this was decided.
+
+### D-028. Models, enums and what the sync tests compare
+`citetally/models.py` defines every enumeration once, as `StrEnum`s in the document's order, plus `EditField` (the header and line fields with `category` and `entry_type`, matching the `field_edits` constraint), `EventType` (audit event names, which the schema leaves unconstrained), the blocking-check set and `required_fields()`. One row model per table (all 17), with the table's exact columns; a test checks fields against `PRAGMA table_info` and nullable columns against optional fields, so a column added to a migration without a model fails the suite. `0/1` columns are `bool` in the models. `Word`, `ExtractedLine` and `ExtractedFields` validate the JSON shapes: extracted values must be text or null (a number such as `23.11` is rejected, because the model copies printed text and never reformats) and unknown keys are rejected.
+
+`tests/test_models.py` compares three things: the enumeration table and the severity table parsed out of `docs/BACKEND_SCHEMA.md`, the enums in code, and every `CHECK (column IN (...))` in the migrated database (all 15 are mapped, and an unmapped new one fails). It was checked by hand: a one-letter typo in an enum value fails two tests. The provider list in `config.py` is checked against the `Provider` enum too.
+
+### D-029. Audit events: a closed list of payload keys, no free text
+`citetally/events.py` writes one `audit_events` row and one JSON log line per event. A payload may only use a short list of keys, each with a closed vocabulary (read method, OCR engine, check code, export profile, provider, extract mode, decision, stage, trigger), a number (counts, timings, confidence, ids) or a flag. There is no key for free text on purpose: an invoice number or a vendor name looks like any other identifier, so a pattern check on a text field cannot tell them apart. Model name and prompt version are therefore not event keys; they are columns of `extractions`. Error messages name the refused key and never echo the value. Unknown keys, wrong value types and values outside a vocabulary raise `PayloadError`, and nothing is stored.
+
+`tests/test_events.py` covers the rule the schema asks for ("a test enforces this"): it tries every kind of content (vendor name, invoice number, amounts, page text, an injected instruction) as keys and values, then checks the captured log output and the stored rows contain none of it. Removing the key allowlist by hand makes 10 of its tests fail. `configure_logging()` sends lines to stderr as bare JSON and returns its handler, and the API will call it at start-up in Phase 5.
+
+### D-030. Order of Phase 2 tasks 3 and 4
+The state machine (task 3) was built before the audit helper (task 4), but the repository's status-change function (the rest of task 3) must record an audit event in the same transaction as the status change, so the audit helper was built first and the repository last.
+
+### D-031. Repositories and the rules they enforce
+`citetally/repository.py` (not listed in `docs/TRD.md` section 3; added for the "repository functions" task) is the only place that writes to the database. Rules enforced there, each with a test:
+
+- **Status changes** (`change_status`) follow the state machine, run in one transaction, and write an audit event. A failure needs a stage from the allowed list and a plain written reason. A duplicate needs an existing, different document. A document needs an entry before it becomes extracted, needs review or approved. Approval needs every one of the eight blocking checks recorded and either passed or overridden with a written reason (a check that has not run counts as unresolved). A refused change leaves no row and no event.
+- **Reprocessing** (needs review, rejected or failed back to received or read) clears what the re-run stages produce: checks and the entry with its lines, evidence and edit history, and the pages too when starting from received. Extraction attempts stay as history, and the next attempt gets the next number. `field_edits` is deleted with its entry because the schema says so.
+- **Overrides** apply only to failed blocking checks, need a written reason, and are cleared whenever the check runs again, so an override always matches the values the reviewer saw.
+- **Reviews** (`record_review`) change the status, store the review row (counting overrides, and whether anything was edited since the previous review of that document) and log a `review_recorded` event, all together. Rejecting needs a reason; marking a duplicate needs the original's id.
+- **Values.** Amounts must be whole integers (a float, a bool or a string is refused), quantities, unit prices and tax rates must be exact decimal strings (`"2.5"`, never `"7%"`, `NaN` or a float), dates must be real `YYYY-MM-DD` dates, currencies three capital letters, and page boxes fractions of the page in order.
+- **Queries** from `BACKEND_SCHEMA.md` section 5 (review queue, duplicate lookups by number and by content, vendor history) are implemented as written.
+
+`db.now()` is now strictly increasing inside a process, so rows written one after another always sort in write order. Not built yet because their phases need them: exports and export items (Phase 6), vendor-name normalisation and matching (Phase 4; `create_vendor` takes the normalised name as an argument), and the `approved` to `exported` change, which `change_status` already allows.
+
+### D-032. A small mismatch in the schema document
+`BACKEND_SCHEMA.md` says every table has `created_at`, but `schema_migrations` has `applied_at`, `settings` has `updated_at`, and `export_items` has no timestamp. The tables are built as written; only the sentence is inexact.
