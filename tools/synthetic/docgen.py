@@ -63,14 +63,6 @@ def generate(
         lines.append(Line(item.description, qty, item.unit_price, amount, item.taxable))
 
     subtotal = sum(line.amount_minor for line in lines)
-    taxable = sum(line.amount_minor for line in lines if line.taxable)
-    if style.tax_mode == "per_line":
-        for line in lines:
-            line.tax_minor = tax_minor(line.amount_minor, rate) if line.taxable else 0
-        tax_total = sum(line.tax_minor for line in lines)
-    else:
-        tax_total = tax_minor(taxable, rate)
-
     shipping = rng.randint(800, 3500) if style.has_shipping else 0
     discount = 0
     if style.has_discount:
@@ -102,11 +94,29 @@ def generate(
         subtotal_minor=subtotal,
         shipping_minor=shipping,
         discount_minor=discount,
-        tax_total_minor=tax_total,
-        total_minor=subtotal + tax_total + shipping - discount,
+        tax_total_minor=0,
+        total_minor=0,
     )
+    recompute(doc)
     reprint(doc)
     return doc
+
+
+def recompute(doc: Doc) -> None:
+    """Set every figure from the lines, shipping and discount. Exact, half up."""
+    for line in doc.lines:
+        line.amount_minor = line_amount_minor(line.quantity, line.unit_price)
+    doc.subtotal_minor = sum(line.amount_minor for line in doc.lines)
+    if doc.style.tax_mode == "per_line":
+        for line in doc.lines:
+            line.tax_minor = tax_minor(line.amount_minor, doc.tax_rate) if line.taxable else 0
+        doc.tax_total_minor = sum(line.tax_minor for line in doc.lines)
+    else:
+        taxable = sum(line.amount_minor for line in doc.lines if line.taxable)
+        doc.tax_total_minor = tax_minor(taxable, doc.tax_rate)
+    doc.total_minor = (
+        doc.subtotal_minor + doc.tax_total_minor + doc.shipping_minor - doc.discount_minor
+    )
 
 
 def _money_style(doc: Doc) -> str:
