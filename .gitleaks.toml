@@ -1,0 +1,7 @@
+title = "citetally gitleaks config"
+
+# Start from gitleaks' built-in ruleset and add nothing that weakens it.
+[extend]
+useDefault = true
+
+# Only allowlist things with a written reason. Currently none are needed.

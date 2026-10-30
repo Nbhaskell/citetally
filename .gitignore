@@ -35,3 +35,6 @@ web/dist/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local tool downloads (the pinned gitleaks binary)
+.tools/
