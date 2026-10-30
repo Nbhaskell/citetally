@@ -151,3 +151,20 @@ The state machine (task 3) was built before the audit helper (task 4), but the r
 
 ### D-032. A small mismatch in the schema document
 `BACKEND_SCHEMA.md` says every table has `created_at`, but `schema_migrations` has `applied_at`, `settings` has `updated_at`, and `export_items` has no timestamp. The tables are built as written; only the sentence is inexact.
+
+## Phase 3
+
+### D-033. How printed amounts and dates are read
+`citetally/money.py` and `citetally/dates.py` read exactly what is printed and guess nothing; text that is not exactly one clean amount or date returns `None`. A lookalike letter ("1O0.00") is never corrected. The module `money.py` contains no float at all, and a test checks the source for the word.
+
+**Amounts.** Currency symbols and codes before or after the number, `(45.00)`, a leading, trailing or true minus sign, and thousands grouped by commas, dots, spaces, no-break spaces or apostrophes are all read. When both `.` and `,` appear, the last one is the decimal mark whatever the locale, so a euro invoice reads correctly even under `en-US`. A mark that repeats ("1.234.567") only groups thousands. A mark that appears once before a number of digits other than three is a decimal mark ("12,50"). **A mark once before exactly three digits ("1.234", "1,234") reads two ways**: `parse_money` flags it ambiguous (the example in `docs/TRD.md` section 4.4) and the locale picks the value. A bare `$` means the business's dollar (`dollar="USD"` by default), not necessarily US dollars; `US$` and `CA$` are explicit. Indian-style grouping ("1,23,456") and mixed layouts are refused.
+
+**Quantities and unit prices** (`parse_decimal`) follow the locale for that same lone mark without a flag, because three decimals are normal there: fuel is sold by the thousandth of a gallon (`11.699`) and a gallon costs `4.159`. Flagging every fuel receipt would be noise.
+
+**Rates** (`parse_rate`) need a `%` sign; a bare `0.07` is not guessed to mean seven percent.
+
+**Dates.** Year-first forms are always year, month, day. `/` and `-` numeric dates can be month-first or day-first: if both readings are real dates and differ, the date is flagged ambiguous and the locale picks (`en-US` month first; `en-GB`, `de-DE`, `fr-FR` and others day first). Dots mean day.month.year and are not flagged. Two-digit years pivot at 70 (69 is 2069, 70 is 1970). Only English month names, ordinals ("14th") and years 1900 to 2099 are understood; compact `20260314` and dates with extra words are not parsed.
+
+**Locales** are a small fixed table in each module; an unknown locale is an error rather than a default.
+
+Tests include round trips against the independent test-data printers (every money style and every date style, thousands of random values), and a cross-check that the product's line and tax arithmetic agrees with the separate arithmetic that made the golden set.
