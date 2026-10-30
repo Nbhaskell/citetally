@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "note": "SYNTHETIC TEST DATA. Every name, address, phone number and email below is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range.",
+  "as_of": "2026-10-31",
+  "date_range": ["2026-01-05", "2026-10-28"],
+  "business": {
+    "name": "Brindlewick Pet Lodge",
+    "kind": "pet boarding, daycare and grooming",
+    "address": {"street": "18 Alder Lane", "city": "Fernbrook", "state": "OR", "zip": "00142"},
+    "phone": "555-0100",
+    "email": "frontdesk@brindlewick.example.com",
+    "default_currency": "USD",
+    "locale": "en-US",
+    "sales_tax_rate": "0.0825"
+  },
+  "categories": ["SUPPLIES", "FOOD", "CLEANING", "UTILITIES", "REPAIRS", "INSURANCE", "SOFTWARE", "PROFESSIONAL", "VEHICLE", "MARKETING", "OTHER"],
+  "vendors": [
+    {
+      "id": "V01",
+      "name": "Northfield Pet Supply Co.",
+      "aliases": ["Northfield Pet Supply", "NORTHFIELD PET SUPPLY CO", "Northfield Pet Sup. Co"],
+      "category": "SUPPLIES", "currency": "USD", "entry_type": "invoice", "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "INV-", "invoice_start": 20100,
+      "address": {"street": "400 Mill Road", "city": "Northfield", "state": "OR", "zip": "00211"},
+      "phone": "555-0111", "email": "billing@northfieldpet.example.com",
+      "items": [
+        {"description": "Kibble, 30 lb bag", "unit_price": "38.00", "qty": [1, 6], "taxable": true},
+        {"description": "Poop bags, case of 500", "unit_price": "21.25", "qty": [1, 4], "taxable": true},
+        {"description": "Cat litter, 40 lb", "unit_price": "17.50", "qty": [1, 5], "taxable": true},
+        {"description": "Slip leads, nylon", "unit_price": "6.40", "qty": [4, 20], "taxable": true},
+        {"description": "Stainless bowls, 2 qt", "unit_price": "9.75", "qty": [2, 10], "taxable": true},
+        {"description": "Chew toys, assorted", "unit_price": "4.15", "qty": [10, 40], "taxable": true}
+      ]
+    },
+    {
+      "id": "V02",
+      "name": "Greenleaf Linen & Laundry",
+      "aliases": ["Greenleaf Linen and Laundry", "GREENLEAF LINEN", "Greenleaf Laundry"],
+      "category": "CLEANING", "currency": "USD", "entry_type": "invoice", "terms_days": 15,
+      "credit_notes": false,
+      "invoice_prefix": "GL", "invoice_start": 7300,
+      "address": {"street": "92 Cedar Court", "city": "Alderton", "state": "OR", "zip": "00188"},
+      "phone": "555-0112", "email": "accounts@greenleaflinen.example.com",
+      "items": [
+        {"description": "Bedding laundering, per lb", "unit_price": "1.35", "qty": [120, 400], "taxable": false},
+        {"description": "Towel service, weekly", "unit_price": "48.00", "qty": [1, 4], "taxable": false},
+        {"description": "Linen rental, kennel mats", "unit_price": "3.25", "qty": [10, 40], "taxable": false},
+        {"description": "Pickup and delivery", "unit_price": "18.00", "qty": [1, 4], "taxable": false}
+      ]
+    },
+    {
+      "id": "V03",
+      "name": "Pinecrest Power & Light",
+      "aliases": ["Pinecrest Power and Light", "PINECREST POWER & LIGHT CO", "Pinecrest P&L"],
+      "category": "UTILITIES", "currency": "USD", "entry_type": "invoice", "terms_days": 21,
+      "credit_notes": false,
+      "invoice_prefix": "", "invoice_start": 5510023,
+      "tax_rate": "0.03",
+      "address": {"street": "1 Turbine Plaza", "city": "Pinecrest", "state": "OR", "zip": "00305"},
+      "phone": "555-0113", "email": "service@pinecrestpower.example.com",
+      "items": [
+        {"description": "Electricity, kWh", "unit_price": "0.1475", "qty": [900, 2600], "taxable": true},
+        {"description": "Basic service charge", "unit_price": "24.50", "qty": [1, 1], "taxable": true},
+        {"description": "Demand charge, kW", "unit_price": "9.80", "qty": [4, 12], "taxable": true}
+      ]
+    },
+    {
+      "id": "V04",
+      "name": "Clearwater Water Works",
+      "aliases": ["Clearwater Water", "CLEARWATER WATER WORKS", "Clearwater Municipal Water"],
+      "category": "UTILITIES", "currency": "USD", "entry_type": "invoice", "terms_days": 20,
+      "credit_notes": false,
+      "invoice_prefix": "WW-", "invoice_start": 88120,
+      "address": {"street": "7 Reservoir Way", "city": "Clearwater", "state": "OR", "zip": "00277"},
+      "phone": "555-0114", "email": "billing@clearwaterwater.example.com",
+      "items": [
+        {"description": "Water usage, per 100 cu ft", "unit_price": "3.92", "qty": [30, 120], "taxable": false},
+        {"description": "Sewer usage, per 100 cu ft", "unit_price": "5.18", "qty": [30, 120], "taxable": false},
+        {"description": "Service fee", "unit_price": "12.00", "qty": [1, 1], "taxable": false}
+      ]
+    },
+    {
+      "id": "V05",
+      "name": "Harlan Fix-It Maintenance",
+      "aliases": ["Harlan Fix It Maintenance", "HARLAN FIX-IT", "Harlan Maintenance LLC"],
+      "category": "REPAIRS", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "credit_notes": false,
+      "invoice_prefix": "HFM-", "invoice_start": 3041,
+      "address": {"street": "55 Anvil Street", "city": "Harlan", "state": "OR", "zip": "00340"},
+      "phone": "555-0115", "email": "office@harlanfixit.example.com",
+      "items": [
+        {"description": "Labor, hour", "unit_price": "72.00", "qty": [1, 8], "taxable": false},
+        {"description": "Replacement fan motor", "unit_price": "189.00", "qty": [1, 2], "taxable": true},
+        {"description": "Kennel latch set", "unit_price": "14.25", "qty": [2, 12], "taxable": true},
+        {"description": "Service call", "unit_price": "55.00", "qty": [1, 1], "taxable": false}
+      ]
+    },
+    {
+      "id": "V06",
+      "name": "Cobble Cove Insurance Group",
+      "aliases": ["Cobble Cove Insurance", "COBBLE COVE INS. GROUP", "Cobble Cove Ins Group"],
+      "category": "INSURANCE", "currency": "USD", "entry_type": "invoice", "terms_days": 10,
+      "credit_notes": false,
+      "invoice_prefix": "PRM-", "invoice_start": 150200,
+      "address": {"street": "300 Harbor Row, Suite 4", "city": "Cobble Cove", "state": "OR", "zip": "00412"},
+      "phone": "555-0116", "email": "premiums@cobblecoveins.example.com",
+      "items": [
+        {"description": "Commercial property premium, monthly", "unit_price": "412.00", "qty": [1, 1], "taxable": false},
+        {"description": "Care, custody and control coverage, monthly", "unit_price": "138.50", "qty": [1, 1], "taxable": false},
+        {"description": "Policy fee", "unit_price": "15.00", "qty": [1, 1], "taxable": false}
+      ]
+    },
+    {
+      "id": "V07",
+      "name": "Brightbyte Scheduler",
+      "aliases": ["Brightbyte Scheduler Inc.", "BRIGHTBYTE SCHEDULER", "Bright Byte Scheduler"],
+      "category": "SOFTWARE", "currency": "USD", "entry_type": "invoice", "terms_days": 7,
+      "credit_notes": false,
+      "invoice_prefix": "BB-", "invoice_start": 610400,
+      "address": {"street": "2 Signal Park", "city": "Fernbrook", "state": "OR", "zip": "00143"},
+      "phone": "555-0117", "email": "billing@brightbyte.example.com",
+      "items": [
+        {"description": "Booking platform, monthly", "unit_price": "79.00", "qty": [1, 1], "taxable": false},
+        {"description": "Additional user seats", "unit_price": "9.00", "qty": [1, 6], "taxable": false},
+        {"description": "SMS reminders, per 100", "unit_price": "6.50", "qty": [1, 15], "taxable": false}
+      ]
+    },
+    {
+      "id": "V08",
+      "name": "Lumen Kennel Software GmbH",
+      "aliases": ["Lumen Kennel Software", "LUMEN KENNEL SOFTWARE GMBH", "Lumen Kennel Soft. GmbH"],
+      "category": "SOFTWARE", "currency": "EUR", "entry_type": "invoice", "terms_days": 30,
+      "credit_notes": false,
+      "invoice_prefix": "LKS-2026-", "invoice_start": 1180,
+      "tax_rate": "0.19",
+      "address": {"street": "Musterweg 5", "city": "Alderfeld", "state": "", "zip": "00000", "country": "Germany"},
+      "phone": "+49 30 555-0118", "email": "rechnung@lumenkennel.example.com",
+      "items": [
+        {"description": "Kennel management licence, monthly", "unit_price": "64.00", "qty": [1, 1], "taxable": true},
+        {"description": "Support plan", "unit_price": "20.00", "qty": [1, 1], "taxable": true},
+        {"description": "Extra location", "unit_price": "29.00", "qty": [1, 2], "taxable": true}
+      ]
+    },
+    {
+      "id": "V09",
+      "name": "Ledgerwell Bookkeeping",
+      "aliases": ["Ledgerwell Bookkeeping Services", "LEDGERWELL BOOKKEEPING", "Ledger Well Bookkeeping"],
+      "category": "PROFESSIONAL", "currency": "USD", "entry_type": "invoice", "terms_days": 15,
+      "credit_notes": false,
+      "invoice_prefix": "LW", "invoice_start": 2610,
+      "address": {"street": "12 Quill Street, Floor 2", "city": "Quillfield", "state": "OR", "zip": "00255"},
+      "phone": "555-0119", "email": "hello@ledgerwell.example.com",
+      "items": [
+        {"description": "Monthly bookkeeping", "unit_price": "350.00", "qty": [1, 1], "taxable": false},
+        {"description": "Payroll processing, per run", "unit_price": "45.00", "qty": [1, 2], "taxable": false},
+        {"description": "Advisory time, hour", "unit_price": "95.00", "qty": [1, 3], "taxable": false}
+      ]
+    },
+    {
+      "id": "V10",
+      "name": "Tanager Fuel & Convenience",
+      "aliases": ["Tanager Fuel and Convenience", "TANAGER FUEL & CONV", "Tanager Fuel"],
+      "category": "VEHICLE", "currency": "USD", "entry_type": "receipt", "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "", "invoice_start": 0,
+      "address": {"street": "910 Route 9", "city": "Fernbrook", "state": "OR", "zip": "00144"},
+      "phone": "555-0120", "email": "",
+      "items": [
+        {"description": "Unleaded, gal", "unit_price": "3.789", "qty": [8, 19], "taxable": false},
+        {"description": "Car wash", "unit_price": "8.00", "qty": [1, 1], "taxable": true},
+        {"description": "Bottled water", "unit_price": "1.79", "qty": [1, 3], "taxable": true}
+      ]
+    },
+    {
+      "id": "V11",
+      "name": "Marlow Auto Care",
+      "aliases": ["Marlow Auto Care LLC", "MARLOW AUTO CARE", "Marlow Autocare"],
+      "category": "VEHICLE", "currency": "USD", "entry_type": "invoice", "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "RO-", "invoice_start": 40120,
+      "address": {"street": "230 Marlow Falls Road", "city": "Marlow Falls", "state": "OR", "zip": "00390"},
+      "phone": "555-0121", "email": "service@marlowauto.example.com",
+      "items": [
+        {"description": "Oil and filter service", "unit_price": "79.95", "qty": [1, 1], "taxable": true},
+        {"description": "Tire rotation", "unit_price": "25.00", "qty": [1, 1], "taxable": false},
+        {"description": "Brake pads, front set", "unit_price": "142.00", "qty": [1, 1], "taxable": true},
+        {"description": "Labor, hour", "unit_price": "98.00", "qty": [1, 4], "taxable": false}
+      ]
+    },
+    {
+      "id": "V12",
+      "name": "Sunbeam Print & Sign",
+      "aliases": ["Sunbeam Print and Sign", "SUNBEAM PRINT & SIGN", "Sunbeam Printing"],
+      "category": "MARKETING", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "credit_notes": false,
+      "invoice_prefix": "SPS-", "invoice_start": 9015,
+      "address": {"street": "61 Dawn Avenue", "city": "Alderton", "state": "OR", "zip": "00189"},
+      "phone": "555-0122", "email": "orders@sunbeamprint.example.com",
+      "items": [
+        {"description": "Flyers, 8.5x11, per 100", "unit_price": "14.00", "qty": [2, 10], "taxable": true},
+        {"description": "Banner, 3x6 ft", "unit_price": "62.00", "qty": [1, 2], "taxable": true},
+        {"description": "Window decals", "unit_price": "9.50", "qty": [2, 8], "taxable": true},
+        {"description": "Design proof", "unit_price": "25.00", "qty": [1, 1], "taxable": false}
+      ]
+    },
+    {
+      "id": "V13",
+      "name": "Pawprint Social Studio",
+      "aliases": ["Pawprint Social Studio LLC", "PAWPRINT SOCIAL", "Paw Print Social Studio"],
+      "category": "MARKETING", "currency": "USD", "entry_type": "invoice", "terms_days": 10,
+      "credit_notes": false,
+      "invoice_prefix": "PP", "invoice_start": 1204,
+      "address": {"street": "5 Bright Lane", "city": "Fernbrook", "state": "OR", "zip": "00145"},
+      "phone": "555-0123", "email": "studio@pawprintsocial.example.com",
+      "items": [
+        {"description": "Social media management, monthly", "unit_price": "480.00", "qty": [1, 1], "taxable": false},
+        {"description": "Photo session", "unit_price": "150.00", "qty": [1, 2], "taxable": false},
+        {"description": "Story templates", "unit_price": "35.00", "qty": [1, 4], "taxable": false}
+      ]
+    },
+    {
+      "id": "V14",
+      "name": "Daybreak Barkery Wholesale",
+      "aliases": ["Daybreak Barkery", "DAYBREAK BARKERY WHOLESALE", "Daybreak Bakery Wholesale"],
+      "category": "FOOD", "currency": "USD", "entry_type": "invoice", "terms_days": 14,
+      "credit_notes": true,
+      "invoice_prefix": "DB-", "invoice_start": 12050,
+      "address": {"street": "8 Oven Road", "city": "Quillfield", "state": "OR", "zip": "00256"},
+      "phone": "555-0124", "email": "wholesale@daybreakbarkery.example.com",
+      "items": [
+        {"description": "Peanut butter biscuits, 12 oz box", "unit_price": "5.40", "qty": [6, 40], "taxable": false},
+        {"description": "Pumpkin chews, 8 oz bag", "unit_price": "4.25", "qty": [6, 40], "taxable": false},
+        {"description": "Birthday pupcake, each", "unit_price": "2.10", "qty": [12, 48], "taxable": false}
+      ]
+    },
+    {
+      "id": "V15",
+      "name": "Corner Pantry Market",
+      "aliases": ["Corner Pantry", "CORNER PANTRY MKT", "The Corner Pantry Market"],
+      "category": "FOOD", "currency": "USD", "entry_type": "receipt", "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "", "invoice_start": 0,
+      "address": {"street": "3 Main Street", "city": "Fernbrook", "state": "OR", "zip": "00146"},
+      "phone": "555-0125", "email": "",
+      "items": [
+        {"description": "Coffee, 12 oz", "unit_price": "8.49", "qty": [1, 3], "taxable": false},
+        {"description": "Creamer", "unit_price": "3.29", "qty": [1, 2], "taxable": false},
+        {"description": "Paper towels, 6 roll", "unit_price": "7.99", "qty": [1, 2], "taxable": true},
+        {"description": "Granola bars, box", "unit_price": "4.79", "qty": [1, 3], "taxable": false},
+        {"description": "Bottled water, 24 pk", "unit_price": "5.49", "qty": [1, 3], "taxable": false}
+      ]
+    },
+    {
+      "id": "V16",
+      "name": "Willow & Pine Cleaning Supply",
+      "aliases": ["Willow and Pine Cleaning Supply", "WILLOW & PINE CLEANING", "Willow & Pine Supply"],
+      "category": "CLEANING", "currency": "USD", "entry_type": "invoice", "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "WP-", "invoice_start": 770,
+      "address": {"street": "44 Birch Boulevard", "city": "Pinecrest", "state": "OR", "zip": "00306"},
+      "phone": "555-0126", "email": "sales@willowpine.example.com",
+      "items": [
+        {"description": "Disinfectant, 1 gal", "unit_price": "11.40", "qty": [2, 12], "taxable": true},
+        {"description": "Mop heads", "unit_price": "6.75", "qty": [2, 10], "taxable": true},
+        {"description": "Trash liners, case", "unit_price": "24.00", "qty": [1, 4], "taxable": true},
+        {"description": "Gloves, box of 100", "unit_price": "9.20", "qty": [1, 6], "taxable": true}
+      ]
+    }
+  ]
+}

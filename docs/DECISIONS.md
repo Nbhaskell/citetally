@@ -68,3 +68,16 @@ The owner accepted the weak-copyleft development-only tools flagged in D-005 (`p
 - **Output.** Scans use `--redact`, so a found secret is never printed.
 - **Checked.** A history scan of the first 11 commits found nothing, and a commit containing a fake token-shaped string was refused.
 - **Updating.** Change `VERSION` and the pinned checksums together, from the release's checksums file.
+
+## Phase 1
+
+### D-015. The invented business is self-contained
+The docs name no business but hint at one (`BACKEND_SCHEMA.md` seed categories "Food and treats" and "Cleaning and laundry", and the sample golden item from "Northfield Pet Supply Co."). The demo business is **Brindlewick Pet Lodge**, a pet boarding, daycare and grooming business in an invented town, with 16 invented vendors (`universe/facts.json`). It does not share facts, files or code with the `citedesk` business: the two projects are independent, so neither has to be finished for the other to work. Phones are 555-01xx, emails are at `example.com`, and ZIP codes use the unassigned `00xxx` range. The fact sheet is checked by tests (`tests/test_synthetic_facts.py`). The business and vendor list was shown to the owner for approval before any document was generated.
+
+### D-016. Test-data tooling and its dependencies
+Documents are made by code under `tools/synthetic/` from `universe/facts.json`. New development-only packages, pinned in `requirements-dev.txt`: `reportlab` (BSD, PDF rendering), `pillow` (MIT-CMU, a permissive license; image degradation) and `numpy` (BSD-3-Clause with permissive bundled parts; noise and lighting). All three passed the license check. They move to the runtime requirements when Phase 3 uses Pillow and NumPy in the product.
+
+**OpenCV is not used in Phase 1.** `docs/TRD.md` lists OpenCV for pre-processing, but its pip wheels bundle FFmpeg libraries that are, as far as I know, LGPL, which `CLAUDE.md` rule 10 treats as copyleft. Degradation (blur, noise, rotation, perspective, uneven light) is done with Pillow and NumPy instead. Check the OpenCV license position again before Phase 3 adds it.
+
+### D-017. Truth is computed by the generator, not by the product's code
+The generator has its own small exact-decimal arithmetic (`Decimal`, round half up) and its own date formatting, and does not import `citetally.money` or `citetally.dates` (Phase 3). If it did, a bug in the product's arithmetic would also corrupt the answer key and the evaluation could not see it.
