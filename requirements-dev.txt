@@ -8,14 +8,18 @@ iniconfig==2.3.1
 librt==0.16.0
 mypy==2.4.1
 mypy_extensions==1.1.0
-numpy==2.5.4
 packaging==26.3
 pathspec==1.1.1
-pillow==13.0.0
 pluggy==1.7.0
 Pygments==2.21.0
-pypdfium2==5.14.0
 pytest==9.2.0
 reportlab==5.1.0
 ruff==0.17.3
 truststore==0.10.5
+winrt-runtime==4.0.3; sys_platform == "win32"
+winrt-Windows.Foundation.Collections==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Foundation==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Globalization==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Graphics.Imaging==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Media.Ocr==4!10.0.28000.2705; sys_platform == "win32"
+winrt-Windows.Storage.Streams==4!10.0.28000.2705; sys_platform == "win32"

@@ -27,5 +27,5 @@ plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
 # reportlab and pypdfium2 ship no type information; they are used only by the test-data tools.
-module = ["reportlab.*", "pypdfium2.*"]
-ignore_missing_imports = true
+module = ["reportlab.*", "pypdfium2.*", "winrt.*"]
+ignore_missing_imports = true  # winrt: Windows only, used by the OCR bake-off alone

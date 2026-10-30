@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     )
     tesseract_cmd: str = Field(default="", validation_alias="TESSERACT_CMD")
 
+    max_file_mb: int = Field(default=20, ge=1, validation_alias="CITETALLY_MAX_FILE_MB")
+    max_pages: int = Field(default=10, ge=1, validation_alias="CITETALLY_MAX_PAGES")
+    max_image_pixels: int = Field(
+        default=40_000_000, ge=1, validation_alias="CITETALLY_MAX_IMAGE_PIXELS"
+    )
+    text_layer_min_chars: int = Field(
+        default=80, ge=0, validation_alias="CITETALLY_TEXT_LAYER_MIN_CHARS"
+    )
+
     allow_hosted: bool = Field(default=False, validation_alias="CITETALLY_ALLOW_HOSTED")
     synthetic_data: bool = Field(default=True, validation_alias="CITETALLY_SYNTHETIC_DATA")
 
