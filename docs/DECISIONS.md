@@ -35,3 +35,13 @@ The API app is built by `create_app(settings)` (run with `python -m citetally`),
 ## D-007: Shape of `/api/status` before most features exist
 
 TRD section 7 lists the fields: provider, model, OCR engine, database health, hosted-mode flag, synthetic-data flag; section 10 adds last model call, OCR availability and queue depth. Phase 0 returns the configured values and returns `null` for database health, OCR availability, queue depth and last model call, because those parts are built in Phases 2 to 5. `null` means "not reported yet", not "unhealthy". Field names are `app`, `version`, `model_provider`, `text_model`, `vision_model`, `ocr_engine`, `hosted_mode`, `synthetic_data`, `database_ok`, `ocr_available`, `queue_depth`, `last_model_call_at`. `BACKEND_SCHEMA.md` does not name these, so confirm them when Phase 5 builds the real status endpoint.
+
+## D-008: Web app setup
+
+React 19, Vite 8, TypeScript, Vitest with Testing Library and jsdom, ESLint with typescript-eslint, all at exact versions in `web/package.json` with `package-lock.json` committed.
+
+- **TypeScript 5.9.3, not 7.x.** The newest TypeScript (7.0) is outside the supported range of `typescript-eslint` (below 6.1) and `openapi-typescript` (5.x). 5.9.3 satisfies both.
+- **Dev proxy, no CORS.** Vite serves on `127.0.0.1:5175` (strict port) and proxies `/api` to `127.0.0.1:8200`, so the browser sees one origin and the API needs no CORS configuration.
+- **Generated types.** `python -m tools.export_openapi` writes `web/openapi.json` from the FastAPI app; `npm run gen:api` in `web/` turns it into `web/src/api/schema.d.ts`. Both files are committed. A pytest test fails if `openapi.json` is out of date, and CI fails if `schema.d.ts` is out of date with `openapi.json`.
+- **Licenses.** All npm packages installed are MIT, ISC, BSD, Apache-2.0 or similar, with these exceptions, all build-time only and not shipped in the repository: `lightningcss` (MPL-2.0, weak file-level copyleft, a dependency of Vite) and `caniuse-lite` (CC-BY-4.0, browser-support data). No AGPL or GPL. Flagged with D-005 for the owner to accept.
+- The status page renders every value as text. The hosted-mode banner is already wired to `hosted_mode`; its wording ("a hosted provider") becomes the provider's name when hosted mode exists.

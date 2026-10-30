@@ -3,7 +3,7 @@
 .env.*
 !.env.example
 CLAUDE.local.md
-.claude/settings.local.json
+.claude/
 
 # Data, databases, evaluation runs (never commit real or generated data)
 data/

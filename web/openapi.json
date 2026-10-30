@@ -1,0 +1,123 @@
+{
+  "components": {
+    "schemas": {
+      "StatusResponse": {
+        "properties": {
+          "app": {
+            "title": "App",
+            "type": "string"
+          },
+          "database_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Ok"
+          },
+          "hosted_mode": {
+            "title": "Hosted Mode",
+            "type": "boolean"
+          },
+          "last_model_call_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Model Call At"
+          },
+          "model_provider": {
+            "title": "Model Provider",
+            "type": "string"
+          },
+          "ocr_available": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ocr Available"
+          },
+          "ocr_engine": {
+            "title": "Ocr Engine",
+            "type": "string"
+          },
+          "queue_depth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queue Depth"
+          },
+          "synthetic_data": {
+            "title": "Synthetic Data",
+            "type": "boolean"
+          },
+          "text_model": {
+            "title": "Text Model",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "vision_model": {
+            "title": "Vision Model",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app",
+          "version",
+          "model_provider",
+          "text_model",
+          "vision_model",
+          "ocr_engine",
+          "hosted_mode",
+          "synthetic_data"
+        ],
+        "title": "StatusResponse",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Citetally",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/status": {
+      "get": {
+        "operationId": "status_api_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Status"
+      }
+    }
+  }
+}
