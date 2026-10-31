@@ -3,8 +3,10 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from citetally.dates import LOCALES
 
 
 class Settings(BaseSettings):
@@ -42,8 +44,23 @@ class Settings(BaseSettings):
         default=80, ge=0, validation_alias="CITETALLY_TEXT_LAYER_MIN_CHARS"
     )
 
+    grounding_match_threshold: float = Field(
+        default=0.85, gt=0, le=1, validation_alias="CITETALLY_GROUNDING_MATCH_THRESHOLD"
+    )
+    default_currency: str = Field(
+        default="USD", pattern=r"^[A-Z]{3}$", validation_alias="CITETALLY_DEFAULT_CURRENCY"
+    )
+    locale: str = Field(default="en-US", validation_alias="CITETALLY_LOCALE")
+
     allow_hosted: bool = Field(default=False, validation_alias="CITETALLY_ALLOW_HOSTED")
     synthetic_data: bool = Field(default=True, validation_alias="CITETALLY_SYNTHETIC_DATA")
+
+    @field_validator("locale")
+    @classmethod
+    def locale_is_known(cls, value: str) -> str:
+        if value not in LOCALES:
+            raise ValueError(f"CITETALLY_LOCALE must be one of: {', '.join(sorted(LOCALES))}")
+        return value
 
     @model_validator(mode="after")
     def hosted_requires_opt_in(self) -> "Settings":

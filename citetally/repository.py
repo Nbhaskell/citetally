@@ -49,6 +49,7 @@ from citetally.models import (
     Review,
     Stage,
     Vendor,
+    VendorAlias,
     VendorMatchMethod,
     Word,
     is_blocking,
@@ -193,6 +194,15 @@ def add_alias(conn: sqlite3.Connection, vendor_id: int, alias: str, normalized_a
         "VALUES (?, ?, ?, ?)",
         (vendor_id, alias, normalized_alias, now()),
     )
+
+
+def list_vendors(conn: sqlite3.Connection, *, active_only: bool = True) -> list[Vendor]:
+    where = " WHERE is_active = 1" if active_only else ""
+    return _all(conn, Vendor, f"SELECT * FROM vendors{where} ORDER BY id")
+
+
+def list_aliases(conn: sqlite3.Connection) -> list[VendorAlias]:
+    return _all(conn, VendorAlias, "SELECT * FROM vendor_aliases ORDER BY id")
 
 
 def find_vendor_by_normalized(conn: sqlite3.Connection, normalized: str) -> Vendor | None:
@@ -405,6 +415,11 @@ def add_page(
     )
 
 
+def clear_pages(conn: sqlite3.Connection, document_id: int) -> None:
+    """Remove a document's pages so the read stage can be run again from nothing."""
+    conn.execute("DELETE FROM pages WHERE document_id = ?", (document_id,))
+
+
 def list_pages(conn: sqlite3.Connection, document_id: int) -> list[Page]:
     return _all(
         conn, Page, "SELECT * FROM pages WHERE document_id = ? ORDER BY page_number", (document_id,)
@@ -516,6 +531,12 @@ def get_entry(conn: sqlite3.Connection, entry_id: int) -> Entry:
     )
 
 
+def clear_entry(conn: sqlite3.Connection, document_id: int) -> None:
+    """Remove a document's entry (its lines, evidence and checks go with it)."""
+    conn.execute("DELETE FROM checks WHERE document_id = ?", (document_id,))
+    conn.execute("DELETE FROM entries WHERE document_id = ?", (document_id,))
+
+
 def get_entry_for_document(conn: sqlite3.Connection, document_id: int) -> Entry | None:
     return _one(conn, Entry, "SELECT * FROM entries WHERE document_id = ?", (document_id,))
 
@@ -610,6 +631,10 @@ def add_evidence(
     return _required(
         _one(conn, Evidence, "SELECT * FROM evidence WHERE id = ?", (cursor.lastrowid,)), "Evidence"
     )
+
+
+def clear_evidence(conn: sqlite3.Connection, entry_id: int) -> None:
+    conn.execute("DELETE FROM evidence WHERE entry_id = ?", (entry_id,))
 
 
 def list_evidence(conn: sqlite3.Connection, entry_id: int) -> list[Evidence]:
