@@ -112,3 +112,15 @@ def test_bad_grounding_and_locale_settings_are_refused(
     monkeypatch.setenv(name, value)
     with pytest.raises(ValidationError):
         make()
+
+
+def test_image_mode_is_off_by_default_and_needs_a_vision_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("CITETALLY_EXTRACT_MODE", raising=False)
+    assert make().extract_mode == "text_only"
+    monkeypatch.setenv("CITETALLY_EXTRACT_MODE", "text_and_image")
+    with pytest.raises(ValidationError):
+        make()
+    monkeypatch.setenv("CITETALLY_VISION_MODEL", "qwen3-vl:8b")
+    assert make().extract_mode == "text_and_image"

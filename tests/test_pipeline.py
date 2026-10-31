@@ -18,6 +18,7 @@ from citetally.matching import normalize_name
 from citetally.models import (
     CategorySource,
     EntryType,
+    ExtractMode,
     HeaderField,
     LineField,
     ReadMethod,
@@ -447,3 +448,44 @@ def test_events_hold_ids_stages_and_numbers_but_no_document_content(
     for secret in ("Northfield", "INV-20417", "152.00", "Kibble"):
         assert secret not in dump
     assert {"stage_started", "stage_finished", "status_changed"} <= {r[0] for r in rows}
+
+
+# --- image mode --------------------------------------------------------------------------------
+
+
+def test_image_mode_sends_the_page_image_and_records_the_mode(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings)
+    provider = FakeProvider([GOOD], vision=True)
+    full = Services(
+        settings=settings,
+        ocr=FakeOcr(),
+        provider=provider,
+        isolate=False,
+        extract_mode=ExtractMode.TEXT_AND_IMAGE,
+    )
+    assert process(conn, doc_id, full).status is S.NEEDS_REVIEW
+    (image,) = provider.calls[0].images or []
+    assert Image.open(io.BytesIO(image)).size[0] <= pipeline.IMAGE_MAX_SIDE_PX
+    extraction = repo.latest_extraction(conn, doc_id)
+    assert extraction is not None
+    assert extraction.extract_mode is ExtractMode.TEXT_AND_IMAGE
+    assert extraction.prompt_version == "extract-v3+image"
+
+
+def test_image_mode_with_a_text_only_model_fails_at_extract_without_calling_it(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings)
+    provider = FakeProvider([GOOD])
+    full = Services(
+        settings=settings,
+        ocr=FakeOcr(),
+        provider=provider,
+        isolate=False,
+        extract_mode=ExtractMode.TEXT_AND_IMAGE,
+    )
+    done = process(conn, doc_id, full)
+    assert (done.status, done.failure_stage) == (S.FAILED, Stage.EXTRACT)
+    assert "pictures" in (done.failure_message or "") and provider.calls == []

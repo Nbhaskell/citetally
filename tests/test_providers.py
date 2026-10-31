@@ -250,3 +250,10 @@ def test_the_hosted_provider_is_not_built_yet_even_when_allowed() -> None:
     settings = Settings(_env_file=None, **values)  # type: ignore[arg-type]
     with pytest.raises(ModelUnavailable):
         build_provider(settings)
+
+
+def test_image_mode_builds_the_vision_model_with_a_bigger_context_window() -> None:
+    values = {"CITETALLY_EXTRACT_MODE": "text_and_image", "CITETALLY_VISION_MODEL": "qwen3-vl:8b"}
+    provider = build_provider(Settings(_env_file=None, **values))  # type: ignore[arg-type]
+    assert provider.model == "qwen3-vl:8b" and provider.supports_vision
+    assert isinstance(provider, OllamaProvider) and provider.context_tokens > 8192
