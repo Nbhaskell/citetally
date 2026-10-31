@@ -278,3 +278,17 @@ Same 140 development documents, same scoring as D-040 (values found / numbers fo
 - **`FakeProvider.name` is `"ollama"`** so rows written in pipeline tests satisfy the `extractions.provider` CHECK. (`FakeOcr` reports `"fake"` for the same reason in reverse: the events vocabulary allows only `tesseract`.)
 - **The hosted provider is not built.** `build_provider` raises `ModelUnavailable` for `hosted` even with the opt-in set, which keeps the opt-in rule in `Settings` and the switch in one place.
 - **Contract fixture:** `tests/fixtures/ollama_chat_reply.json` is one real `qwen3:8b` reply to an invented one-line prompt, recorded on the development machine.
+
+### D-043. Extraction prompt `extract-v1` and its retry rules (Phase 4, task 2)
+
+`citetally/extract.py`: `extract(provider, pages, category_codes)` returns validated `ExtractedFields` plus the raw reply, prompt version, attempt count and token and time totals.
+
+- **One call per document, schema built in code.** `build_schema` lists the fields of `ExtractedFields` and `ExtractedLine`, requires all of them (the model must say `null` out loud), forbids extras, and limits `entry_type` and `category_suggestion` to the known values. A test keeps it in step with the Pydantic classes. Categories are passed in because the list is editable in the database.
+- **Data block.** Pages go inside `<document_text><page number="n">…</page></document_text>`; the system prompt says the block is data, never instructions. Text that contains our own tags would close the block early, so `<page`, `</page>`, `<document_text` and `</document_text>` in a page get a space after the `<`. This changes those few characters only in what the model sees; grounding looks at the stored words.
+- **Masking happens here.** `mask_for_model` runs on every page inside `extract`, so no caller can forget it.
+- **Retry.** A reply that is not a JSON object, or fails Pydantic (`StrictStr` means a number where text was printed is rejected, not coerced), is retried once with a note that lists the failing field names and Pydantic's message but never the values. A second failure raises `ExtractionInvalid` (the pipeline maps it to `failed` at `extract`, APP_FLOW). Provider errors (`ModelTimeout`, `ModelUnavailable`) pass through; the pipeline decides what they mean. Thinking is off by default, so the TRD's "retry once without thinking on timeout" has nothing to switch off yet; it comes back if thinking is ever enabled.
+- **An unknown category is dropped to `null`**, not retried: it is a suggestion, not a printed value, and the reviewer picks anyway.
+- **Length limit.** Page text over 12,000 characters raises `ExtractionTooLong` and calls no model, instead of letting the 8,192-token window cut the end (usually the totals). Dev documents are about 1,500 characters (largest 2,000), so this only bites on long multi-page documents; revisit if real documents need more.
+- **Token and time totals add across attempts**; they stay `None` when the provider reports nothing.
+
+**Live check, not a measurement.** On three dev credit notes `qwen3:8b` answered in 4 to 7 seconds, first attempt, with the right invoice number and total. It returned more line items than the truth has (4, 5 and 7 against 2, 2 and 4), probably listing subtotal, tax or shipping rows as lines. Whether the prompt needs a rule for that is for the first dev-split measurement to show.
