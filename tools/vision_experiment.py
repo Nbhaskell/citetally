@@ -41,6 +41,7 @@ from tools.synthetic.golden import load_golden
 WORK = Path("data/vision_dev")
 REPORT = Path("eval/reports/vision_dev.json")
 BASELINE = Path("eval/reports/extraction_dev_extract-v3.json")
+VISION_MODEL = "qwen3-vl:8b-instruct"  # the thinking variant (qwen3-vl:8b) timed out, see D-048
 CONDITIONS = ("scan_heavy", "phone_photo")
 MIN_GAIN = 0.10
 MAX_SECONDS = 60.0
@@ -122,7 +123,7 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings(
         _env_file=None,
         CITETALLY_DATA_DIR=str(WORK),
-        CITETALLY_VISION_MODEL="qwen3-vl:8b",
+        CITETALLY_VISION_MODEL=VISION_MODEL,
     )
     conn = db.connect(str(WORK / "run.db"))
     db.migrate(conn)

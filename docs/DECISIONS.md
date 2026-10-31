@@ -367,3 +367,27 @@ What the numbers say:
 - At the 16,384-token context window that page pictures need, the model takes 8.2 GB, runs 8% on the CPU, fills the GPU (9.9 of 10 GB) and a one-line request timed out at 120 seconds (at least in part the model reloading for the new window size). The first real document timed out at 180 seconds in both text-only and image mode.
 
 So on this machine, with this model, image mode does not fit. This is a finding about the model and the 10 GB card, not about whether pictures help. A non-thinking vision model might; none is installed.
+
+### D-049. Vision experiment, part 2: the page picture helps a great deal, and costs grounding (Phase 4, task 6)
+
+Rerun with `qwen3-vl:8b-instruct` (6.2 GB, no thinking; a trivial prompt answered in 4.8 s). Same tool, same prompt (`extract-v3`, `extract-v3+image`), same rule from D-048, development split only, 69 documents (35 scan_heavy, 34 phone_photo). Report: `eval/reports/vision_dev.json`. Three runs per document: the text model on OCR text (D-047), the vision model on OCR text, the vision model on OCR text and picture.
+
+| | failed | header fields right | all header right | line recall | fully right | values found on page | invented header values | median s/doc |
+|---|---|---|---|---|---|---|---|---|
+| scan_heavy, `qwen3:8b` text | 2 | 43.2% | 0.0% | 3.0% | 0.0% | 92.9% | 9 | 8.2 |
+| scan_heavy, vision model, text | 0 | 37.7% | 0.0% | 1.0% | 0.0% | 92.8% | 0 | 9.6 |
+| scan_heavy, vision model, text + picture | 0 | **93.2%** | 65.7% | 80.8% | 54.3% | 57.1% | 0 | 7.5 |
+| phone_photo, `qwen3:8b` text | 0 | 43.1% | 2.9% | 0.0% | 0.0% | 93.5% | 3 | 7.8 |
+| phone_photo, vision model, text | 0 | 40.0% | 5.9% | 3.9% | 0.0% | 89.4% | 4 | 8.9 |
+| phone_photo, vision model, text + picture | 0 | **97.8%** | 91.2% | 89.2% | 79.4% | 73.4% | 0 | 7.8 |
+
+**By the rule fixed in advance, image mode is enabled for these two conditions**: gains of +50 points (scan_heavy) and +58 points (phone_photo) over the better of the two text-only runs, no failures, no invented header values, far under 60 seconds. The vision model on text alone is no better than `qwen3:8b`, so the gain comes from the picture and not from a different model. The image pass time excludes reading and OCR (the text pass includes it, about 2 s more).
+
+**What it costs: grounding.** Of the correct header values, only 66.8% (scan_heavy) and 74.1% (phone_photo) are found in the OCR words, against about 96-99% for the text runs. The picture lets the model read what OCR could not, and rule 5 then reports those values as `VALUE_IN_DOCUMENT` failing, which is the honest outcome: nothing on the page words backs them. In practice about a third of the correct header values on bad scans would arrive flagged for a person to confirm against the picture. That is acceptable for a review desk and the opposite of silently trusting the model, but it makes the review screen's side-by-side page picture (Phase 7) essential, and a value read only from the picture should say so. Wrong header values were rarer (15 and 5, against 75-117 in the text runs), so the "found on page" rate among the wrong ones (46.7% and 100%) rests on few cases.
+
+**Limits of this result.**
+- Only scan_heavy and phone_photo were run. clean_pdf and scan_light were not, so there is no evidence yet on whether picture mode helps, or hurts, where OCR already works.
+- One vision model, one prompt, one run per document, on the split that earlier prompts and OCR settings were tuned on. The held-out split stays sealed until Phase 8.
+- The model takes 8.2 GB with a 16,384-token window and spills 8% to the CPU on the 10 GB card. It was fast enough here (a few seconds per page), but it is the limit on larger pages or longer documents.
+
+**Not decided here: whether to switch it on by default.** `CITETALLY_EXTRACT_MODE` stays `text_only`. The choice is between always using the vision model, using it only for pages that went through OCR (scans and photos, not text-layer PDFs), or only when OCR confidence is low. Routing by OCR confidence is Phase 5 or later work and needs a measurement on clean_pdf and scan_light first.
