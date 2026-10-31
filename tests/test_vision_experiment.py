@@ -21,7 +21,7 @@ def summary(
 
 
 def report(image: dict[str, Any], *others: dict[str, Any]) -> dict[str, Any]:
-    text, vl = (others + (summary(0.40), summary(0.40)))[:2]
+    text, vl = (*others, summary(0.40), summary(0.40))[:2]
     return {
         "configs": {
             "text_model_text_only": {c: text for c in vx.CONDITIONS},
