@@ -209,6 +209,12 @@ def test_text_beyond_the_limit_fails_clearly_and_calls_no_model() -> None:
     assert provider.calls == []
 
 
+def test_layout_padding_does_not_count_towards_the_limit() -> None:
+    padded = "total" + " " * (MAX_TEXT_CHARS * 3) + "$5.00"
+    _, result = run([GOOD], pages=[padded])
+    assert result.attempts == 1
+
+
 def test_a_document_with_no_pages_is_a_programming_error() -> None:
     with pytest.raises(ValueError):
         extract(FakeProvider([GOOD]), [], CATEGORIES)

@@ -22,7 +22,8 @@ from citetally.reading.masking import mask_for_model
 
 PROMPT_VERSION = "extract-v1"
 MAX_ATTEMPTS = 2
-# Page text longer than this would crowd the reply out of the model's context window.
+# Page text longer than this (runs of spaces counted once: layout padding costs almost no tokens)
+# would crowd the reply out of the model's context window.
 MAX_TEXT_CHARS = 12_000
 _MAX_NOTED_ERRORS = 8
 
@@ -150,7 +151,7 @@ def extract(
     if not pages:
         raise ValueError("A document needs at least one page of text.")
     masked = [mask_for_model(text) for text in pages]
-    if sum(len(text) for text in masked) > MAX_TEXT_CHARS:
+    if sum(len(" ".join(text.split())) for text in masked) > MAX_TEXT_CHARS:
         raise ExtractionTooLong("The document text is too long to read in one call.")
     system = build_system_prompt(category_codes)
     base_user = build_user_prompt(masked)
