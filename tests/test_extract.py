@@ -60,7 +60,7 @@ def test_a_good_reply_becomes_validated_fields_with_the_prompt_version_and_token
     provider, result = run([GOOD])
     assert result.fields == ExtractedFields.model_validate(GOOD)
     assert (result.prompt_version, result.attempts) == (PROMPT_VERSION, 1)
-    assert PROMPT_VERSION == "extract-v1"
+    assert PROMPT_VERSION == "extract-v2"
     assert json.loads(result.raw) == GOOD
     assert result.input_tokens and result.output_tokens and result.duration_ms == 1
     assert len(provider.calls) == 1

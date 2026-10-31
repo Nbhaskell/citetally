@@ -9,7 +9,7 @@ set is run once, in Phase 8, after they are frozen.
     python -m tools.extract_dev [--limit N] [--fresh]
 
 Per-document results are kept in data/extract_dev/results.jsonl so an interrupted run resumes.
-The report is written to eval/reports/extraction_dev.json.
+The report is written to eval/reports/extraction_dev_<prompt version>.json.
 """
 
 from __future__ import annotations
@@ -27,12 +27,13 @@ from typing import Any
 from citetally import db, ingest, pipeline
 from citetally import repository as repo
 from citetally.config import Settings
+from citetally.extract import PROMPT_VERSION
 from citetally.providers import build_provider
 from citetally.reading.ocr import TesseractOcr, find_tesseract
 from tools.synthetic.golden import Item, load_golden
 
 WORK = Path("data/extract_dev")
-REPORT = Path("eval/reports/extraction_dev.json")
+REPORT = Path(f"eval/reports/extraction_dev_{PROMPT_VERSION}.json")
 CONDITIONS = ("clean_pdf", "scan_light", "scan_heavy", "phone_photo")
 # `currency` is scored apart: some templates never print the symbol the golden record lists.
 HEADER = (
@@ -274,6 +275,7 @@ def main(argv: list[str] | None = None) -> int:
     scored = [(done[i], score_record(done[i], by_id[i])) for i in by_id if i in done]
     report: dict[str, Any] = {
         "split": "tuned",
+        "prompt_version": PROMPT_VERSION,
         "model": settings.text_model,
         "by_condition": {
             name: summarise(pair for pair in scored if pair[0]["condition"] == name)

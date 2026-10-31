@@ -20,7 +20,7 @@ from citetally.models import EntryType, ExtractedFields, ExtractedLine
 from citetally.providers.base import ModelProvider, ModelResult
 from citetally.reading.masking import mask_for_model
 
-PROMPT_VERSION = "extract-v1"
+PROMPT_VERSION = "extract-v2"
 MAX_ATTEMPTS = 2
 # Page text longer than this (runs of spaces counted once: layout padding costs almost no tokens)
 # would crowd the reply out of the model's context window.
@@ -85,8 +85,14 @@ def build_system_prompt(category_codes: Sequence[str]) -> str:
         "and date format. Never calculate, convert, round, reformat, correct or guess.",
         "If a value is not printed on the page, use null. Never work out a missing subtotal, tax, "
         "total or line amount; leave it null.",
-        '"lines" has one entry for each printed line item, from top to bottom. "description" is '
-        "the text printed for that line. Use null for a column the page does not have.",
+        '"lines" has one entry for each printed line item (a row for goods or services), from top '
+        "to bottom. Subtotal, tax, shipping, discount and total rows are not line items. "
+        '"description" is the text printed for that line. Use null for a column the page does '
+        "not have.",
+        '"vendor_name" is the full name of the business that issued the document, every word of '
+        "it, as printed in its letterhead.",
+        '"invoice_number" is the number only, without its label (copy "CN-12062", not "Credit '
+        'note no. CN-12062"). Dates are the complete date as printed, month and year included.',
         '"entry_type" is "invoice", "receipt" or "credit_note", from the wording of the document.',
         '"currency" is the symbol or code printed next to the amounts, as printed.',
         '"category_suggestion" is the best match from this list, or null if none fits: '
