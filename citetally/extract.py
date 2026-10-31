@@ -20,7 +20,7 @@ from citetally.models import EntryType, ExtractedFields, ExtractedLine
 from citetally.providers.base import ModelProvider, ModelResult
 from citetally.reading.masking import mask_for_model
 
-PROMPT_VERSION = "extract-v2"
+PROMPT_VERSION = "extract-v3"
 MAX_ATTEMPTS = 2
 # Page text longer than this (runs of spaces counted once: layout padding costs almost no tokens)
 # would crowd the reply out of the model's context window.
@@ -85,14 +85,18 @@ def build_system_prompt(category_codes: Sequence[str]) -> str:
         "and date format. Never calculate, convert, round, reformat, correct or guess.",
         "If a value is not printed on the page, use null. Never work out a missing subtotal, tax, "
         "total or line amount; leave it null.",
-        '"lines" has one entry for each printed line item (a row for goods or services), from top '
-        "to bottom. Subtotal, tax, shipping, discount and total rows are not line items. "
-        '"description" is the text printed for that line. Use null for a column the page does '
-        "not have.",
+        '"lines" has one entry for each printed row of goods or services, from top to bottom. '
+        "A column heading row is not a line item. Subtotal, tax, shipping, discount and total "
+        "rows are never line items: they belong in the fields of the same name. Use null for a "
+        "column the page does not have.",
+        '"description" is only the words that describe the item, not the numbers printed in the '
+        'other columns. "quantity" is the count alone: when a row prints a count, a multiplication '
+        "sign and a price, the count is the quantity and the price is the unit price.",
         '"vendor_name" is the full name of the business that issued the document, every word of '
         "it, as printed in its letterhead.",
-        '"invoice_number" is the number only, without its label (copy "CN-12062", not "Credit '
-        'note no. CN-12062"). Dates are the complete date as printed, month and year included.',
+        '"invoice_number" is the number only, without its label such as "Invoice #" or "No."; '
+        "null if the document prints no such number. Dates are the complete date as printed, "
+        "month and year included.",
         '"entry_type" is "invoice", "receipt" or "credit_note", from the wording of the document.',
         '"currency" is the symbol or code printed next to the amounts, as printed.',
         '"category_suggestion" is the best match from this list, or null if none fits: '

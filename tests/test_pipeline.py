@@ -155,7 +155,7 @@ def test_a_digital_invoice_goes_from_received_to_needs_review_with_everything_st
 
     extraction = repo.latest_extraction(conn, doc_id)
     assert extraction is not None
-    assert (extraction.prompt_version, extraction.provider.value) == ("extract-v2", "ollama")
+    assert (extraction.prompt_version, extraction.provider.value) == ("extract-v3", "ollama")
     assert json.loads(extraction.fields)["invoice_number"] == "INV-20417"
 
     entry = repo.get_entry_for_document(conn, doc_id)
