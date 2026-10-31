@@ -21,6 +21,9 @@ def clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
         "CITETALLY_TEXT_LAYER_MIN_CHARS",
         "CITETALLY_SYNTHETIC_DATA",
         "CITETALLY_TEXT_MODEL",
+        "CITETALLY_GROUNDING_MATCH_THRESHOLD",
+        "CITETALLY_DEFAULT_CURRENCY",
+        "CITETALLY_LOCALE",
         "CITETALLY_VISION_MODEL",
         "OLLAMA_URL",
         "TESSERACT_CMD",
@@ -85,5 +88,27 @@ def test_upload_limits_default_to_the_documented_values() -> None:
 
 def test_upload_limits_must_be_positive(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("CITETALLY_MAX_FILE_MB", "0")
+    with pytest.raises(ValidationError):
+        make()
+
+
+def test_grounding_and_locale_defaults_match_the_docs() -> None:
+    s = make()
+    assert (s.grounding_match_threshold, s.default_currency, s.locale) == (0.85, "USD", "en-US")
+
+
+@pytest.mark.parametrize(
+    ("name", "value"),
+    [
+        ("CITETALLY_GROUNDING_MATCH_THRESHOLD", "0"),
+        ("CITETALLY_GROUNDING_MATCH_THRESHOLD", "1.5"),
+        ("CITETALLY_DEFAULT_CURRENCY", "usd"),
+        ("CITETALLY_LOCALE", "xx-YY"),
+    ],
+)
+def test_bad_grounding_and_locale_settings_are_refused(
+    monkeypatch: pytest.MonkeyPatch, name: str, value: str
+) -> None:
+    monkeypatch.setenv(name, value)
     with pytest.raises(ValidationError):
         make()
