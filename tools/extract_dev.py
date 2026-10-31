@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import statistics
 import sys
 import time
@@ -232,16 +233,18 @@ def run_one(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0] if __doc__ else None)
     parser.add_argument("--limit", type=int, default=0, help="only the first N documents")
-    parser.add_argument("--fresh", action="store_true", help="ignore earlier results")
+    parser.add_argument(
+        "--fresh", action="store_true", help="delete earlier results and start over"
+    )
     args = parser.parse_args(argv)
 
     items = load_golden(split="tuned")
     if args.limit:
         items = items[: args.limit]
+    if args.fresh:  # the database too: a document it already holds would be skipped as a duplicate
+        shutil.rmtree(WORK, ignore_errors=True)
     WORK.mkdir(parents=True, exist_ok=True)
     results_file = WORK / "results.jsonl"
-    if args.fresh and results_file.exists():
-        results_file.unlink()
     done: dict[str, dict[str, Any]] = {}
     if results_file.exists():
         for line in results_file.read_text(encoding="utf-8").splitlines():
