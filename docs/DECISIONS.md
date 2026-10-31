@@ -265,3 +265,16 @@ Same 140 development documents, same scoring as D-040 (values found / numbers fo
 **What this does not settle.** Only two engines were compared; RapidOCR, EasyOCR or a vision model might read heavy scans better, and the question stays open for the vision experiment in Phase 4. The numbers are on the development split that the settings were chosen on, so they are optimistic; the held-out templates (T11 to T15) have not been read. Heavy scans at 64% mean most of them will reach the reviewer with values the page cannot confirm. That is the intended behaviour (`VALUE_IN_DOCUMENT`, `LOW_READ_QUALITY`) and Phase 8 reports it by condition.
 
 **Phase 3 acceptance.** All 140 development documents read without crashing in every configuration; the report with accuracy by condition is `eval/reports/ocr_bakeoff.json` and the table above; the security tests pass.
+
+### D-042. Model providers (Phase 4, task 1)
+
+`citetally/providers/` holds `ModelProvider` (a `Protocol`), `OllamaProvider` and `FakeProvider`. Choices the TRD left open:
+
+- **Standard-library HTTP, no new dependency.** `OllamaProvider` posts to `/api/chat` with `urllib`, through an opener with no proxy so page text goes only to the configured address. The transport is a parameter, so tests replay a recorded reply or drive the real transport against a small local server.
+- **A reply that is not a JSON object is returned, not raised.** `ModelResult.parsed` is `None` and `raw` holds the text, so the extraction step can store the raw reply and retry with the validation error (TRD 4.3). Transport failures are errors: `ModelTimeout`, `ModelUnavailable` (unreachable, HTTP error, model not pulled) and `ModelError`. Messages carry the kind of failure and an HTTP status, never prompt or reply text, and a test checks that.
+- **`model` added to the interface** (the TRD lists only `name`, `supports_vision` and `generate_json`) because `extractions.model` must be stored.
+- **Context window set explicitly** (`num_ctx` 8192, `OllamaProvider(context_tokens=...)`). Ollama's default is a few thousand tokens and cuts a long prompt without an error; a long invoice would lose its end, usually the totals.
+- **Thinking is a constructor option, off by default** (`think=False`, sent as the `think` field). The settings class does not get `CITETALLY_ENABLE_THINKING` until the extraction step uses it.
+- **`FakeProvider.name` is `"ollama"`** so rows written in pipeline tests satisfy the `extractions.provider` CHECK. (`FakeOcr` reports `"fake"` for the same reason in reverse: the events vocabulary allows only `tesseract`.)
+- **The hosted provider is not built.** `build_provider` raises `ModelUnavailable` for `hosted` even with the opt-in set, which keeps the opt-in rule in `Settings` and the switch in one place.
+- **Contract fixture:** `tests/fixtures/ollama_chat_reply.json` is one real `qwen3:8b` reply to an invented one-line prompt, recorded on the development machine.

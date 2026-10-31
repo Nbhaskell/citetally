@@ -1,0 +1,17 @@
+{
+  "model": "qwen3:8b",
+  "created_at": "2026-10-31T16:03:00.4629857Z",
+  "message": {
+    "role": "assistant",
+    "content": "{\"invoice_number\": \"INV-20001\", \"total\": \"$12.50\"}"
+  },
+  "done": true,
+  "done_reason": "stop",
+  "total_duration": 4170761900,
+  "load_duration": 3686771600,
+  "prompt_eval_count": 58,
+  "prompt_eval_cached_count": 0,
+  "prompt_eval_duration": 174929000,
+  "eval_count": 24,
+  "eval_duration": 305686000
+}
