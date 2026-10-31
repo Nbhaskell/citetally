@@ -49,6 +49,7 @@ from citetally.models import (
     Review,
     Stage,
     Vendor,
+    VendorAlias,
     VendorMatchMethod,
     Word,
     is_blocking,
@@ -193,6 +194,15 @@ def add_alias(conn: sqlite3.Connection, vendor_id: int, alias: str, normalized_a
         "VALUES (?, ?, ?, ?)",
         (vendor_id, alias, normalized_alias, now()),
     )
+
+
+def list_vendors(conn: sqlite3.Connection, *, active_only: bool = True) -> list[Vendor]:
+    where = " WHERE is_active = 1" if active_only else ""
+    return _all(conn, Vendor, f"SELECT * FROM vendors{where} ORDER BY id")
+
+
+def list_aliases(conn: sqlite3.Connection) -> list[VendorAlias]:
+    return _all(conn, VendorAlias, "SELECT * FROM vendor_aliases ORDER BY id")
 
 
 def find_vendor_by_normalized(conn: sqlite3.Connection, normalized: str) -> Vendor | None:
