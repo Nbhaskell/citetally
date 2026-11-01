@@ -209,6 +209,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Exports */
+        get: operations["list_exports_api_exports_get"];
+        put?: never;
+        /** Create Export */
+        post: operations["create_export_api_exports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/exports/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Preview
+         * @description What an export would hold now: counts, totals, dates and the first few rows.
+         */
+        get: operations["preview_api_exports_preview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/exports/{export_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download */
+        get: operations["download_api_exports__export_id__download_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/status": {
         parameters: {
             query?: never;
@@ -624,6 +679,67 @@ export interface components {
             /** Y1 */
             y1: number | null;
         };
+        /** ExportCreate */
+        ExportCreate: {
+            /** Entry Ids */
+            entry_ids?: number[] | null;
+            /**
+             * Include Exported
+             * @default false
+             */
+            include_exported: boolean;
+            profile: components["schemas"]["ExportProfile"];
+        };
+        /** ExportCreated */
+        ExportCreated: {
+            export: components["schemas"]["ExportOut"];
+            /** Skipped Already Exported */
+            skipped_already_exported: number;
+        };
+        /** ExportOut */
+        ExportOut: {
+            /** Created At */
+            created_at: string;
+            /** Download Url */
+            download_url: string;
+            /** Entry Count */
+            entry_count: number;
+            /** File Name */
+            file_name: string;
+            /** File Sha256 */
+            file_sha256: string;
+            /** Id */
+            id: number;
+            profile: components["schemas"]["ExportProfile"];
+            /** Row Count */
+            row_count: number;
+        };
+        /** ExportPreview */
+        ExportPreview: {
+            /** Columns */
+            columns: string[];
+            /** Entry Count */
+            entry_count: number;
+            /** First Date */
+            first_date: string | null;
+            /** Last Date */
+            last_date: string | null;
+            /** Row Count */
+            row_count: number;
+            /** Sample */
+            sample: string[][];
+            /** Skipped Already Exported */
+            skipped_already_exported: number;
+            /** Totals */
+            totals: {
+                [key: string]: string;
+            };
+        };
+        /**
+         * ExportProfile
+         * @enum {string}
+         */
+        ExportProfile: "lines_csv" | "entries_csv";
         /** ExtractionOut */
         ExtractionOut: {
             /** Attempt */
@@ -1274,6 +1390,131 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_exports_api_exports_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportOut"][];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_export_api_exports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportCreated"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    preview_api_exports_preview_get: {
+        parameters: {
+            query: {
+                profile: components["schemas"]["ExportProfile"];
+                include_exported?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportPreview"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    download_api_exports__export_id__download_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                export_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Default Response */

@@ -19,7 +19,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from citetally import __version__
 from citetally import repository as repo
-from citetally.api import routes_documents, routes_review, routes_vendors
+from citetally.api import routes_documents, routes_exports, routes_review, routes_vendors
 from citetally.api.deps import get_state
 from citetally.api.errors import (
     ApiError,
@@ -150,6 +150,7 @@ def create_app(
         )
 
     app.include_router(routes_documents.router)
+    app.include_router(routes_exports.router)
     app.include_router(routes_review.router)
     app.include_router(routes_vendors.router)
     return app

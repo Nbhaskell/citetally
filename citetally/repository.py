@@ -38,6 +38,8 @@ from citetally.models import (
     EntryType,
     EventType,
     Evidence,
+    Export,
+    ExportProfile,
     Extraction,
     ExtractMode,
     FieldEdit,
@@ -1164,3 +1166,69 @@ def merge_vendors(conn: sqlite3.Connection, source_id: int, into_id: int) -> lis
         conn.execute("UPDATE entries SET vendor_id = ? WHERE vendor_id = ?", (into_id, source_id))
         conn.execute("UPDATE vendors SET is_active = 0 WHERE id = ?", (source_id,))
     return moved
+
+
+# ---- exports ----------------------------------------------------------------------------------
+
+
+def insert_export(
+    conn: sqlite3.Connection,
+    profile: ExportProfile,
+    entry_count: int,
+    row_count: int,
+    file_sha256: str,
+) -> Export:
+    """Record an export. The file is named after its id, so the name is set once the id exists."""
+    cursor = conn.execute(
+        "INSERT INTO exports (profile, entry_count, row_count, file_name, file_sha256, created_at) "
+        "VALUES (?, ?, ?, '', ?, ?)",
+        (ExportProfile(profile).value, entry_count, row_count, file_sha256, now()),
+    )
+    export_id = int(cursor.lastrowid or 0)
+    conn.execute(
+        "UPDATE exports SET file_name = ? WHERE id = ?",
+        (f"citetally_{ExportProfile(profile).value}_{export_id:04d}.csv", export_id),
+    )
+    return get_export(conn, export_id)
+
+
+def add_export_items(conn: sqlite3.Connection, export_id: int, entry_ids: Sequence[int]) -> None:
+    conn.executemany(
+        "INSERT INTO export_items (export_id, entry_id) VALUES (?, ?)",
+        [(export_id, entry_id) for entry_id in entry_ids],
+    )
+
+
+def get_export(conn: sqlite3.Connection, export_id: int) -> Export:
+    return _required(
+        _one(conn, Export, "SELECT * FROM exports WHERE id = ?", (export_id,)),
+        f"Export {export_id}",
+    )
+
+
+def list_exports(conn: sqlite3.Connection) -> list[Export]:
+    return _all(conn, Export, "SELECT * FROM exports ORDER BY id DESC")
+
+
+def entries_with_status(
+    conn: sqlite3.Connection, entry_ids: Sequence[int] | None
+) -> list[tuple[Entry, S]]:
+    """Entries with their document's status, oldest first. Without ids: the approved and exported
+    ones. With ids: exactly those, whatever their status."""
+    params: tuple[int, ...]
+    if entry_ids is None:
+        where, params = "WHERE d.status IN ('approved','exported')", ()
+    else:
+        marks = ", ".join("?" for _ in entry_ids)
+        where, params = f"WHERE e.id IN ({marks})", tuple(entry_ids)
+    rows = conn.execute(
+        "SELECT e.*, d.status AS document_status FROM entries e "
+        f"JOIN documents d ON d.id = e.document_id {where} ORDER BY e.id",
+        params,
+    )
+    found = []
+    for row in rows:
+        data = dict(row)
+        status = S(data.pop("document_status"))
+        found.append((Entry.model_validate(data), status))
+    return found
