@@ -701,3 +701,25 @@ def test_vendor_suggestions_offer_close_names_best_first_and_nothing_for_a_stran
     stranger = new_document(client, app, vendor_name="Zephyr Lanterns")
     assert client.get(f"/api/entries/{entry_id(client, stranger)}/vendor-suggestions").json() == []
     assert client.get("/api/entries/9999/vendor-suggestions").status_code == 404
+
+
+def test_vendors_report_their_entries_and_a_default_category_can_be_changed_or_cleared(
+    client: TestClient, app: Any
+) -> None:
+    vendor = known_vendor(app, "Northfield Supply")
+    assert client.get("/api/vendors").json()[0]["entry_count"] == 0
+    document_id = new_document(client, app)
+    client.post(f"/api/entries/{entry_id(client, document_id)}/vendor", json={"vendor_id": vendor})
+    row = client.get("/api/vendors").json()[0]
+    assert row["entry_count"] == 1 and row["waiting_count"] == 1 and row["last_entry_date"]
+
+    changed = client.patch(f"/api/vendors/{vendor}", json={"default_category": "REPAIRS"})
+    assert changed.status_code == 200 and changed.json()["default_category"] == "REPAIRS"
+    assert client.patch(f"/api/vendors/{vendor}", json={}).json()["default_category"] == "REPAIRS"
+    cleared = client.patch(f"/api/vendors/{vendor}", json={"default_category": None})
+    assert cleared.json()["default_category"] is None
+    assert (
+        client.patch(f"/api/vendors/{vendor}", json={"default_category": "NOPE"}).status_code == 404
+    )
+    assert client.patch("/api/vendors/9999", json={}).status_code == 404
+    assert client.patch(f"/api/vendors/{vendor}", json={"name": "X"}).status_code == 422

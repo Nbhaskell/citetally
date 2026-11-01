@@ -203,6 +203,27 @@ def list_vendors(conn: sqlite3.Connection, *, active_only: bool = True) -> list[
     return _all(conn, Vendor, f"SELECT * FROM vendors{where} ORDER BY id")
 
 
+def vendor_usage(conn: sqlite3.Connection) -> dict[int, tuple[int, int, str | None]]:
+    """Per vendor: entries on documents not rejected, how many still wait for review, and the
+    latest entry date."""
+    rows = conn.execute(
+        "SELECT e.vendor_id AS vendor_id, COUNT(*) AS entries, "
+        "SUM(d.status = 'needs_review') AS waiting, MAX(e.entry_date) AS last_date "
+        "FROM entries e JOIN documents d ON d.id = e.document_id "
+        "WHERE e.vendor_id IS NOT NULL AND d.status != 'rejected' GROUP BY e.vendor_id"
+    )
+    return {
+        int(r["vendor_id"]): (int(r["entries"]), int(r["waiting"] or 0), r["last_date"])
+        for r in rows
+    }
+
+
+def set_vendor_category(conn: sqlite3.Connection, vendor_id: int, category_id: int | None) -> None:
+    conn.execute(
+        "UPDATE vendors SET default_category_id = ? WHERE id = ?", (category_id, vendor_id)
+    )
+
+
 def list_aliases(conn: sqlite3.Connection) -> list[VendorAlias]:
     return _all(conn, VendorAlias, "SELECT * FROM vendor_aliases ORDER BY id")
 

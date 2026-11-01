@@ -38,6 +38,15 @@ export function formatMinor(
   return `${negative ? MINUS : ""}${symbol}${whole}${fraction}`;
 }
 
+/** A signed decimal string from the API ("-45.50") shown as money, without becoming a float. */
+export function formatDecimal(text: string, currency: string): string {
+  const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(text.trim());
+  if (!match) return text;
+  const places = decimals(currency);
+  const minor = Number(match[2] + (match[3] ?? "").padEnd(places, "0").slice(0, places));
+  return formatMinor(match[1] ? -minor : minor, currency);
+}
+
 export function symbolFor(currency: string): string {
   return SYMBOLS[currency] ?? currency + " ";
 }

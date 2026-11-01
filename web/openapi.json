@@ -2466,6 +2466,11 @@
             ],
             "title": "Default Currency"
           },
+          "entry_count": {
+            "default": 0,
+            "title": "Entry Count",
+            "type": "integer"
+          },
           "id": {
             "title": "Id",
             "type": "integer"
@@ -2474,9 +2479,25 @@
             "title": "Is Active",
             "type": "boolean"
           },
+          "last_entry_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Date"
+          },
           "name": {
             "title": "Name",
             "type": "string"
+          },
+          "waiting_count": {
+            "default": 0,
+            "title": "Waiting Count",
+            "type": "integer"
           }
         },
         "required": [
@@ -2509,6 +2530,26 @@
           "score"
         ],
         "title": "VendorSuggestion",
+        "type": "object"
+      },
+      "VendorUpdate": {
+        "additionalProperties": false,
+        "description": "Only the fields that are sent change; `default_category: null` clears it.",
+        "properties": {
+          "default_category": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Category"
+          }
+        },
+        "title": "VendorUpdate",
         "type": "object"
       }
     }
@@ -3591,6 +3632,58 @@
           }
         },
         "summary": "Create Vendor",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/vendors/{vendor_id}": {
+      "patch": {
+        "operationId": "update_vendor_api_vendors__vendor_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "title": "Vendor Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Update Vendor",
         "tags": [
           "vendors"
         ]

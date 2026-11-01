@@ -1,6 +1,8 @@
 import { useRoute } from "./lib/router";
 import Inbox from "./pages/Inbox";
+import Exports from "./pages/Exports";
 import Placeholder from "./pages/Placeholder";
+import Vendors from "./pages/Vendors";
 import Review from "./pages/Review";
 import Shell from "./shell/Shell";
 import { ToastProvider } from "./ui/Toast";
@@ -13,9 +15,9 @@ function Screen() {
     case "review":
       return <Review key={route.id} id={route.id} />;
     case "vendors":
-      return <Placeholder title="Vendors" />;
+      return <Vendors />;
     case "exports":
-      return <Placeholder title="Exports" />;
+      return <Exports />;
     case "insights":
       return <Placeholder title="Insights" />;
     case "settings":

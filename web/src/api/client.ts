@@ -22,6 +22,10 @@ export type VendorSuggestion = Schemas["VendorSuggestion"];
 export type Override = Schemas["Override"];
 export type DecisionResponse = Schemas["DecisionResponse"];
 export type CategoryOut = Schemas["CategoryOut"];
+export type ExportOut = Schemas["ExportOut"];
+export type ExportPreview = Schemas["ExportPreview"];
+export type ExportCreated = Schemas["ExportCreated"];
+export type ExportProfile = Schemas["ExportProfile"];
 
 /** Every refusal from the API has one shape: a code, a message for a person, a request id. */
 export class ApiError extends Error {
@@ -146,6 +150,20 @@ export const api = {
     request<VendorSuggestion[]>(`/api/entries/${entryId}/vendor-suggestions`, { signal }),
   vendors: (signal?: AbortSignal) => request<VendorOut[]>("/api/vendors", { signal }),
   categories: (signal?: AbortSignal) => request<CategoryOut[]>("/api/categories", { signal }),
+  createVendor: (name: string, defaultCategory: string | null) =>
+    post<VendorOut>("/api/vendors", { name, default_category: defaultCategory }),
+  setVendorCategory: (id: number, defaultCategory: string | null) =>
+    send<VendorOut>("PATCH", `/api/vendors/${id}`, { default_category: defaultCategory }),
+  addAlias: (id: number, alias: string) => post<VendorOut>(`/api/vendors/${id}/aliases`, { alias }),
+  mergeVendor: (id: number, into: number) => post<VendorOut>(`/api/vendors/${id}/merge`, { into }),
+  exportPreview: (profile: ExportProfile, includeExported: boolean, signal?: AbortSignal) =>
+    request<ExportPreview>(
+      `/api/exports/preview?profile=${profile}&include_exported=${includeExported}`,
+      { signal },
+    ),
+  createExport: (profile: ExportProfile, includeExported: boolean) =>
+    post<ExportCreated>("/api/exports", { profile, include_exported: includeExported }),
+  exports: (signal?: AbortSignal) => request<ExportOut[]>("/api/exports", { signal }),
   approve: (id: number, overrides: Override[], reviewSeconds?: number) =>
     post<DecisionResponse>(`/api/documents/${id}/approve`, {
       overrides,

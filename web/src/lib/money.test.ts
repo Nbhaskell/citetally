@@ -38,7 +38,7 @@ describe("formatMinor", () => {
   });
 });
 
-import { amountInput, parseMinor, percentText, priceText } from "./money";
+import { amountInput, formatDecimal, parseMinor, percentText, priceText } from "./money";
 
 describe("parseMinor", () => {
   it.each([
@@ -105,5 +105,19 @@ describe("amountInput, percentText, priceText", () => {
   it("puts the symbol in front of a stored price", () => {
     expect(priceText("4.50", "USD")).toBe("$4.50");
     expect(priceText(null, "USD")).toBe("");
+  });
+});
+
+describe("formatDecimal", () => {
+  it("shows a decimal string from the API as money, signed, without rounding", () => {
+    expect(formatDecimal("1240.05", "USD")).toBe("$1,240.05");
+    expect(formatDecimal("-45.5", "USD")).toBe("−$45.50");
+    expect(formatDecimal("12", "USD")).toBe("$12.00");
+    expect(formatDecimal("1500", "JPY")).toBe("¥1,500");
+    expect(formatDecimal("0.00", "USD")).toBe("$0.00");
+  });
+
+  it("leaves text it cannot read as it was", () => {
+    expect(formatDecimal("n/a", "USD")).toBe("n/a");
   });
 });
