@@ -447,3 +447,17 @@ Where the documents left a choice, the simplest option was taken:
 - **The download re-checks the file against its recorded SHA-256** and refuses (409) a file that has changed since it was written.
 - **Added beyond the TRD's route list:** `GET /api/exports/preview?profile=&include_exported=` for the Exports screen's "ready to export" summary (count, rows, signed totals per currency, date range, the first five rows, and how many already-exported entries are left out), which the UI brief calls for.
 - The audit event holds `export_id`, `profile`, `entry_count` and `row_count`; no names or amounts.
+
+### D-054. Interface foundation and the Inbox (Phase 7, first slice)
+
+**Visual direction: "ledger paper".** A calm bookkeeping desk: warm paper background, ink-dark text, hairline rules between rows like a ledger, a serif face (a system serif stack) for the name, headings and figures, the system sans for controls, tabular numerals for money. Status and check colours are muted (green ink, amber, brick red, slate blue) and always come with an icon and a word. A dark theme follows the system setting; both were looked at in the browser. No stock gradients, no purple-blue palette, no emoji or decorative art. The page image stays the hero of the Review screen, which is the next slice.
+
+**Nothing is fetched from outside.** No web fonts, no icon packs, no CDN: fonts are system stacks and the icons are small inline SVG drawn in `ui/Icon.tsx`. The app therefore makes no network requests except to its own API (CLAUDE.md rule 1 in spirit, and it keeps the demo working offline).
+
+**No router or state library.** A tiny hash router (`lib/router.ts`) and one data hook (`lib/useApi.ts`). Addresses hold only a screen name and a document id; search text, vendor names and invoice numbers are kept in component state and never in the URL or history.
+
+**API additions the Inbox needed** (in `routes_documents.py`): `GET /api/documents/counts` (every status, plus upload batch labels), repeated `status` filters (so "Needs review" can also show documents still being read), `order=oldest|newest`, a `warnings` list on each row beside the blocking checks, and `POST /api/demo/load` (loads the invented demo set made by `python -m tools.synthetic.demo`; refused unless the data is synthetic). "Blocking checks first" sorts the rows already loaded on the client rather than adding a server-side sort with its own paging.
+
+**Money display** splits integer minor units with BigInt, so a total is never a float on the screen either. A credit note shows a real minus sign and the word "Credit".
+
+**Retry** is offered only where it can help: a failure while reading goes back to read, a failure later goes back to the model; a file refused at ingest has no retry.
