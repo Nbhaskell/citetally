@@ -38,9 +38,9 @@ def test_migrating_an_empty_database_creates_every_table(conn: sqlite3.Connectio
     assert table_names(conn) == TABLES
 
 
-def test_the_first_migration_is_recorded(conn: sqlite3.Connection) -> None:
+def test_the_migrations_are_recorded(conn: sqlite3.Connection) -> None:
     rows = conn.execute("SELECT version, name FROM schema_migrations").fetchall()
-    assert [(r["version"], r["name"]) for r in rows] == [(1, "init")]
+    assert [(r["version"], r["name"]) for r in rows] == [(1, "init"), (2, "tax_rate_evidence")]
 
 
 def test_migrating_again_applies_nothing_and_changes_nothing(conn: sqlite3.Connection) -> None:
@@ -52,7 +52,39 @@ def test_migrating_again_applies_nothing_and_changes_nothing(conn: sqlite3.Conne
 
 def test_migrate_returns_the_versions_it_applied() -> None:
     connection = db.connect(":memory:")
-    assert db.migrate(connection) == [1]
+    assert db.migrate(connection) == [1, 2]
+
+
+def test_upgrading_keeps_evidence_and_edit_rows_and_accepts_the_tax_rate_field(
+    tmp_path: Path,
+) -> None:
+    only_first = tmp_path / "first"
+    only_first.mkdir()
+    (only_first / "0001_init.sql").write_text(
+        (db.MIGRATIONS_DIR / "0001_init.sql").read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    connection = db.connect(":memory:")
+    assert db.migrate(connection, only_first) == [1]
+    connection.execute("PRAGMA foreign_keys = OFF")  # the parent rows are not the point here
+    connection.execute(
+        "INSERT INTO evidence (entry_id, field, printed_text, found, created_at) "
+        "VALUES (1, 'total', '$5.00', 1, 'now')"
+    )
+    connection.execute(
+        "INSERT INTO field_edits (entry_id, field, old_value, new_value, created_at) "
+        "VALUES (1, 'total', '5.00', '6.00', 'now')"
+    )
+    assert db.migrate(connection) == [2]
+    for table in ("evidence", "field_edits"):
+        assert connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 1
+    connection.execute(
+        "INSERT INTO evidence (entry_id, field, printed_text, found, created_at) "
+        "VALUES (1, 'tax_rate', '7%', 1, 'now')"
+    )
+    connection.execute(
+        "INSERT INTO field_edits (entry_id, field, old_value, new_value, created_at) "
+        "VALUES (1, 'tax_rate', '0.07', '0.08', 'now')"
+    )
 
 
 def test_foreign_keys_are_enforced(conn: sqlite3.Connection) -> None:

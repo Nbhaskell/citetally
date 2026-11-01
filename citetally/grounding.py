@@ -24,7 +24,7 @@ from citetally.money import parse_decimal, parse_money, parse_rate, to_minor
 from citetally.reading.layout import clean_token, line_indices
 
 Method = Literal["exact", "fuzzy", "numeric"]
-Kind = Literal["text", "money", "decimal", "date"]
+Kind = Literal["text", "money", "decimal", "date", "rate"]
 
 DEFAULT_THRESHOLD = 0.85
 NUMERIC_SCORE = 0.75  # the score of an amount or date found printed another way
@@ -42,9 +42,16 @@ _KINDS: dict[HeaderField | LineField, Kind] = {
     LineField.AMOUNT: "money",
     LineField.QUANTITY: "decimal",
     LineField.UNIT_PRICE: "decimal",
+    LineField.TAX_RATE: "rate",
 }
 _HEADER_ORDER = tuple(HeaderField)
-_LINE_ORDER = (LineField.DESCRIPTION, LineField.QUANTITY, LineField.UNIT_PRICE, LineField.AMOUNT)
+_LINE_ORDER = (
+    LineField.DESCRIPTION,
+    LineField.QUANTITY,
+    LineField.UNIT_PRICE,
+    LineField.AMOUNT,
+    LineField.TAX_RATE,
+)
 
 
 @dataclass(frozen=True)
@@ -72,7 +79,7 @@ class GroundedValue:
 @dataclass(frozen=True)
 class Grounding:
     values: list[GroundedValue]
-    line_tax_rates: list[Decimal | None]  # per line; printed tax rates have no evidence row
+    line_tax_rates: list[Decimal | None]  # per line, as a fraction ("7%" is 0.07)
     currency: str  # the ISO code the amounts were read in
 
     @property
@@ -285,8 +292,10 @@ def _ground_one(
     document_currency: str,
     threshold: float,
 ) -> GroundedValue:
-    parsed = None if kind == "text" else _parse_text(kind, text, locale, currency)
+    parsed = None if kind in ("text", "rate") else _parse_text(kind, text, locale, currency)
     value: Decimal | date | None = getattr(parsed, "value", None)
+    if kind == "rate":
+        value = parse_rate(text, locale)  # not guessed without a % sign
 
     target = _normalise(text)
     found = [c for page in pages if (c := _search(page, target, threshold)) is not None]
@@ -297,7 +306,7 @@ def _ground_one(
             key=lambda c: c.rank,
             default=None,
         )
-    if candidate is None and value is not None and kind != "text":
+    if candidate is None and value is not None and kind not in ("text", "rate"):
         candidate = _numeric(pages, kind, value, locale, currency)
 
     minor = None
@@ -321,7 +330,7 @@ def _ground_one(
         y1=max((w.y1 for w in words), default=None),
         match_score=candidate.score if candidate else None,
         method=candidate.method if candidate else None,
-        parsed=kind == "text" or parsed is not None,
+        parsed=kind == "text" or parsed is not None or (kind == "rate" and value is not None),
         value=value,
         amount_minor=minor,
         ambiguous=ambiguous,

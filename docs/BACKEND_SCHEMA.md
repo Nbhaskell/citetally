@@ -24,7 +24,7 @@ Conventions
 | `stage` | `ingest`, `read`, `extract`, `ground`, `match`, `check` |
 | `check_code` | `REQUIRED_FIELDS`, `VALUE_IN_DOCUMENT`, `LINE_MATH`, `SUBTOTAL_MATCH`, `TAX_MATCH`, `TOTAL_MATCH`, `DUPLICATE_SUSPECT`, `UNKNOWN_VENDOR`, `AMOUNT_OUTLIER`, `DATE_SANITY`, `CURRENCY_CHECK`, `LOW_READ_QUALITY`, `AMBIGUOUS_FORMAT`, `SUSPICIOUS_TEXT` |
 | `field` (header) | `vendor_name`, `invoice_number`, `entry_date`, `due_date`, `po_number`, `currency`, `subtotal`, `tax_total`, `shipping`, `discount`, `total` |
-| `field` (line) | `description`, `quantity`, `unit_price`, `amount` |
+| `field` (line) | `description`, `quantity`, `unit_price`, `amount`, `tax_rate` |
 | `decision` | `approve`, `reject`, `reopen`, `mark_duplicate` |
 | `vendor_match_method` | `exact`, `alias`, `fuzzy`, `manual`, `created` |
 | `category_source` | `vendor_default`, `model`, `manual` |
@@ -208,7 +208,7 @@ CREATE TABLE evidence (
   field         TEXT NOT NULL CHECK (field IN
                 ('vendor_name','invoice_number','entry_date','due_date','po_number','currency',
                  'subtotal','tax_total','shipping','discount','total',
-                 'description','quantity','unit_price','amount')),
+                 'description','quantity','unit_price','amount','tax_rate')),
   printed_text  TEXT NOT NULL,                     -- what the model said the page shows
   found         INTEGER NOT NULL,                  -- 1 if located on the page
   page_number   INTEGER,
@@ -242,7 +242,7 @@ CREATE TABLE field_edits (
   field        TEXT NOT NULL CHECK (field IN
                ('vendor_name','invoice_number','entry_date','due_date','po_number','currency',
                 'subtotal','tax_total','shipping','discount','total',
-                'description','quantity','unit_price','amount','category','entry_type')),
+                'description','quantity','unit_price','amount','tax_rate','category','entry_type')),
   old_value    TEXT,
   new_value    TEXT,
   reviewer     TEXT NOT NULL DEFAULT 'local',

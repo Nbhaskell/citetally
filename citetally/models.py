@@ -91,6 +91,7 @@ class LineField(StrEnum):
     QUANTITY = "quantity"
     UNIT_PRICE = "unit_price"
     AMOUNT = "amount"
+    TAX_RATE = "tax_rate"
 
 
 class EditField(StrEnum):
@@ -111,6 +112,7 @@ class EditField(StrEnum):
     QUANTITY = "quantity"
     UNIT_PRICE = "unit_price"
     AMOUNT = "amount"
+    TAX_RATE = "tax_rate"
     CATEGORY = "category"
     ENTRY_TYPE = "entry_type"
 
