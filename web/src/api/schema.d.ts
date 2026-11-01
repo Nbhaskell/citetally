@@ -4,6 +4,211 @@
  */
 
 export interface paths {
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Categories */
+        get: operations["list_categories_api_categories_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Documents
+         * @description Newest first. `cursor` is the `next_cursor` of the previous page.
+         */
+        get: operations["list_documents_api_documents_get"];
+        put?: never;
+        /**
+         * Upload
+         * @description Accept files and queue them. Each file gets its own outcome; one bad file stops no other.
+         */
+        post: operations["upload_api_documents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Document */
+        get: operations["get_document_api_documents__document_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve
+         * @description Approve, giving a written reason for each blocking check that failed and is being accepted.
+         *     All or nothing: if approval is refused, the overrides sent with it are not kept.
+         */
+        post: operations["approve_api_documents__document_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/mark-duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark Duplicate */
+        post: operations["mark_duplicate_api_documents__document_id__mark_duplicate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/pages/{page_number}/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Page Image */
+        get: operations["page_image_api_documents__document_id__pages__page_number__image_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject */
+        post: operations["reject_api_documents__document_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen */
+        post: operations["reopen_api_documents__document_id__reopen_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/{document_id}/reprocess": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reprocess
+         * @description Read again (`read`) or ask the model again (`extract`). What was made after that point is
+         *     discarded; the state machine says which documents may be sent back.
+         */
+        post: operations["reprocess_api_documents__document_id__reprocess_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/entries/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit Entry */
+        patch: operations["edit_entry_api_entries__entry_id__patch"];
+        trace?: never;
+    };
+    "/api/entries/{entry_id}/vendor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set Vendor
+         * @description Set the vendor: an existing one, or a new one made from `name` or the printed name.
+         */
+        post: operations["set_vendor_api_entries__entry_id__vendor_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/status": {
         parameters: {
             query?: never;
@@ -21,10 +226,553 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/vendors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vendors */
+        get: operations["list_vendors_api_vendors_get"];
+        put?: never;
+        /** Create Vendor */
+        post: operations["create_vendor_api_vendors_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/vendors/{vendor_id}/aliases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Alias */
+        post: operations["add_alias_api_vendors__vendor_id__aliases_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/vendors/{vendor_id}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Merge Vendor
+         * @description Fold this vendor into another. Documents still waiting for review are checked again.
+         */
+        post: operations["merge_vendor_api_vendors__vendor_id__merge_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AliasCreate */
+        AliasCreate: {
+            /** Alias */
+            alias: string;
+        };
+        /** ApproveRequest */
+        ApproveRequest: {
+            /**
+             * Overrides
+             * @default []
+             */
+            overrides: components["schemas"]["Override"][];
+            /** Review Seconds */
+            review_seconds?: number | null;
+        };
+        /** Body_upload_api_documents_post */
+        Body_upload_api_documents_post: {
+            /** Batch Label */
+            batch_label?: string | null;
+            /** Files */
+            files: string[];
+        };
+        /** CategoryOut */
+        CategoryOut: {
+            /** Code */
+            code: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Name */
+            name: string;
+        };
+        /**
+         * CheckCode
+         * @enum {string}
+         */
+        CheckCode: "REQUIRED_FIELDS" | "VALUE_IN_DOCUMENT" | "LINE_MATH" | "SUBTOTAL_MATCH" | "TAX_MATCH" | "TOTAL_MATCH" | "DUPLICATE_SUSPECT" | "UNKNOWN_VENDOR" | "AMOUNT_OUTLIER" | "DATE_SANITY" | "CURRENCY_CHECK" | "LOW_READ_QUALITY" | "AMBIGUOUS_FORMAT" | "SUSPICIOUS_TEXT";
+        /** CheckOut */
+        CheckOut: {
+            /** Blocking */
+            blocking: boolean;
+            check_code: components["schemas"]["CheckCode"];
+            /** Detail */
+            detail: {
+                [key: string]: unknown;
+            };
+            /** Overridden */
+            overridden: boolean;
+            /** Overridden At */
+            overridden_at: string | null;
+            /** Override Reason */
+            override_reason: string | null;
+            /** Passed */
+            passed: boolean;
+        };
+        /**
+         * Decision
+         * @enum {string}
+         */
+        Decision: "approve" | "reject" | "reopen" | "mark_duplicate";
+        /** DecisionResponse */
+        DecisionResponse: {
+            document: components["schemas"]["DocumentOut"];
+            review: components["schemas"]["Review"];
+        };
+        /** DocumentDetail */
+        DocumentDetail: {
+            /** Checks */
+            checks: components["schemas"]["CheckOut"][];
+            document: components["schemas"]["DocumentOut"];
+            /** Edits */
+            edits: components["schemas"]["FieldEdit"][];
+            entry: components["schemas"]["EntryOut"] | null;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            extraction: components["schemas"]["ExtractionOut"] | null;
+            /** History */
+            history: components["schemas"]["EventOut"][];
+            /** Pages */
+            pages: components["schemas"]["PageOut"][];
+            /** Reviews */
+            reviews: components["schemas"]["Review"][];
+        };
+        /** DocumentList */
+        DocumentList: {
+            /** Items */
+            items: components["schemas"]["DocumentSummary"][];
+            /** Next Cursor */
+            next_cursor?: string | null;
+        };
+        /** DocumentOut */
+        DocumentOut: {
+            /** Batch Label */
+            batch_label: string | null;
+            /** Created At */
+            created_at: string;
+            /** Duplicate Of */
+            duplicate_of: number | null;
+            /** Failure Message */
+            failure_message: string | null;
+            failure_stage: components["schemas"]["Stage"] | null;
+            /** Id */
+            id: number;
+            /** Is Synthetic */
+            is_synthetic: boolean;
+            /** Mime Type */
+            mime_type: string;
+            /** Original Filename */
+            original_filename: string;
+            /** Page Count */
+            page_count: number | null;
+            /** Size Bytes */
+            size_bytes: number;
+            source_kind: components["schemas"]["SourceKind"] | null;
+            status: components["schemas"]["DocumentStatus"];
+            /** Updated At */
+            updated_at: string;
+        };
+        /**
+         * DocumentStatus
+         * @enum {string}
+         */
+        DocumentStatus: "received" | "read" | "extracted" | "needs_review" | "approved" | "rejected" | "exported" | "failed" | "duplicate";
+        /** DocumentSummary */
+        DocumentSummary: {
+            /** Batch Label */
+            batch_label: string | null;
+            /** Created At */
+            created_at: string;
+            /** Currency */
+            currency?: string | null;
+            /** Duplicate Of */
+            duplicate_of: number | null;
+            /** Entry Date */
+            entry_date?: string | null;
+            /** Entry Id */
+            entry_id?: number | null;
+            entry_type?: components["schemas"]["EntryType"] | null;
+            /** Failure Message */
+            failure_message: string | null;
+            failure_stage: components["schemas"]["Stage"] | null;
+            /** Id */
+            id: number;
+            /** Invoice Number */
+            invoice_number?: string | null;
+            /** Is Synthetic */
+            is_synthetic: boolean;
+            /** Mime Type */
+            mime_type: string;
+            /** Original Filename */
+            original_filename: string;
+            /** Page Count */
+            page_count: number | null;
+            /** Size Bytes */
+            size_bytes: number;
+            source_kind: components["schemas"]["SourceKind"] | null;
+            status: components["schemas"]["DocumentStatus"];
+            /** Total Minor */
+            total_minor?: number | null;
+            /**
+             * Unresolved Checks
+             * @default []
+             */
+            unresolved_checks: components["schemas"]["CheckCode"][];
+            /** Updated At */
+            updated_at: string;
+            /** Vendor Name */
+            vendor_name?: string | null;
+        };
+        /**
+         * EditField
+         * @description What a reviewer can change: every header and line field, plus category and entry type.
+         * @enum {string}
+         */
+        EditField: "vendor_name" | "invoice_number" | "entry_date" | "due_date" | "po_number" | "currency" | "subtotal" | "tax_total" | "shipping" | "discount" | "total" | "description" | "quantity" | "unit_price" | "amount" | "tax_rate" | "category" | "entry_type";
+        /** EntryLine */
+        EntryLine: {
+            /** Amount Minor */
+            amount_minor: number | null;
+            /** Created At */
+            created_at: string;
+            /** Description */
+            description: string | null;
+            /** Entry Id */
+            entry_id: number;
+            /** Id */
+            id: number;
+            /** Line Number */
+            line_number: number;
+            /** Quantity */
+            quantity: string | null;
+            /** Tax Rate */
+            tax_rate: string | null;
+            /** Unit Price */
+            unit_price: string | null;
+        };
+        /** EntryOut */
+        EntryOut: {
+            /** Category */
+            category: string | null;
+            /** Category Source */
+            category_source: string | null;
+            /** Currency */
+            currency: string | null;
+            /** Discount Minor */
+            discount_minor: number | null;
+            /** Due Date */
+            due_date: string | null;
+            /** Entry Date */
+            entry_date: string | null;
+            entry_type: components["schemas"]["EntryType"];
+            /** Id */
+            id: number;
+            /** Invoice Number */
+            invoice_number: string | null;
+            /** Lines */
+            lines: components["schemas"]["EntryLine"][];
+            /** Notes */
+            notes: string | null;
+            /** Po Number */
+            po_number: string | null;
+            /** Shipping Minor */
+            shipping_minor: number | null;
+            /** Subtotal Minor */
+            subtotal_minor: number | null;
+            /** Tax Total Minor */
+            tax_total_minor: number | null;
+            /** Total Minor */
+            total_minor: number | null;
+            /** Vendor Id */
+            vendor_id: number | null;
+            vendor_match_method: components["schemas"]["VendorMatchMethod"] | null;
+            /** Vendor Match Score */
+            vendor_match_score: number | null;
+            /** Vendor Name */
+            vendor_name: string | null;
+            /** Vendor Name Raw */
+            vendor_name_raw: string | null;
+        };
+        /**
+         * EntryPatch
+         * @description Only the fields present are changed; null clears a field. `lines`, when present, is the
+         *     whole list as it should be: lines left out are removed.
+         */
+        EntryPatch: {
+            /** Category */
+            category?: string | null;
+            /** Currency */
+            currency?: string | null;
+            /** Discount Minor */
+            discount_minor?: number | null;
+            /** Due Date */
+            due_date?: string | null;
+            /** Entry Date */
+            entry_date?: string | null;
+            entry_type?: components["schemas"]["EntryType"] | null;
+            /** Invoice Number */
+            invoice_number?: string | null;
+            /** Lines */
+            lines?: components["schemas"]["LinePatch"][] | null;
+            /** Notes */
+            notes?: string | null;
+            /** Po Number */
+            po_number?: string | null;
+            /** Shipping Minor */
+            shipping_minor?: number | null;
+            /** Subtotal Minor */
+            subtotal_minor?: number | null;
+            /** Tax Total Minor */
+            tax_total_minor?: number | null;
+            /** Total Minor */
+            total_minor?: number | null;
+        };
+        /**
+         * EntryType
+         * @enum {string}
+         */
+        EntryType: "invoice" | "receipt" | "credit_note";
+        /** ErrorBody */
+        ErrorBody: {
+            /** Code */
+            code: string;
+            /** Details */
+            details?: {
+                [key: string]: unknown;
+            } | null;
+            /** Message */
+            message: string;
+            /** Request Id */
+            request_id: string;
+        };
+        /** ErrorResponse */
+        ErrorResponse: {
+            error: components["schemas"]["ErrorBody"];
+        };
+        /** EventOut */
+        EventOut: {
+            /** Created At */
+            created_at: string;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Event Type */
+            event_type: string;
+            from_status: components["schemas"]["DocumentStatus"] | null;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            stage: components["schemas"]["Stage"] | null;
+            to_status: components["schemas"]["DocumentStatus"] | null;
+        };
+        /** Evidence */
+        Evidence: {
+            /** Created At */
+            created_at: string;
+            /** Entry Id */
+            entry_id: number;
+            /** Field */
+            field: components["schemas"]["HeaderField"] | components["schemas"]["LineField"];
+            /** Found */
+            found: boolean;
+            /** Id */
+            id: number;
+            /** Line Id */
+            line_id: number | null;
+            /** Match Score */
+            match_score: number | null;
+            /** Page Number */
+            page_number: number | null;
+            /** Printed Text */
+            printed_text: string;
+            /** X0 */
+            x0: number | null;
+            /** X1 */
+            x1: number | null;
+            /** Y0 */
+            y0: number | null;
+            /** Y1 */
+            y1: number | null;
+        };
+        /** ExtractionOut */
+        ExtractionOut: {
+            /** Attempt */
+            attempt: number;
+            /** Created At */
+            created_at: string;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Extract Mode */
+            extract_mode: string;
+            /** Id */
+            id: number;
+            /** Input Tokens */
+            input_tokens: number | null;
+            /** Model */
+            model: string;
+            /** Output Tokens */
+            output_tokens: number | null;
+            /** Prompt Version */
+            prompt_version: string;
+            /** Provider */
+            provider: string;
+        };
+        /** FieldEdit */
+        FieldEdit: {
+            /** Created At */
+            created_at: string;
+            /** Entry Id */
+            entry_id: number;
+            field: components["schemas"]["EditField"];
+            /** Id */
+            id: number;
+            /** Line Id */
+            line_id: number | null;
+            /** New Value */
+            new_value: string | null;
+            /** Old Value */
+            old_value: string | null;
+            /** Reviewer */
+            reviewer: string;
+        };
+        /**
+         * HeaderField
+         * @enum {string}
+         */
+        HeaderField: "vendor_name" | "invoice_number" | "entry_date" | "due_date" | "po_number" | "currency" | "subtotal" | "tax_total" | "shipping" | "discount" | "total";
+        /**
+         * LineField
+         * @enum {string}
+         */
+        LineField: "description" | "quantity" | "unit_price" | "amount" | "tax_rate";
+        /** LinePatch */
+        LinePatch: {
+            /** Amount Minor */
+            amount_minor?: number | null;
+            /** Description */
+            description?: string | null;
+            /** Id */
+            id?: number | null;
+            /** Quantity */
+            quantity?: string | null;
+            /** Tax Rate */
+            tax_rate?: string | null;
+            /** Unit Price */
+            unit_price?: string | null;
+        };
+        /** MarkDuplicateRequest */
+        MarkDuplicateRequest: {
+            /** Duplicate Of */
+            duplicate_of: number;
+            /** Review Seconds */
+            review_seconds?: number | null;
+        };
+        /** Override */
+        Override: {
+            check_code: components["schemas"]["CheckCode"];
+            /** Reason */
+            reason: string;
+        };
+        /** PageOut */
+        PageOut: {
+            /** Height Px */
+            height_px: number;
+            /** Image Url */
+            image_url: string;
+            /** Mean Confidence */
+            mean_confidence: number | null;
+            /** Ocr Engine */
+            ocr_engine: string | null;
+            /** Page Number */
+            page_number: number;
+            /** Read Method */
+            read_method: string;
+            /** Skew Degrees */
+            skew_degrees: number | null;
+            /** Text */
+            text: string;
+            /** Width Px */
+            width_px: number;
+            /** Word Count */
+            word_count: number;
+        };
+        /** RejectRequest */
+        RejectRequest: {
+            /** Reason */
+            reason: string;
+            /** Review Seconds */
+            review_seconds?: number | null;
+        };
+        /** ReopenRequest */
+        ReopenRequest: Record<string, never>;
+        /** ReprocessRequest */
+        ReprocessRequest: {
+            /**
+             * From Stage
+             * @enum {string}
+             */
+            from_stage: "read" | "extract";
+        };
+        /** Review */
+        Review: {
+            /** Created At */
+            created_at: string;
+            decision: components["schemas"]["Decision"];
+            /** Document Id */
+            document_id: number;
+            /** Edited */
+            edited: boolean;
+            /** Id */
+            id: number;
+            /** Overrides */
+            overrides: number;
+            /** Reason */
+            reason: string | null;
+            /** Review Seconds */
+            review_seconds: number | null;
+            /** Reviewer */
+            reviewer: string;
+        };
+        /**
+         * SourceKind
+         * @enum {string}
+         */
+        SourceKind: "digital_pdf" | "scanned_pdf" | "image";
+        /**
+         * Stage
+         * @enum {string}
+         */
+        Stage: "ingest" | "read" | "extract" | "ground" | "match" | "check";
         /** StatusResponse */
         StatusResponse: {
             /** App */
@@ -52,6 +800,78 @@ export interface components {
             /** Vision Model */
             vision_model: string;
         };
+        /** UploadResponse */
+        UploadResponse: {
+            /** Results */
+            results: components["schemas"]["UploadResult"][];
+        };
+        /** UploadResult */
+        UploadResult: {
+            /** Document Id */
+            document_id?: number | null;
+            /** Filename */
+            filename: string;
+            /** Message */
+            message?: string | null;
+            /**
+             * Outcome
+             * @enum {string}
+             */
+            outcome: "accepted" | "duplicate" | "failed" | "rejected";
+            status?: components["schemas"]["DocumentStatus"] | null;
+        };
+        /**
+         * VendorChoice
+         * @description Pick an existing vendor, or create one (from `name`, else the name printed on the page).
+         */
+        VendorChoice: {
+            /**
+             * Create
+             * @default false
+             */
+            create: boolean;
+            /** Name */
+            name?: string | null;
+            /** Vendor Id */
+            vendor_id?: number | null;
+        };
+        /** VendorCreate */
+        VendorCreate: {
+            /** Default Category */
+            default_category?: string | null;
+            /** Default Currency */
+            default_currency?: string | null;
+            /** Name */
+            name: string;
+        };
+        /**
+         * VendorMatchMethod
+         * @enum {string}
+         */
+        VendorMatchMethod: "exact" | "alias" | "fuzzy" | "manual" | "created";
+        /** VendorMerge */
+        VendorMerge: {
+            /** Into */
+            into: number;
+        };
+        /** VendorOut */
+        VendorOut: {
+            /**
+             * Aliases
+             * @default []
+             */
+            aliases: string[];
+            /** Default Category */
+            default_category?: string | null;
+            /** Default Currency */
+            default_currency: string | null;
+            /** Id */
+            id: number;
+            /** Is Active */
+            is_active: boolean;
+            /** Name */
+            name: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -61,6 +881,412 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_categories_api_categories_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryOut"][];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_documents_api_documents_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["DocumentStatus"] | null;
+                check?: components["schemas"]["CheckCode"] | null;
+                q?: string | null;
+                batch?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentList"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    upload_api_documents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_api_documents_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_document_api_documents__document_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    approve_api_documents__document_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecisionResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mark_duplicate_api_documents__document_id__mark_duplicate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkDuplicateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecisionResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    page_image_api_documents__document_id__pages__page_number__image_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+                page_number: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    reject_api_documents__document_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecisionResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    reopen_api_documents__document_id__reopen_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReopenRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecisionResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    reprocess_api_documents__document_id__reprocess_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReprocessRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    edit_entry_api_entries__entry_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntryPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    set_vendor_api_entries__entry_id__vendor_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorChoice"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     status_api_status_get: {
         parameters: {
             query?: never;
@@ -77,6 +1303,149 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_vendors_api_vendors_get: {
+        parameters: {
+            query?: {
+                include_inactive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"][];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_vendor_api_vendors_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    add_alias_api_vendors__vendor_id__aliases_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendor_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AliasCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    merge_vendor_api_vendors__vendor_id__merge_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendor_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorMerge"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
