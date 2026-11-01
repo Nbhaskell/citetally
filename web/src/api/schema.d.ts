@@ -21,6 +21,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/demo/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Load Demo
+         * @description Queue the invented demo documents (made by `python -m tools.synthetic.demo`). Loading them
+         *     again finds the same files and reports them as duplicates.
+         */
+        post: operations["load_demo_api_demo_load_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/documents": {
         parameters: {
             query?: never;
@@ -30,7 +51,7 @@ export interface paths {
         };
         /**
          * List Documents
-         * @description Newest first. `cursor` is the `next_cursor` of the previous page.
+         * @description Newest or oldest first. `cursor` is the `next_cursor` of the previous page.
          */
         get: operations["list_documents_api_documents_get"];
         put?: never;
@@ -39,6 +60,26 @@ export interface paths {
          * @description Accept files and queue them. Each file gets its own outcome; one bad file stops no other.
          */
         post: operations["upload_api_documents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/documents/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Document Counts
+         * @description How many documents are in each status, for the Inbox chips.
+         */
+        get: operations["document_counts_api_documents_counts_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -404,6 +445,18 @@ export interface components {
             document: components["schemas"]["DocumentOut"];
             review: components["schemas"]["Review"];
         };
+        /** DocumentCounts */
+        DocumentCounts: {
+            /**
+             * Batches
+             * @default []
+             */
+            batches: string[];
+            /** Counts */
+            counts: {
+                [key: string]: number;
+            };
+        };
         /** DocumentDetail */
         DocumentDetail: {
             /** Checks */
@@ -507,6 +560,11 @@ export interface components {
             updated_at: string;
             /** Vendor Name */
             vendor_name?: string | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: components["schemas"]["CheckCode"][];
         };
         /**
          * EditField
@@ -1026,15 +1084,45 @@ export interface operations {
             };
         };
     };
+    load_demo_api_demo_load_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     list_documents_api_documents_get: {
         parameters: {
             query?: {
-                status?: components["schemas"]["DocumentStatus"] | null;
+                status?: components["schemas"]["DocumentStatus"][] | null;
                 check?: components["schemas"]["CheckCode"] | null;
                 q?: string | null;
                 batch?: string | null;
                 cursor?: string | null;
                 limit?: number;
+                order?: "newest" | "oldest";
             };
             header?: never;
             path?: never;
@@ -1082,6 +1170,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    document_counts_api_documents_counts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentCounts"];
                 };
             };
             /** @description Default Response */

@@ -1017,20 +1017,23 @@ def _like(text: str) -> str:
 def list_documents_page(
     conn: sqlite3.Connection,
     *,
-    status: S | None = None,
+    statuses: Sequence[S] = (),
     check: CheckCode | None = None,
     q: str | None = None,
     batch: str | None = None,
-    before_id: int | None = None,
+    cursor_id: int | None = None,
+    oldest_first: bool = False,
     limit: int = 50,
 ) -> list[Document]:
-    """Newest first. `check` keeps documents where that check failed and was not overridden;
-    `q` looks in the file name, printed vendor, vendor and invoice number."""
+    """Newest first, or oldest first; `cursor_id` is the last id of the previous page.
+
+    `check` keeps documents where that check failed and was not overridden; `q` looks in the
+    file name, printed vendor, vendor and invoice number."""
     where: list[str] = []
     params: list[Any] = []
-    if status is not None:
-        where.append("d.status = ?")
-        params.append(status.value)
+    if statuses:
+        where.append(f"d.status IN ({', '.join('?' for _ in statuses)})")
+        params.extend(status.value for status in statuses)
     if batch is not None:
         where.append("d.batch_label = ?")
         params.append(batch)
@@ -1047,15 +1050,16 @@ def list_documents_page(
         )
         for _ in range(4):
             params.extend([_like(q), _LIKE_ESCAPE])
-    if before_id is not None:
-        where.append("d.id < ?")
-        params.append(before_id)
+    if cursor_id is not None:
+        where.append("d.id > ?" if oldest_first else "d.id < ?")
+        params.append(cursor_id)
     clause = f" WHERE {' AND '.join(where)}" if where else ""
     return _all(
         conn,
         Document,
         "SELECT d.* FROM documents d LEFT JOIN entries e ON e.document_id = d.id "
-        f"LEFT JOIN vendors v ON v.id = e.vendor_id{clause} ORDER BY d.id DESC LIMIT ?",
+        f"LEFT JOIN vendors v ON v.id = e.vendor_id{clause} "
+        f"ORDER BY d.id {'ASC' if oldest_first else 'DESC'} LIMIT ?",
         (*params, limit),
     )
 
@@ -1232,3 +1236,31 @@ def entries_with_status(
         status = S(data.pop("document_status"))
         found.append((Entry.model_validate(data), status))
     return found
+
+
+def status_counts(conn: sqlite3.Connection) -> dict[str, int]:
+    """How many documents are in each status (every status is present, zero included)."""
+    counts = {status.value: 0 for status in S}
+    for row in conn.execute("SELECT status, COUNT(*) AS n FROM documents GROUP BY status"):
+        counts[row["status"]] = row["n"]
+    return counts
+
+
+def unresolved_warnings(conn: sqlite3.Connection, document_id: int) -> list[CheckCode]:
+    """Non-blocking checks that failed and were not overridden: the "worth a look" ones."""
+    rows = conn.execute(
+        "SELECT check_code FROM checks WHERE document_id = ? AND blocking = 0 AND passed = 0 "
+        "AND overridden = 0 ORDER BY id",
+        (document_id,),
+    )
+    return [CheckCode(row["check_code"]) for row in rows]
+
+
+def list_batches(conn: sqlite3.Connection, limit: int = 50) -> list[str]:
+    """Upload batch labels, the most recently used first."""
+    rows = conn.execute(
+        "SELECT batch_label FROM documents WHERE batch_label IS NOT NULL "
+        "GROUP BY batch_label ORDER BY MAX(id) DESC LIMIT ?",
+        (limit,),
+    )
+    return [row["batch_label"] for row in rows]

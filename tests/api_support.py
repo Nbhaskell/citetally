@@ -27,7 +27,9 @@ def db(app: Any) -> Any:
     return app.state.citetally.database.connect()
 
 
-def new_document(client: TestClient, app: Any, **changes: Any) -> int:
+def new_document(
+    client: TestClient, app: Any, *, extra_lines: tuple[str, ...] = (), **changes: Any
+) -> int:
     """Upload a distinct invoice, let the worker process it, and return its document id."""
     n = next(_counter)
     fields = {"invoice_number": f"INV-{n}", **changes}
@@ -39,7 +41,7 @@ def new_document(client: TestClient, app: Any, **changes: Any) -> int:
         for line in LINES
     ]
     body = client.post(
-        "/api/documents", files=[("files", (f"a{n}.pdf", pdf([*page, f"copy {n}"])))]
+        "/api/documents", files=[("files", (f"a{n}.pdf", pdf([*page, *extra_lines, f"copy {n}"])))]
     )
     document_id = body.json()["results"][0]["document_id"]
     assert worker(app).drain() >= 1

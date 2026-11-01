@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, File, Form, Query, UploadFile
 from fastapi.responses import FileResponse
@@ -15,6 +15,7 @@ from citetally.api.deps import Conn, RequestId, State
 from citetally.api.errors import ApiError
 from citetally.api.schemas import (
     CheckOut,
+    DocumentCounts,
     DocumentDetail,
     DocumentList,
     DocumentOut,
@@ -27,6 +28,7 @@ from citetally.api.schemas import (
     UploadResponse,
     UploadResult,
 )
+from citetally.api.state import AppState
 from citetally.models import CheckCode, Document, Entry
 from citetally.models import DocumentStatus as S
 
@@ -126,10 +128,48 @@ def document_summary(conn: sqlite3.Connection, document: Document) -> DocumentSu
         unresolved_checks=(
             repo.unresolved_blocking(conn, document.id) if document.status is S.NEEDS_REVIEW else []
         ),
+        warnings=(
+            repo.unresolved_warnings(conn, document.id) if document.status is S.NEEDS_REVIEW else []
+        ),
     )
 
 
 # ---- routes ------------------------------------------------------------------------------------
+
+
+def _ingest_one(
+    conn: sqlite3.Connection,
+    state: AppState,
+    name: str,
+    data: bytes,
+    batch_label: str | None,
+    request_id: str,
+) -> UploadResult:
+    """Ingest one file and queue it if it was accepted. A refusal is a result, not an error."""
+    settings = state.settings
+    try:
+        result = ingest.ingest(
+            conn,
+            data,
+            name,
+            settings=settings,
+            batch_label=batch_label,
+            is_synthetic=settings.synthetic_data,
+            request_id=request_id,
+            isolate=state.isolate_ingest,
+        )
+    except ingest.IngestRejected as error:
+        return UploadResult(filename=name, outcome="rejected", message=str(error))
+    document = result.document
+    if result.outcome == "accepted":
+        state.worker.submit(document.id)
+    return UploadResult(
+        filename=name,
+        outcome=result.outcome,
+        document_id=document.id,
+        status=document.status,
+        message=document.failure_message,
+    )
 
 
 @router.post("/documents", response_model=UploadResponse)
@@ -145,64 +185,80 @@ def upload(
         raise ApiError(
             413, "too_many_files", f"Upload at most {MAX_FILES_PER_UPLOAD} files at a time."
         )
-    settings = state.settings
-    limit = settings.max_file_mb * 1024 * 1024
-    results: list[UploadResult] = []
-    for upload_file in files:
-        name = upload_file.filename or "file"
-        data = upload_file.file.read(limit + 1)  # one byte past the limit is enough to refuse it
-        try:
-            result = ingest.ingest(
-                conn,
-                data,
-                name,
-                settings=settings,
-                batch_label=batch_label.strip() if batch_label and batch_label.strip() else None,
-                is_synthetic=settings.synthetic_data,
-                request_id=request_id,
-                isolate=state.isolate_ingest,
-            )
-        except ingest.IngestRejected as error:
-            results.append(UploadResult(filename=name, outcome="rejected", message=str(error)))
-            continue
-        document = result.document
-        if result.outcome == "accepted":
-            state.worker.submit(document.id)
-        results.append(
-            UploadResult(
-                filename=name,
-                outcome=result.outcome,
-                document_id=document.id,
-                status=document.status,
-                message=document.failure_message,
-            )
+    limit = state.settings.max_file_mb * 1024 * 1024
+    label = batch_label.strip() if batch_label and batch_label.strip() else None
+    results = [
+        _ingest_one(
+            conn,
+            state,
+            upload_file.filename or "file",
+            upload_file.file.read(limit + 1),  # one byte past the limit is enough to refuse it
+            label,
+            request_id,
         )
+        for upload_file in files
+    ]
     return UploadResponse(results=results)
+
+
+DEMO_SUFFIXES = {".pdf", ".png", ".jpg", ".jpeg"}
+
+
+@router.post("/demo/load", response_model=UploadResponse)
+def load_demo(conn: Conn, state: State, request_id: RequestId) -> UploadResponse:
+    """Queue the invented demo documents (made by `python -m tools.synthetic.demo`). Loading them
+    again finds the same files and reports them as duplicates."""
+    if not state.settings.synthetic_data:
+        raise ApiError(
+            403,
+            "demo_unavailable",
+            "Demo documents can only be loaded while the data is synthetic.",
+        )
+    folder = state.settings.data_dir / "synthetic" / "demo"
+    files = (
+        sorted(p for p in folder.iterdir() if p.suffix.lower() in DEMO_SUFFIXES)
+        if folder.is_dir()
+        else []
+    )
+    if not files:
+        raise ApiError(
+            404,
+            "demo_missing",
+            "The demo documents have not been made yet. Run: python -m tools.synthetic.demo",
+        )
+    return UploadResponse(
+        results=[
+            _ingest_one(conn, state, path.name, path.read_bytes(), "demo", request_id)
+            for path in files
+        ]
+    )
 
 
 @router.get("/documents", response_model=DocumentList)
 def list_documents(
     conn: Conn,
-    status: S | None = None,
+    status: Annotated[list[S] | None, Query()] = None,
     check: CheckCode | None = None,
     q: Annotated[str | None, Query(max_length=100)] = None,
     batch: Annotated[str | None, Query(max_length=100)] = None,
     cursor: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = 50,
+    order: Literal["newest", "oldest"] = "newest",
 ) -> DocumentList:
-    """Newest first. `cursor` is the `next_cursor` of the previous page."""
-    before: int | None = None
+    """Newest or oldest first. `cursor` is the `next_cursor` of the previous page."""
+    after: int | None = None
     if cursor is not None:
         if not cursor.isdigit():
             raise ApiError(422, "invalid_cursor", "That page marker is not valid.")
-        before = int(cursor)
+        after = int(cursor)
     rows = repo.list_documents_page(
         conn,
-        status=status,
+        statuses=status or (),
         check=check,
         q=q.strip() if q and q.strip() else None,
         batch=batch,
-        before_id=before,
+        cursor_id=after,
+        oldest_first=order == "oldest",
         limit=limit + 1,
     )
     more = len(rows) > limit
@@ -211,6 +267,12 @@ def list_documents(
         items=[document_summary(conn, document) for document in page],
         next_cursor=str(page[-1].id) if more else None,
     )
+
+
+@router.get("/documents/counts", response_model=DocumentCounts)
+def document_counts(conn: Conn) -> DocumentCounts:
+    """How many documents are in each status, for the Inbox chips."""
+    return DocumentCounts(counts=repo.status_counts(conn), batches=repo.list_batches(conn))
 
 
 @router.get("/documents/{document_id}", response_model=DocumentDetail)
