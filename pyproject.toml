@@ -19,6 +19,10 @@ extend-exclude = ["web", "docs"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+# The report writer is mostly sentences of prose and table rows; wrapping them hides the wording.
+"tools/evaluation/report.py" = ["E501", "RUF001"]
+
 [tool.mypy]
 python_version = "3.13"
 strict = true

@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     extract_mode: Literal["text_only", "text_and_image"] = Field(
         default="text_only", validation_alias="CITETALLY_EXTRACT_MODE"
     )
+    enable_thinking: bool = Field(default=False, validation_alias="CITETALLY_ENABLE_THINKING")
+    # A model that thinks first spends part of this budget (and time) before it answers.
+    extract_max_tokens: int = Field(
+        default=2000, ge=200, validation_alias="CITETALLY_EXTRACT_MAX_TOKENS"
+    )
+    extract_timeout_s: int = Field(
+        default=180, ge=10, validation_alias="CITETALLY_EXTRACT_TIMEOUT_S"
+    )
 
     ocr_engine: Literal["tesseract"] = Field(
         default="tesseract", validation_alias="CITETALLY_OCR_ENGINE"
