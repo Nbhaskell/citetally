@@ -58,6 +58,24 @@ export const CHECK_TITLE: Record<CheckCode, string> = {
   SUSPICIOUS_TEXT: "The page contains instructions",
 };
 
+/** How a check reads when it passed. */
+export const PASSED_TITLE: Record<CheckCode, string> = {
+  REQUIRED_FIELDS: "Nothing is missing",
+  VALUE_IN_DOCUMENT: "Every value is on the page",
+  LINE_MATH: "Lines add up",
+  SUBTOTAL_MATCH: "Lines match the subtotal",
+  TAX_MATCH: "Tax is consistent",
+  TOTAL_MATCH: "Total adds up",
+  DUPLICATE_SUSPECT: "Not a duplicate of anything else",
+  UNKNOWN_VENDOR: "Vendor is known",
+  AMOUNT_OUTLIER: "Amount is in the usual range",
+  DATE_SANITY: "Dates look right",
+  CURRENCY_CHECK: "Usual currency",
+  LOW_READ_QUALITY: "Easy to read",
+  AMBIGUOUS_FORMAT: "Dates and numbers read one way",
+  SUSPICIOUS_TEXT: "No instructions on the page",
+};
+
 export const NOT_FOUND_ADVICE = "Start the API with: python -m citetally";
 
 /** Which stage a failed document should be sent back to, or null when retrying cannot help. */

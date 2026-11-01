@@ -33,6 +33,9 @@ function install(current: () => StatusResponse | Error) {
       return Response.json(value);
     }
     if (path.startsWith("/api/documents/counts")) return Response.json({ counts: ZERO, batches: [] });
+    if (/^\/api\/documents\/\d+$/.test(path)) {
+      return Response.json({ error: { code: "not_found", message: "Document 12 was not found.", request_id: "t" } }, { status: 404 });
+    }
     if (path.startsWith("/api/documents")) return Response.json({ items: [], next_cursor: null });
     return new Response("no", { status: 404 });
   });
@@ -134,8 +137,10 @@ describe("moving between screens", () => {
     install(() => status);
     window.location.hash = "#/review/12";
     render(<App />);
-    expect(await screen.findByRole("heading", { name: "Review" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Inbox" })).toHaveAttribute("aria-current", "page");
+    // The test server has no such document, so the Review screen says so plainly.
+    expect(await screen.findByText("That document does not exist")).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "Inbox" })[0]).toHaveAttribute("aria-current", "page");
   });
 
   it("does not break on an address it does not know", async () => {

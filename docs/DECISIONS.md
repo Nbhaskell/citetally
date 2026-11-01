@@ -461,3 +461,18 @@ Where the documents left a choice, the simplest option was taken:
 **Money display** splits integer minor units with BigInt, so a total is never a float on the screen either. A credit note shows a real minus sign and the word "Credit".
 
 **Retry** is offered only where it can help: a failure while reading goes back to read, a failure later goes back to the model; a file refused at ingest has no retry.
+
+### D-055. The Review screen (Phase 7, second slice)
+
+`web/src/pages/Review.tsx` with `web/src/review/*`. The page picture is the hero (about 55% of the width on a wide screen, sticky), the form and checks sit beside it, the decision bar is fixed to the bottom.
+
+- **Every sentence about a check comes from the numbers the code check recorded.** `review/explain.ts` turns each check's stored detail into the plain wording of the UI brief ("Line 3: 10 × $4.50 is $45.00, but the page says $54.00."). The screen does no arithmetic of its own beyond showing a difference of two recorded integers and one ratio for the outlier sentence. Per-line arithmetic in words shows the printed amount when the line matches and the recorded expected amount when it does not.
+- **Evidence both ways.** A box for each value found, in fractions of the page so it follows zoom; clicking a box goes to its field and focusing a field marks its box and shows its page. The same information is a list ("Total: found on page 1", "Invoice number: not found on the page") so nobody depends on the picture. The page text as read sits in a collapsed panel.
+- **Saving.** A value saves when you leave its box (or press Enter); a value that is not clearly an amount, a three-letter currency or a number is explained and not sent. Amounts are typed in major units and turned into integer minor units by `parseMinor`, which refuses `12.345` and `1,24.00` rather than guess. The result is announced in a polite live region ("Saved. 1 check must be resolved."). A failed save puts the old value back and says why with the request id.
+- **Overrides are staged, then applied with the approval.** "Override with reason" records the reason on the screen and the check shows "Will be accepted when you approve, because: …" with a Take back. The approval sends all of them in one request, which the server applies all-or-nothing. Any edit clears them on the screen exactly as the server clears them.
+- **Next and Undo.** After approving, rejecting or setting aside a duplicate, the next document waiting (oldest first) opens, or the Inbox when it was the last. Approve and Reject offer Undo, which reopens the document and goes back to it. The time spent on the screen is sent as `review_seconds`.
+- **Vendor.** The picker shows names close to the printed one in words ("Probably the same", "Possibly the same"), never applied for you, from a new `GET /api/entries/{id}/vendor-suggestions` that returns what the matching code already computes. Choosing or creating a vendor also remembers the printed name as an alias (server side), and the picker says so.
+- **Duplicates** are found by searching vendor, invoice number or file name (the list search does not look at totals), then shown side by side before confirming.
+- **Keyboard** (when not typing and no dialog is open): `j` and `k` through the documents waiting, `a` approve when allowed, `r` reject, `e` first field, `g` then `p` the page picture, `?` the list.
+- **Phone width** has tabs Page, Details and Checks (a count of what is left on the last one) and the same sticky decision bar. "Show on page" switches to the page; "Fix value" to the details.
+- Reopening is offered for approved and rejected documents; an exported entry says it cannot be reopened and why; a duplicate says it is set aside.

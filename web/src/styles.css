@@ -692,7 +692,7 @@ select {
 .toasts {
   position: fixed;
   right: 1rem;
-  bottom: 1rem;
+  bottom: 4.5rem; /* above the decision bar on the Review screen */
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -812,5 +812,6 @@ select {
   .toasts {
     left: 1rem;
     right: 1rem;
+    bottom: 9.5rem;
   }
 }
