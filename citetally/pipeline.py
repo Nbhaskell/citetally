@@ -13,7 +13,7 @@ import json
 import sqlite3
 import time
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -23,6 +23,7 @@ from PIL import Image
 
 from citetally import events, ingest
 from citetally import repository as repo
+from citetally.checks import run_checks
 from citetally.config import Settings
 from citetally.db import transaction
 from citetally.extract import ExtractionInvalid, ExtractionTooLong, extract
@@ -88,18 +89,15 @@ class StageFailure(Exception):
         self.message = message
 
 
-def _no_checks(conn: sqlite3.Connection, document_id: int) -> None:
-    """Placeholder until the checks exist (Phase 5)."""
-
-
 @dataclass
 class Services:
     settings: Settings
     ocr: OcrEngine
     provider: ModelProvider
-    run_checks: Callable[[sqlite3.Connection, int], None] = field(default=_no_checks)
+    run_checks: Callable[[sqlite3.Connection, int], None] | None = None  # tests inject one
     extract_mode: ExtractMode = ExtractMode.TEXT_ONLY
     isolate: bool = True  # read pages in a separate process; tests turn this off
+    today: date | None = None  # the date the checks use; None means the real date
 
 
 # ---- reading (the part that runs in a worker) --------------------------------------------------
@@ -460,8 +458,11 @@ def match_stage(conn: sqlite3.Connection, document: Document, services: Services
 
 
 def check_stage(conn: sqlite3.Connection, document: Document, services: Services) -> dict[str, Any]:
-    services.run_checks(conn, document.id)
-    return {}
+    if services.run_checks is not None:
+        services.run_checks(conn, document.id)
+        return {}
+    outcomes = run_checks(conn, document.id, settings=services.settings, today=services.today)
+    return {"count": len(outcomes)}
 
 
 # ---- running -----------------------------------------------------------------------------------

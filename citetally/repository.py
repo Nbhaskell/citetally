@@ -905,6 +905,64 @@ def vendor_history_totals(conn: sqlite3.Connection, vendor_id: int, currency: st
     return [row["total_minor"] for row in rows]
 
 
+@dataclass(frozen=True)
+class SiblingEntry:
+    """Another entry of the same vendor, as the duplicate check needs it."""
+
+    document_id: int
+    entry_type: str
+    invoice_number: str | None
+    total_minor: int | None
+    currency: str | None
+    entry_date: str | None
+
+
+def sibling_entries(
+    conn: sqlite3.Connection, vendor_id: int, *, exclude_document_id: int
+) -> list[SiblingEntry]:
+    """The vendor's other entries that are still live: not rejected, marked duplicate or failed."""
+    rows = conn.execute(
+        "SELECT e.document_id, e.entry_type, e.invoice_number, e.total_minor, e.currency, "
+        "e.entry_date FROM entries e JOIN documents d ON d.id = e.document_id "
+        "WHERE e.vendor_id = ? AND e.document_id <> ? "
+        "AND d.status NOT IN ('rejected','duplicate','failed') ORDER BY e.document_id",
+        (vendor_id, exclude_document_id),
+    )
+    return [SiblingEntry(**dict(row)) for row in rows]
+
+
+@dataclass(frozen=True)
+class PastEntry:
+    total_minor: int | None
+    subtotal_minor: int | None
+    tax_total_minor: int | None
+
+
+def approved_history(
+    conn: sqlite3.Connection,
+    vendor_id: int,
+    currency: str,
+    entry_type: EntryType,
+    *,
+    exclude_document_id: int,
+) -> list[PastEntry]:
+    """A vendor's approved or exported entries of one type and currency, oldest first."""
+    rows = conn.execute(
+        "SELECT e.total_minor, e.subtotal_minor, e.tax_total_minor FROM entries e "
+        "JOIN documents d ON d.id = e.document_id "
+        "WHERE e.vendor_id = ? AND e.currency = ? AND e.entry_type = ? AND e.document_id <> ? "
+        "AND d.status IN ('approved','exported') ORDER BY e.document_id",
+        (vendor_id, currency, EntryType(entry_type).value, exclude_document_id),
+    )
+    return [PastEntry(**dict(row)) for row in rows]
+
+
+def get_vendor(conn: sqlite3.Connection, vendor_id: int) -> Vendor:
+    return _required(
+        _one(conn, Vendor, "SELECT * FROM vendors WHERE id = ?", (vendor_id,)), "Vendor"
+    )
+
+
 def list_audit_events(conn: sqlite3.Connection, document_id: int) -> list[AuditEvent]:
     return _all(
         conn,

@@ -1,5 +1,6 @@
 """Settings read from environment variables (and a local .env file). See docs/TRD.md section 8."""
 
+from decimal import Decimal
 from pathlib import Path
 from typing import Literal
 
@@ -55,6 +56,26 @@ class Settings(BaseSettings):
         default="USD", pattern=r"^[A-Z]{3}$", validation_alias="CITETALLY_DEFAULT_CURRENCY"
     )
     locale: str = Field(default="en-US", validation_alias="CITETALLY_LOCALE")
+
+    low_confidence: float = Field(
+        default=75.0, ge=0, le=100, validation_alias="CITETALLY_LOW_CONFIDENCE"
+    )
+    math_tolerance_minor: int = Field(
+        default=1, ge=0, validation_alias="CITETALLY_MATH_TOLERANCE_MINOR"
+    )
+    duplicate_date_window_days: int = Field(
+        default=7, ge=0, validation_alias="CITETALLY_DUPLICATE_DATE_WINDOW_DAYS"
+    )
+    outlier_min_history: int = Field(
+        default=5, ge=1, validation_alias="CITETALLY_OUTLIER_MIN_HISTORY"
+    )
+    outlier_ratio: Decimal = Field(
+        default=Decimal(3), gt=1, validation_alias="CITETALLY_OUTLIER_RATIO"
+    )
+    max_age_days: int = Field(default=400, ge=1, validation_alias="CITETALLY_MAX_AGE_DAYS")
+    suspicious_phrases: str = Field(
+        default="", validation_alias="CITETALLY_SUSPICIOUS_PHRASES"
+    )  # extra phrases for SUSPICIOUS_TEXT, separated by semicolons, matched as plain text
 
     allow_hosted: bool = Field(default=False, validation_alias="CITETALLY_ALLOW_HOSTED")
     synthetic_data: bool = Field(default=True, validation_alias="CITETALLY_SYNTHETIC_DATA")
