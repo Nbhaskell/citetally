@@ -218,3 +218,28 @@ def test_layout_padding_does_not_count_towards_the_limit() -> None:
 def test_a_document_with_no_pages_is_a_programming_error() -> None:
     with pytest.raises(ValueError):
         extract(FakeProvider([GOOD]), [], CATEGORIES)
+
+
+# --- page images (the vision experiment) -------------------------------------------------------
+
+
+def test_images_are_sent_with_the_text_and_the_system_prompt_says_how_to_use_them() -> None:
+    provider = FakeProvider([GOOD], vision=True)
+    result = extract(provider, ["Invoice INV-20417"], CATEGORIES, images=[b"png-1", b"png-2"])
+    (call,) = provider.calls
+    assert call.images == [b"png-1", b"png-2"]
+    assert "picture of each page" in call.system and "<document_text>" in call.user
+    assert result.prompt_version == "extract-v3+image"
+
+
+def test_without_images_the_prompt_is_unchanged() -> None:
+    provider = FakeProvider([GOOD])
+    result = extract(provider, ["Invoice INV-20417"], CATEGORIES)
+    assert provider.calls[0].images is None and "picture" not in provider.calls[0].system
+    assert result.prompt_version == PROMPT_VERSION
+
+
+def test_a_retry_sends_the_images_again() -> None:
+    provider = FakeProvider(["not json", GOOD], vision=True)
+    extract(provider, ["page"], CATEGORIES, images=[b"png"])
+    assert [call.images for call in provider.calls] == [[b"png"], [b"png"]]

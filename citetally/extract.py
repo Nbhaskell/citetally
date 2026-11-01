@@ -21,6 +21,12 @@ from citetally.providers.base import ModelProvider, ModelResult
 from citetally.reading.masking import mask_for_model
 
 PROMPT_VERSION = "extract-v3"
+PROMPT_VERSION_IMAGE = f"{PROMPT_VERSION}+image"
+_IMAGE_NOTE = (
+    "A picture of each page is attached, in page order. The text in the data block was read "
+    "from the same pages by a machine and may contain mistakes, missing words or missing "
+    "columns. Use the picture to see what is really printed, and copy values exactly as printed."
+)
 MAX_ATTEMPTS = 2
 # Page text longer than this (runs of spaces counted once: layout padding costs almost no tokens)
 # would crowd the reply out of the model's context window.
@@ -79,7 +85,7 @@ def build_schema(category_codes: Sequence[str]) -> dict[str, Any]:
     }
 
 
-def build_system_prompt(category_codes: Sequence[str]) -> str:
+def build_system_prompt(category_codes: Sequence[str], *, with_images: bool = False) -> str:
     rules = [
         "Copy every value exactly as printed: the same characters, punctuation, currency symbols "
         "and date format. Never calculate, convert, round, reformat, correct or guess.",
@@ -110,7 +116,8 @@ def build_system_prompt(category_codes: Sequence[str]) -> str:
     return (
         "You read invoices, receipts and credit notes for a small business and copy what is "
         f"printed on them into JSON.\n\nRules:\n{numbered}\n\n"
-        "Reply with one JSON object that matches the schema and nothing else."
+        + (f"{_IMAGE_NOTE}\n\n" if with_images else "")
+        + "Reply with one JSON object that matches the schema and nothing else."
     )
 
 
@@ -152,6 +159,7 @@ def extract(
     *,
     max_tokens: int = 2000,
     timeout_s: int = 180,
+    images: Sequence[bytes] | None = None,
 ) -> Extracted:
     """Read one document. `pages` is the layout text of each page, in order.
 
@@ -163,7 +171,7 @@ def extract(
     masked = [mask_for_model(text) for text in pages]
     if sum(len(" ".join(text.split())) for text in masked) > MAX_TEXT_CHARS:
         raise ExtractionTooLong("The document text is too long to read in one call.")
-    system = build_system_prompt(category_codes)
+    system = build_system_prompt(category_codes, with_images=bool(images))
     base_user = build_user_prompt(masked)
     schema = build_schema(category_codes)
 
@@ -171,7 +179,12 @@ def extract(
     results: list[ModelResult] = []
     for attempt in range(1, MAX_ATTEMPTS + 1):
         result = provider.generate_json(
-            system=system, user=user, schema=schema, max_tokens=max_tokens, timeout_s=timeout_s
+            system=system,
+            user=user,
+            schema=schema,
+            images=list(images) if images else None,
+            max_tokens=max_tokens,
+            timeout_s=timeout_s,
         )
         results.append(result)
         fields, notes = _problems(result)
@@ -181,7 +194,7 @@ def extract(
             return Extracted(
                 fields=fields,
                 raw=result.raw,
-                prompt_version=PROMPT_VERSION,
+                prompt_version=PROMPT_VERSION_IMAGE if images else PROMPT_VERSION,
                 attempts=attempt,
                 input_tokens=_sum([r.input_tokens for r in results]),
                 output_tokens=_sum([r.output_tokens for r in results]),

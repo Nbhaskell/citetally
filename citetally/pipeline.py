@@ -8,6 +8,7 @@ the person decides what happens next. Nothing here pays, posts or sends anything
 
 from __future__ import annotations
 
+import io
 import json
 import sqlite3
 import time
@@ -52,6 +53,7 @@ from citetally.reading.ocr import (
 )
 from citetally.reading.preprocess import preprocess, preprocess_words
 
+IMAGE_MAX_SIDE_PX = 1568  # a larger picture only costs the model more tokens
 READ_BASE_TIMEOUT_S = 60.0
 READ_TIMEOUT_PER_PAGE_S = 150.0
 EXTRACT_MAX_TOKENS = 2000
@@ -67,6 +69,7 @@ _MESSAGES = {
     "model_down": "The language model is not running. Start Ollama, then reprocess this document.",
     "model_slow": "The language model took too long to answer. Reprocess to try again.",
     "model_other": "The language model could not be used.",
+    "no_images": "The language model in use cannot read page pictures.",
     "invalid": "The model's answer could not be used, even after a second try.",
     "too_long": "This document has too much text to read in one go.",
     "read": "The pages could not be read.",
@@ -95,6 +98,7 @@ class Services:
     ocr: OcrEngine
     provider: ModelProvider
     run_checks: Callable[[sqlite3.Connection, int], None] = field(default=_no_checks)
+    extract_mode: ExtractMode = ExtractMode.TEXT_ONLY
     isolate: bool = True  # read pages in a separate process; tests turn this off
 
 
@@ -241,6 +245,16 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
 # ---- extracting --------------------------------------------------------------------------------
 
 
+def _page_image(path: Path) -> bytes:
+    """The stored page picture, scaled down for the model, as JPEG bytes."""
+    with Image.open(path) as opened:
+        picture = opened.convert("RGB")
+    picture.thumbnail((IMAGE_MAX_SIDE_PX, IMAGE_MAX_SIDE_PX))
+    buffer = io.BytesIO()
+    picture.save(buffer, "JPEG", quality=90)
+    return buffer.getvalue()
+
+
 def extract_stage(
     conn: sqlite3.Connection, document: Document, services: Services
 ) -> dict[str, Any]:
@@ -248,6 +262,15 @@ def extract_stage(
     if not any(text.strip() for text in texts):
         raise StageFailure(_MESSAGES["no_text"])
     codes = [c.code for c in repo.list_categories(conn) if c.is_active]
+    mode = services.extract_mode
+    images = None
+    if mode is ExtractMode.TEXT_AND_IMAGE:
+        if not services.provider.supports_vision:
+            raise StageFailure(_MESSAGES["no_images"])
+        images = [
+            _page_image(services.settings.data_dir / page.image_path)
+            for page in repo.list_pages(conn, document.id)
+        ]
     try:
         result = extract(
             services.provider,
@@ -255,6 +278,7 @@ def extract_stage(
             codes,
             max_tokens=EXTRACT_MAX_TOKENS,
             timeout_s=EXTRACT_TIMEOUT_S,
+            images=images,
         )
     except ModelUnavailable:
         raise StageFailure(_MESSAGES["model_down"]) from None
@@ -275,7 +299,7 @@ def extract_stage(
             document.id,
             provider=Provider(services.provider.name),
             model=services.provider.model,
-            extract_mode=ExtractMode.TEXT_ONLY,
+            extract_mode=mode,
             prompt_version=result.prompt_version,
             fields=fields.model_dump(mode="json"),
             raw_response=result.raw,
@@ -301,7 +325,7 @@ def extract_stage(
 
     payload: dict[str, Any] = {
         "provider": services.provider.name,
-        "extract_mode": ExtractMode.TEXT_ONLY.value,
+        "extract_mode": mode.value,
         "attempt": result.attempts,
     }
     if result.input_tokens is not None:

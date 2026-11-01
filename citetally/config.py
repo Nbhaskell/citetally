@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     text_model: str = Field(default="qwen3:8b", validation_alias="CITETALLY_TEXT_MODEL")
     vision_model: str = Field(default="", validation_alias="CITETALLY_VISION_MODEL")
 
+    extract_mode: Literal["text_only", "text_and_image"] = Field(
+        default="text_only", validation_alias="CITETALLY_EXTRACT_MODE"
+    )
+
     ocr_engine: Literal["tesseract"] = Field(
         default="tesseract", validation_alias="CITETALLY_OCR_ENGINE"
     )
@@ -61,6 +65,12 @@ class Settings(BaseSettings):
         if value not in LOCALES:
             raise ValueError(f"CITETALLY_LOCALE must be one of: {', '.join(sorted(LOCALES))}")
         return value
+
+    @model_validator(mode="after")
+    def image_mode_needs_a_vision_model(self) -> "Settings":
+        if self.extract_mode == "text_and_image" and not self.vision_model:
+            raise ValueError("CITETALLY_EXTRACT_MODE=text_and_image needs CITETALLY_VISION_MODEL.")
+        return self
 
     @model_validator(mode="after")
     def hosted_requires_opt_in(self) -> "Settings":

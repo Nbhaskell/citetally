@@ -186,18 +186,8 @@ def render(report: dict[str, Any]) -> str:
 # ---- running -----------------------------------------------------------------------------------
 
 
-def run_one(
-    conn: Any, settings: Settings, services: pipeline.Services, item: Item
-) -> dict[str, Any]:
-    started = time.monotonic()
-    result = ingest.ingest(
-        conn, Path(item.file).read_bytes(), Path(item.file).name, settings=settings
-    )
-    doc_id = result.document.duplicate_of if result.outcome == "duplicate" else result.document.id
-    document = result.document
-    if result.outcome != "failed" and doc_id is not None:
-        document = pipeline.process(conn, doc_id, services)
-    seconds = round(time.monotonic() - started, 1)
+def build_record(conn: Any, document: Any, item: Item, seconds: float) -> dict[str, Any]:
+    """What the pipeline stored for one document, as plain data for scoring."""
     record: dict[str, Any] = {
         "id": item.id,
         "condition": item.condition,
@@ -212,8 +202,7 @@ def run_one(
     if extraction is not None:
         record["fields"] = json.loads(extraction.fields)
     if entry is not None:
-        lines = repo.list_lines(conn, entry.id)
-        line_ids = {line.id for line in lines}
+        line_ids = {line.id for line in repo.list_lines(conn, entry.id)}
         record["evidence"] = [
             {
                 "field": e.field.value,
@@ -224,10 +213,22 @@ def run_one(
             }
             for e in repo.list_evidence(conn, entry.id)
         ]
-        record["vendor_match"] = (
-            entry.vendor_match_method.value if entry.vendor_match_method else None
-        )
+        method = entry.vendor_match_method
+        record["vendor_match"] = method.value if method else None
     return record
+
+
+def run_one(
+    conn: Any, settings: Settings, services: pipeline.Services, item: Item
+) -> dict[str, Any]:
+    started = time.monotonic()
+    path = Path(item.file)
+    result = ingest.ingest(conn, path.read_bytes(), path.name, settings=settings)
+    doc_id = result.document.duplicate_of if result.outcome == "duplicate" else result.document.id
+    document = result.document
+    if result.outcome != "failed" and doc_id is not None:
+        document = pipeline.process(conn, doc_id, services)
+    return build_record(conn, document, item, round(time.monotonic() - started, 1))
 
 
 def main(argv: list[str] | None = None) -> int:
