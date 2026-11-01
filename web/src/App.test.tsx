@@ -157,3 +157,39 @@ describe("moving between screens", () => {
     expect(screen.getByRole("link", { name: "Skip to the content" })).toHaveAttribute("href", "#main");
   });
 });
+
+describe("go-to shortcuts", () => {
+  it("g then a letter moves between screens from anywhere, and not while typing or in a dialog", async () => {
+    install(() => status);
+    render(<App />);
+    await screen.findByRole("heading", { name: "Inbox" });
+    const press = (key: string, target: Element = document.body) => fireEvent.keyDown(target, { key });
+    for (const [letter, name, hash] of [
+      ["v", "Vendors", "#/vendors"],
+      ["e", "Exports", "#/exports"],
+      ["n", "Insights", "#/insights"],
+      ["s", "Settings", "#/settings"],
+      ["i", "Inbox", "#/"],
+    ] as const) {
+      press("g");
+      press(letter);
+      expect(await screen.findByRole("heading", { name })).toBeInTheDocument();
+      expect(window.location.hash).toBe(hash === "#/" ? "#/" : hash);
+    }
+
+    const box = document.createElement("input");
+    document.body.append(box);
+    press("g", box);
+    press("v", box);
+    expect(window.location.hash).toBe("#/"); // typing in a box is left alone
+    box.remove();
+
+    const dialog = document.createElement("dialog");
+    dialog.setAttribute("open", "");
+    document.body.append(dialog);
+    press("g");
+    press("v");
+    expect(window.location.hash).toBe("#/");
+    dialog.remove();
+  });
+});

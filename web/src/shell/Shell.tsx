@@ -1,8 +1,9 @@
 import { useEffect, useRef, type ReactNode } from "react";
 
 import { api, ApiError, UNREACHABLE } from "../api/client";
-import { hrefFor, useRoute, type Route } from "../lib/router";
+import { hrefFor, navigate, useRoute, type Route } from "../lib/router";
 import { useApi } from "../lib/useApi";
+import { useShortcuts } from "../lib/useShortcuts";
 import Banner from "../ui/Banner";
 import EmptyState from "../ui/EmptyState";
 import Skeleton from "../ui/Skeleton";
@@ -41,6 +42,15 @@ export default function Shell({ children }: { children: ReactNode }) {
   });
   const main = useRef<HTMLElement>(null);
   const first = useRef(true);
+
+  // "g" then a letter goes to a screen, from anywhere (when not typing and no dialog is open).
+  useShortcuts({
+    "g i": () => navigate({ name: "inbox" }),
+    "g v": () => navigate({ name: "vendors" }),
+    "g e": () => navigate({ name: "exports" }),
+    "g n": () => navigate({ name: "insights" }),
+    "g s": () => navigate({ name: "settings" }),
+  });
 
   useEffect(() => {
     document.title = `${TITLE[route.name]} – Citetally`;

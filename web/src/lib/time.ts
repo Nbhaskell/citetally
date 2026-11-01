@@ -23,3 +23,37 @@ export function shortDate(iso: string | null | undefined): string {
 export function secondsSince(iso: string, now: Date = new Date()): number {
   return Math.max(0, (now.getTime() - new Date(iso).getTime()) / 1000);
 }
+
+export type Period = "month" | "30d" | "90d" | "year" | "all";
+
+function isoDay(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** The first and last day (as "2026-03-14") a period covers, counting back from today. */
+export function periodRange(period: Period, today: Date = new Date()): { from: string | null; to: string | null } {
+  const to = isoDay(today);
+  switch (period) {
+    case "month":
+      return { from: isoDay(new Date(today.getFullYear(), today.getMonth(), 1)), to };
+    case "30d":
+      return { from: isoDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29)), to };
+    case "90d":
+      return { from: isoDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 89)), to };
+    case "year":
+      return { from: isoDay(new Date(today.getFullYear(), 0, 1)), to };
+    default:
+      return { from: null, to: null };
+  }
+}
+
+/** Seconds in the plainest words: "45 s", "1 min 30 s", "12 min". */
+export function duration(seconds: number): string {
+  if (seconds < 60) return `${seconds} s`;
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  if (minutes >= 10 || rest === 0) return `${minutes} min`;
+  return `${minutes} min ${rest} s`;
+}

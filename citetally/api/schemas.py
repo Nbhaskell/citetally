@@ -344,3 +344,86 @@ class ExportPreview(BaseModel):
     skipped_already_exported: int
     columns: list[str]
     sample: list[list[str]]
+
+
+# ---- insights ----------------------------------------------------------------------------------
+
+
+class SpendRow(_Out):
+    code: str | None = None
+    label: str
+    currency: str
+    total_minor: int  # credit notes count as negative
+    entries: int
+
+
+class AgeBucket(_Out):
+    bucket: Literal["under_1_day", "1_to_3_days", "3_to_7_days", "over_7_days"]
+    documents: int
+
+
+class FieldCount(_Out):
+    field: str
+    edits: int
+
+
+class CheckCount(_Out):
+    check_code: CheckCode
+    documents: int
+    overridden: int
+
+
+class InsightsOut(_Out):
+    date_from: str | None
+    date_to: str | None
+    by_category: list[SpendRow]
+    by_vendor: list[SpendRow]
+    waiting_by_age: list[AgeBucket]
+    approved_documents: int
+    edited_documents: int
+    edited_fields: list[FieldCount]
+    checks_failing: list[CheckCount]
+    review_seconds_median: int | None
+    review_seconds_count: int
+
+
+# ---- settings ----------------------------------------------------------------------------------
+
+
+class EditableSettings(_Out):
+    default_currency: str
+    locale: str
+    duplicate_date_window_days: int
+    outlier_ratio: str
+    low_confidence: float
+
+
+class SettingsOut(_Out):
+    status: StatusResponse
+    allow_hosted: bool
+    extract_mode: str
+    values: EditableSettings
+    defaults: EditableSettings  # what the environment says, for "back to the default"
+    locales: list[str]
+
+
+class SettingsUpdate(_In):
+    """Only the fields that are sent change."""
+
+    default_currency: Annotated[str, StringConstraints(pattern=r"^[A-Z]{3}$")] | None = None
+    locale: Annotated[str, StringConstraints(max_length=10)] | None = None
+    duplicate_date_window_days: Annotated[int, Field(ge=0, le=60)] | None = None
+    outlier_ratio: Annotated[str, StringConstraints(max_length=8)] | None = None
+    low_confidence: Annotated[float, Field(ge=1, le=99)] | None = None
+
+
+class SelfTestRow(_Out):
+    name: str
+    expectation: str
+    passed: bool
+    fired: list[CheckCode]
+
+
+class SelfTestOut(_Out):
+    passed: bool
+    results: list[SelfTestRow]

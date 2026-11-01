@@ -9,7 +9,6 @@ docs/TRD.md sections 7 and 9.
 from __future__ import annotations
 
 import logging
-import sqlite3
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from typing import Annotated
@@ -19,7 +18,13 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from citetally import __version__
 from citetally import repository as repo
-from citetally.api import routes_documents, routes_exports, routes_review, routes_vendors
+from citetally.api import (
+    routes_documents,
+    routes_exports,
+    routes_review,
+    routes_settings,
+    routes_vendors,
+)
 from citetally.api.deps import get_state
 from citetally.api.errors import (
     ApiError,
@@ -33,7 +38,7 @@ from citetally.api.state import AppState, Database, real_services
 from citetally.config import Settings
 from citetally.models import DocumentStatus
 from citetally.pipeline import Services
-from citetally.reading.ocr import find_tesseract
+from citetally.runtime_settings import apply_overrides
 from citetally.worker import Worker
 
 log = logging.getLogger("citetally.api")
@@ -63,10 +68,11 @@ def create_app(
     settings = settings or Settings()
     database = Database(settings)
     worker = Worker(
-        database.connect, (lambda: services) if services else lambda: real_services(settings)
+        database.connect, (lambda: services) if services else lambda: real_services(state.settings)
     )
     state = AppState(
         settings=settings,
+        base_settings=settings,
         database=database,
         worker=worker,
         autostart_worker=autostart_worker,
@@ -79,6 +85,7 @@ def create_app(
         database.ensure()
         connection = database.connect()
         try:
+            state.settings = apply_overrides(state.base_settings, connection)
             for status in _STUCK:  # work interrupted by a restart picks up where it stopped
                 for document in repo.list_documents(connection, status):
                     worker.submit(document.id)
@@ -117,40 +124,11 @@ def create_app(
 
     @app.get("/api/status", response_model=StatusResponse)
     def status(state: Annotated[AppState, Depends(get_state)]) -> StatusResponse:
-        database_ok: bool | None
-        last_call: str | None = None
-        try:
-            connection = state.database.connect()
-            try:
-                connection.execute("SELECT 1").fetchone()
-                last_call = connection.execute(
-                    "SELECT MAX(created_at) FROM extractions"
-                ).fetchone()[0]
-            finally:
-                connection.close()
-            database_ok = True
-        except (sqlite3.Error, OSError):
-            database_ok = False
-        ocr = (
-            True if state.services_injected else find_tesseract(settings.tesseract_cmd) is not None
-        )
-        return StatusResponse(
-            app="citetally",
-            version=__version__,
-            model_provider=settings.model_provider,
-            text_model=settings.text_model,
-            vision_model=settings.vision_model,
-            ocr_engine=settings.ocr_engine,
-            hosted_mode=settings.model_provider == "hosted",
-            synthetic_data=settings.synthetic_data,
-            database_ok=database_ok,
-            ocr_available=ocr,
-            queue_depth=state.worker.depth,
-            last_model_call_at=last_call,
-        )
+        return routes_settings.current_status(state)
 
     app.include_router(routes_documents.router)
     app.include_router(routes_exports.router)
     app.include_router(routes_review.router)
+    app.include_router(routes_settings.router)
     app.include_router(routes_vendors.router)
     return app

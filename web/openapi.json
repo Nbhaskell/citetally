@@ -1,6 +1,30 @@
 {
   "components": {
     "schemas": {
+      "AgeBucket": {
+        "properties": {
+          "bucket": {
+            "enum": [
+              "under_1_day",
+              "1_to_3_days",
+              "3_to_7_days",
+              "over_7_days"
+            ],
+            "title": "Bucket",
+            "type": "string"
+          },
+          "documents": {
+            "title": "Documents",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bucket",
+          "documents"
+        ],
+        "title": "AgeBucket",
+        "type": "object"
+      },
       "AliasCreate": {
         "additionalProperties": false,
         "properties": {
@@ -117,6 +141,28 @@
         ],
         "title": "CheckCode",
         "type": "string"
+      },
+      "CheckCount": {
+        "properties": {
+          "check_code": {
+            "$ref": "#/components/schemas/CheckCode"
+          },
+          "documents": {
+            "title": "Documents",
+            "type": "integer"
+          },
+          "overridden": {
+            "title": "Overridden",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "check_code",
+          "documents",
+          "overridden"
+        ],
+        "title": "CheckCount",
+        "type": "object"
       },
       "CheckOut": {
         "properties": {
@@ -699,6 +745,39 @@
         ],
         "title": "EditField",
         "type": "string"
+      },
+      "EditableSettings": {
+        "properties": {
+          "default_currency": {
+            "title": "Default Currency",
+            "type": "string"
+          },
+          "duplicate_date_window_days": {
+            "title": "Duplicate Date Window Days",
+            "type": "integer"
+          },
+          "locale": {
+            "title": "Locale",
+            "type": "string"
+          },
+          "low_confidence": {
+            "title": "Low Confidence",
+            "type": "number"
+          },
+          "outlier_ratio": {
+            "title": "Outlier Ratio",
+            "type": "string"
+          }
+        },
+        "required": [
+          "default_currency",
+          "locale",
+          "duplicate_date_window_days",
+          "outlier_ratio",
+          "low_confidence"
+        ],
+        "title": "EditableSettings",
+        "type": "object"
       },
       "EntryLine": {
         "additionalProperties": false,
@@ -1725,6 +1804,24 @@
         "title": "ExtractionOut",
         "type": "object"
       },
+      "FieldCount": {
+        "properties": {
+          "edits": {
+            "title": "Edits",
+            "type": "integer"
+          },
+          "field": {
+            "title": "Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "edits"
+        ],
+        "title": "FieldCount",
+        "type": "object"
+      },
       "FieldEdit": {
         "additionalProperties": false,
         "properties": {
@@ -1810,6 +1907,105 @@
         ],
         "title": "HeaderField",
         "type": "string"
+      },
+      "InsightsOut": {
+        "properties": {
+          "approved_documents": {
+            "title": "Approved Documents",
+            "type": "integer"
+          },
+          "by_category": {
+            "items": {
+              "$ref": "#/components/schemas/SpendRow"
+            },
+            "title": "By Category",
+            "type": "array"
+          },
+          "by_vendor": {
+            "items": {
+              "$ref": "#/components/schemas/SpendRow"
+            },
+            "title": "By Vendor",
+            "type": "array"
+          },
+          "checks_failing": {
+            "items": {
+              "$ref": "#/components/schemas/CheckCount"
+            },
+            "title": "Checks Failing",
+            "type": "array"
+          },
+          "date_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date From"
+          },
+          "date_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date To"
+          },
+          "edited_documents": {
+            "title": "Edited Documents",
+            "type": "integer"
+          },
+          "edited_fields": {
+            "items": {
+              "$ref": "#/components/schemas/FieldCount"
+            },
+            "title": "Edited Fields",
+            "type": "array"
+          },
+          "review_seconds_count": {
+            "title": "Review Seconds Count",
+            "type": "integer"
+          },
+          "review_seconds_median": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Seconds Median"
+          },
+          "waiting_by_age": {
+            "items": {
+              "$ref": "#/components/schemas/AgeBucket"
+            },
+            "title": "Waiting By Age",
+            "type": "array"
+          }
+        },
+        "required": [
+          "date_from",
+          "date_to",
+          "by_category",
+          "by_vendor",
+          "waiting_by_age",
+          "approved_documents",
+          "edited_documents",
+          "edited_fields",
+          "checks_failing",
+          "review_seconds_median",
+          "review_seconds_count"
+        ],
+        "title": "InsightsOut",
+        "type": "object"
       },
       "LineField": {
         "enum": [
@@ -2147,6 +2343,166 @@
         "title": "Review",
         "type": "object"
       },
+      "SelfTestOut": {
+        "properties": {
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SelfTestRow"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "passed",
+          "results"
+        ],
+        "title": "SelfTestOut",
+        "type": "object"
+      },
+      "SelfTestRow": {
+        "properties": {
+          "expectation": {
+            "title": "Expectation",
+            "type": "string"
+          },
+          "fired": {
+            "items": {
+              "$ref": "#/components/schemas/CheckCode"
+            },
+            "title": "Fired",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "expectation",
+          "passed",
+          "fired"
+        ],
+        "title": "SelfTestRow",
+        "type": "object"
+      },
+      "SettingsOut": {
+        "properties": {
+          "allow_hosted": {
+            "title": "Allow Hosted",
+            "type": "boolean"
+          },
+          "defaults": {
+            "$ref": "#/components/schemas/EditableSettings"
+          },
+          "extract_mode": {
+            "title": "Extract Mode",
+            "type": "string"
+          },
+          "locales": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Locales",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusResponse"
+          },
+          "values": {
+            "$ref": "#/components/schemas/EditableSettings"
+          }
+        },
+        "required": [
+          "status",
+          "allow_hosted",
+          "extract_mode",
+          "values",
+          "defaults",
+          "locales"
+        ],
+        "title": "SettingsOut",
+        "type": "object"
+      },
+      "SettingsUpdate": {
+        "additionalProperties": false,
+        "description": "Only the fields that are sent change.",
+        "properties": {
+          "default_currency": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{3}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Currency"
+          },
+          "duplicate_date_window_days": {
+            "anyOf": [
+              {
+                "maximum": 60.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Date Window Days"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "maxLength": 10,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "low_confidence": {
+            "anyOf": [
+              {
+                "maximum": 99.0,
+                "minimum": 1.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Confidence"
+          },
+          "outlier_ratio": {
+            "anyOf": [
+              {
+                "maxLength": 8,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlier Ratio"
+          }
+        },
+        "title": "SettingsUpdate",
+        "type": "object"
+      },
       "SourceKind": {
         "enum": [
           "digital_pdf",
@@ -2155,6 +2511,45 @@
         ],
         "title": "SourceKind",
         "type": "string"
+      },
+      "SpendRow": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "entries": {
+            "title": "Entries",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "total_minor": {
+            "title": "Total Minor",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "currency",
+          "total_minor",
+          "entries"
+        ],
+        "title": "SpendRow",
+        "type": "object"
       },
       "Stage": {
         "enum": [
@@ -3520,6 +3915,175 @@
         "summary": "Download",
         "tags": [
           "exports"
+        ]
+      }
+    },
+    "/api/insights": {
+      "get": {
+        "operationId": "insights_api_insights_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InsightsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Insights",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/self-test": {
+      "post": {
+        "description": "Run the checks on invented sample documents. Reads nothing and changes nothing.",
+        "operationId": "self_test_api_self_test_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelfTestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Self Test",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/settings": {
+      "get": {
+        "operationId": "read_settings_api_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Read Settings",
+        "tags": [
+          "settings"
+        ]
+      },
+      "patch": {
+        "operationId": "update_settings_api_settings_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Update Settings",
+        "tags": [
+          "settings"
         ]
       }
     },
