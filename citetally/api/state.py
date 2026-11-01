@@ -56,7 +56,8 @@ def real_services(settings: Settings) -> Services:
 
 @dataclass
 class AppState:
-    settings: Settings
+    settings: Settings  # in force: the environment's, with saved changes laid over
+    base_settings: Settings  # the environment's alone
     database: Database
     worker: Worker
     autostart_worker: bool = True

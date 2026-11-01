@@ -245,6 +245,10 @@ def get_setting(conn: sqlite3.Connection, key: str) -> str | None:
     return None if row is None else str(row["value"])
 
 
+def delete_setting(conn: sqlite3.Connection, key: str) -> None:
+    conn.execute("DELETE FROM settings WHERE key = ?", (key,))
+
+
 def set_setting(conn: sqlite3.Connection, key: str, value: str) -> None:
     conn.execute(
         "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) "

@@ -1,9 +1,11 @@
 import { useRoute } from "./lib/router";
 import Inbox from "./pages/Inbox";
 import Exports from "./pages/Exports";
+import Insights from "./pages/Insights";
 import Placeholder from "./pages/Placeholder";
 import Vendors from "./pages/Vendors";
 import Review from "./pages/Review";
+import Settings from "./pages/Settings";
 import Shell from "./shell/Shell";
 import { ToastProvider } from "./ui/Toast";
 
@@ -19,9 +21,9 @@ function Screen() {
     case "exports":
       return <Exports />;
     case "insights":
-      return <Placeholder title="Insights" />;
+      return <Insights />;
     case "settings":
-      return <Placeholder title="Settings" />;
+      return <Settings />;
     default:
       return <Placeholder title="Not found" />;
   }

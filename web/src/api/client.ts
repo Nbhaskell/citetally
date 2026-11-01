@@ -26,6 +26,10 @@ export type ExportOut = Schemas["ExportOut"];
 export type ExportPreview = Schemas["ExportPreview"];
 export type ExportCreated = Schemas["ExportCreated"];
 export type ExportProfile = Schemas["ExportProfile"];
+export type InsightsOut = Schemas["InsightsOut"];
+export type SettingsOut = Schemas["SettingsOut"];
+export type SettingsUpdate = Schemas["SettingsUpdate"];
+export type SelfTestOut = Schemas["SelfTestOut"];
 
 /** Every refusal from the API has one shape: a code, a message for a person, a request id. */
 export class ApiError extends Error {
@@ -164,6 +168,16 @@ export const api = {
   createExport: (profile: ExportProfile, includeExported: boolean) =>
     post<ExportCreated>("/api/exports", { profile, include_exported: includeExported }),
   exports: (signal?: AbortSignal) => request<ExportOut[]>("/api/exports", { signal }),
+  insights: (from: string | null, to: string | null, signal?: AbortSignal) => {
+    const params = new URLSearchParams();
+    if (from) params.set("date_from", from);
+    if (to) params.set("date_to", to);
+    const text = params.toString();
+    return request<InsightsOut>(`/api/insights${text ? `?${text}` : ""}`, { signal });
+  },
+  settings: (signal?: AbortSignal) => request<SettingsOut>("/api/settings", { signal }),
+  updateSettings: (patch: SettingsUpdate) => send<SettingsOut>("PATCH", "/api/settings", patch),
+  selfTest: () => post<SelfTestOut>("/api/self-test"),
   approve: (id: number, overrides: Override[], reviewSeconds?: number) =>
     post<DecisionResponse>(`/api/documents/${id}/approve`, {
       overrides,

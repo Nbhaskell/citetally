@@ -326,6 +326,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Insights */
+        get: operations["insights_api_insights_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/self-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Self Test
+         * @description Run the checks on invented sample documents. Reads nothing and changes nothing.
+         */
+        post: operations["self_test_api_self_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Settings */
+        get: operations["read_settings_api_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Settings */
+        patch: operations["update_settings_api_settings_patch"];
+        trace?: never;
+    };
     "/api/status": {
         parameters: {
             query?: never;
@@ -419,6 +474,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AgeBucket */
+        AgeBucket: {
+            /**
+             * Bucket
+             * @enum {string}
+             */
+            bucket: "under_1_day" | "1_to_3_days" | "3_to_7_days" | "over_7_days";
+            /** Documents */
+            documents: number;
+        };
         /** AliasCreate */
         AliasCreate: {
             /** Alias */
@@ -455,6 +520,14 @@ export interface components {
          * @enum {string}
          */
         CheckCode: "REQUIRED_FIELDS" | "VALUE_IN_DOCUMENT" | "LINE_MATH" | "SUBTOTAL_MATCH" | "TAX_MATCH" | "TOTAL_MATCH" | "DUPLICATE_SUSPECT" | "UNKNOWN_VENDOR" | "AMOUNT_OUTLIER" | "DATE_SANITY" | "CURRENCY_CHECK" | "LOW_READ_QUALITY" | "AMBIGUOUS_FORMAT" | "SUSPICIOUS_TEXT";
+        /** CheckCount */
+        CheckCount: {
+            check_code: components["schemas"]["CheckCode"];
+            /** Documents */
+            documents: number;
+            /** Overridden */
+            overridden: number;
+        };
         /** CheckOut */
         CheckOut: {
             /** Blocking */
@@ -610,6 +683,19 @@ export interface components {
          * @enum {string}
          */
         EditField: "vendor_name" | "invoice_number" | "entry_date" | "due_date" | "po_number" | "currency" | "subtotal" | "tax_total" | "shipping" | "discount" | "total" | "description" | "quantity" | "unit_price" | "amount" | "tax_rate" | "category" | "entry_type";
+        /** EditableSettings */
+        EditableSettings: {
+            /** Default Currency */
+            default_currency: string;
+            /** Duplicate Date Window Days */
+            duplicate_date_window_days: number;
+            /** Locale */
+            locale: string;
+            /** Low Confidence */
+            low_confidence: number;
+            /** Outlier Ratio */
+            outlier_ratio: string;
+        };
         /** EntryLine */
         EntryLine: {
             /** Amount Minor */
@@ -859,6 +945,13 @@ export interface components {
             /** Provider */
             provider: string;
         };
+        /** FieldCount */
+        FieldCount: {
+            /** Edits */
+            edits: number;
+            /** Field */
+            field: string;
+        };
         /** FieldEdit */
         FieldEdit: {
             /** Created At */
@@ -882,6 +975,31 @@ export interface components {
          * @enum {string}
          */
         HeaderField: "vendor_name" | "invoice_number" | "entry_date" | "due_date" | "po_number" | "currency" | "subtotal" | "tax_total" | "shipping" | "discount" | "total";
+        /** InsightsOut */
+        InsightsOut: {
+            /** Approved Documents */
+            approved_documents: number;
+            /** By Category */
+            by_category: components["schemas"]["SpendRow"][];
+            /** By Vendor */
+            by_vendor: components["schemas"]["SpendRow"][];
+            /** Checks Failing */
+            checks_failing: components["schemas"]["CheckCount"][];
+            /** Date From */
+            date_from: string | null;
+            /** Date To */
+            date_to: string | null;
+            /** Edited Documents */
+            edited_documents: number;
+            /** Edited Fields */
+            edited_fields: components["schemas"]["FieldCount"][];
+            /** Review Seconds Count */
+            review_seconds_count: number;
+            /** Review Seconds Median */
+            review_seconds_median: number | null;
+            /** Waiting By Age */
+            waiting_by_age: components["schemas"]["AgeBucket"][];
+        };
         /**
          * LineField
          * @enum {string}
@@ -975,11 +1093,70 @@ export interface components {
             /** Reviewer */
             reviewer: string;
         };
+        /** SelfTestOut */
+        SelfTestOut: {
+            /** Passed */
+            passed: boolean;
+            /** Results */
+            results: components["schemas"]["SelfTestRow"][];
+        };
+        /** SelfTestRow */
+        SelfTestRow: {
+            /** Expectation */
+            expectation: string;
+            /** Fired */
+            fired: components["schemas"]["CheckCode"][];
+            /** Name */
+            name: string;
+            /** Passed */
+            passed: boolean;
+        };
+        /** SettingsOut */
+        SettingsOut: {
+            /** Allow Hosted */
+            allow_hosted: boolean;
+            defaults: components["schemas"]["EditableSettings"];
+            /** Extract Mode */
+            extract_mode: string;
+            /** Locales */
+            locales: string[];
+            status: components["schemas"]["StatusResponse"];
+            values: components["schemas"]["EditableSettings"];
+        };
+        /**
+         * SettingsUpdate
+         * @description Only the fields that are sent change.
+         */
+        SettingsUpdate: {
+            /** Default Currency */
+            default_currency?: string | null;
+            /** Duplicate Date Window Days */
+            duplicate_date_window_days?: number | null;
+            /** Locale */
+            locale?: string | null;
+            /** Low Confidence */
+            low_confidence?: number | null;
+            /** Outlier Ratio */
+            outlier_ratio?: string | null;
+        };
         /**
          * SourceKind
          * @enum {string}
          */
         SourceKind: "digital_pdf" | "scanned_pdf" | "image";
+        /** SpendRow */
+        SpendRow: {
+            /** Code */
+            code?: string | null;
+            /** Currency */
+            currency: string;
+            /** Entries */
+            entries: number;
+            /** Label */
+            label: string;
+            /** Total Minor */
+            total_minor: number;
+        };
         /**
          * Stage
          * @enum {string}
@@ -1730,6 +1907,129 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    insights_api_insights_get: {
+        parameters: {
+            query?: {
+                date_from?: string | null;
+                date_to?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightsOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    self_test_api_self_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelfTestOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_settings_api_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_settings_api_settings_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsOut"];
                 };
             };
             /** @description Default Response */

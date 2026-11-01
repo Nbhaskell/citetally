@@ -131,6 +131,7 @@ const SHORTCUTS: [string, string][] = [
   ["r", "Reject…"],
   ["e", "Edit the first field"],
   ["g then p", "Move to the page picture"],
+  ["g then i / v / e / n / s", "Go to Inbox, Vendors, Exports, Insights, Settings (from any screen)"],
   ["?", "Show this list"],
 ];
 

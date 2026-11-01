@@ -30,3 +30,30 @@ describe("shortDate", () => {
     expect(shortDate("<b>x</b>")).toBe("");
   });
 });
+
+import { duration, periodRange } from "./time";
+
+describe("periodRange", () => {
+  const today = new Date(2026, 2, 14); // 14 March 2026, local time
+
+  it("counts the periods back from today", () => {
+    expect(periodRange("month", today)).toEqual({ from: "2026-03-01", to: "2026-03-14" });
+    expect(periodRange("30d", today)).toEqual({ from: "2026-02-13", to: "2026-03-14" });
+    expect(periodRange("90d", today)).toEqual({ from: "2025-12-15", to: "2026-03-14" });
+    expect(periodRange("year", today)).toEqual({ from: "2026-01-01", to: "2026-03-14" });
+  });
+
+  it("means no limits for all time", () => {
+    expect(periodRange("all", today)).toEqual({ from: null, to: null });
+  });
+});
+
+describe("duration", () => {
+  it("is as short as honest words allow", () => {
+    expect(duration(45)).toBe("45 s");
+    expect(duration(60)).toBe("1 min");
+    expect(duration(90)).toBe("1 min 30 s");
+    expect(duration(600)).toBe("10 min");
+    expect(duration(725)).toBe("12 min");
+  });
+});

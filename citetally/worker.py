@@ -15,6 +15,7 @@ import threading
 from collections.abc import Callable
 
 from citetally import pipeline
+from citetally.config import Settings
 from citetally.pipeline import Services
 
 log = logging.getLogger("citetally.worker")
@@ -46,6 +47,11 @@ class Worker:
         if self._services is None:
             self._services = self._make_services()
         return self._services
+
+    def use_settings(self, settings: Settings) -> None:
+        """Later documents are checked with these settings (the services are built once)."""
+        if self._services is not None:
+            self._services.settings = settings
 
     def submit(self, document_id: int) -> None:
         self._queue.put(document_id)
