@@ -250,6 +250,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/entries/{entry_id}/vendor-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Vendor Suggestions
+         * @description Vendors whose names are close to the printed one, best first. Only a suggestion: the
+         *     reviewer chooses.
+         */
+        get: operations["vendor_suggestions_api_entries__entry_id__vendor_suggestions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/exports": {
         parameters: {
             query?: never;
@@ -1046,6 +1067,15 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** VendorSuggestion */
+        VendorSuggestion: {
+            /** Name */
+            name: string;
+            /** Score */
+            score: number;
+            /** Vendor Id */
+            vendor_id: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -1507,6 +1537,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vendor_suggestions_api_entries__entry_id__vendor_suggestions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorSuggestion"][];
                 };
             };
             /** @description Default Response */

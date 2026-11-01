@@ -2487,6 +2487,29 @@
         ],
         "title": "VendorOut",
         "type": "object"
+      },
+      "VendorSuggestion": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "vendor_id": {
+            "title": "Vendor Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "vendor_id",
+          "name",
+          "score"
+        ],
+        "title": "VendorSuggestion",
+        "type": "object"
       }
     }
   },
@@ -3241,6 +3264,53 @@
           }
         },
         "summary": "Set Vendor",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/api/entries/{entry_id}/vendor-suggestions": {
+      "get": {
+        "description": "Vendors whose names are close to the printed one, best first. Only a suggestion: the\nreviewer chooses.",
+        "operationId": "vendor_suggestions_api_entries__entry_id__vendor_suggestions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "title": "Entry Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorSuggestion"
+                  },
+                  "title": "Response Vendor Suggestions Api Entries  Entry Id  Vendor Suggestions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Vendor Suggestions",
         "tags": [
           "review"
         ]

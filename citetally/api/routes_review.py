@@ -27,11 +27,12 @@ from citetally.api.schemas import (
     RejectRequest,
     ReopenRequest,
     VendorChoice,
+    VendorSuggestion,
 )
 from citetally.checks import run_checks
 from citetally.config import Settings
 from citetally.db import transaction
-from citetally.matching import normalize_name
+from citetally.matching import match_vendor, normalize_name
 from citetally.models import (
     CategorySource,
     Decision,
@@ -194,6 +195,22 @@ def edit_entry(
         if changed:
             _recheck(conn, entry.document_id, state.settings, request_id)
     return document_detail(conn, repo.get_document(conn, entry.document_id))
+
+
+@router.get("/entries/{entry_id}/vendor-suggestions", response_model=list[VendorSuggestion])
+def vendor_suggestions(entry_id: int, conn: Conn) -> list[VendorSuggestion]:
+    """Vendors whose names are close to the printed one, best first. Only a suggestion: the
+    reviewer chooses."""
+    entry = repo.get_entry(conn, entry_id)
+    match = match_vendor(entry.vendor_name_raw, repo.list_vendors(conn), repo.list_aliases(conn))
+    return [
+        VendorSuggestion(
+            vendor_id=found.vendor_id,
+            name=repo.get_vendor(conn, found.vendor_id).name,
+            score=found.score,
+        )
+        for found in match.suggestions
+    ]
 
 
 @router.post("/entries/{entry_id}/vendor", response_model=DocumentDetail)

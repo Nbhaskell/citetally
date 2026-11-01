@@ -223,6 +223,12 @@ class EntryPatch(_In):
     lines: Annotated[list[LinePatch], Field(max_length=500)] | None = None
 
 
+class VendorSuggestion(BaseModel):
+    vendor_id: int
+    name: str
+    score: float  # 0 to 1: how alike the printed name and this vendor's names are
+
+
 class VendorChoice(_In):
     """Pick an existing vendor, or create one (from `name`, else the name printed on the page)."""
 

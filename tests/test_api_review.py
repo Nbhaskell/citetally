@@ -686,3 +686,18 @@ def test_the_background_thread_processes_uploads_on_its_own(settings: Settings) 
             status = client.get("/api/documents").json()["items"][0]["status"]
         assert status == "needs_review"
         assert client.get("/api/status").json()["queue_depth"] == 0
+
+
+def test_vendor_suggestions_offer_close_names_best_first_and_nothing_for_a_stranger(
+    client: TestClient, app: Any
+) -> None:
+    close = known_vendor(app, "Northfield Supply")
+    known_vendor(app, "Totally Different Plumbing")
+    document_id = new_document(client, app)
+    url = f"/api/entries/{entry_id(client, document_id)}/vendor-suggestions"
+    found = client.get(url).json()
+    assert [s["vendor_id"] for s in found] == [close]
+    assert found[0]["name"] == "Northfield Supply" and 0.75 <= found[0]["score"] < 1
+    stranger = new_document(client, app, vendor_name="Zephyr Lanterns")
+    assert client.get(f"/api/entries/{entry_id(client, stranger)}/vendor-suggestions").json() == []
+    assert client.get("/api/entries/9999/vendor-suggestions").status_code == 404
