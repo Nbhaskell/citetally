@@ -48,8 +48,10 @@ def now() -> str:
     return tick.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
-def connect(path: str | Path) -> sqlite3.Connection:
-    connection = sqlite3.connect(str(path), isolation_level=None)
+def connect(path: str | Path, *, any_thread: bool = False) -> sqlite3.Connection:
+    """Open the database. `any_thread` lets one connection be used from several threads, one at
+    a time (a web request may start on one worker thread and finish on another)."""
+    connection = sqlite3.connect(str(path), isolation_level=None, check_same_thread=not any_thread)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     connection.execute("PRAGMA busy_timeout = 5000")

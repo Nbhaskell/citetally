@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     )
 
     port: int = Field(default=8200, validation_alias="CITETALLY_PORT")
+    web_port: int = Field(default=5175, validation_alias="CITETALLY_WEB_PORT")
     db_path: Path = Field(default=Path("data/citetally.db"), validation_alias="CITETALLY_DB_PATH")
     data_dir: Path = Field(default=Path("data"), validation_alias="CITETALLY_DATA_DIR")
 

@@ -970,3 +970,197 @@ def list_audit_events(conn: sqlite3.Connection, document_id: int) -> list[AuditE
         "SELECT * FROM audit_events WHERE document_id = ? ORDER BY id",
         (document_id,),
     )
+
+
+# ---- support for the API ----------------------------------------------------------------------
+
+
+def get_category(conn: sqlite3.Connection, category_id: int) -> Category:
+    return _required(
+        _one(conn, Category, "SELECT * FROM categories WHERE id = ?", (category_id,)), "Category"
+    )
+
+
+def list_edits(conn: sqlite3.Connection, entry_id: int) -> list[FieldEdit]:
+    return _all(
+        conn, FieldEdit, "SELECT * FROM field_edits WHERE entry_id = ? ORDER BY id", (entry_id,)
+    )
+
+
+def list_reviews(conn: sqlite3.Connection, document_id: int) -> list[Review]:
+    return _all(
+        conn, Review, "SELECT * FROM reviews WHERE document_id = ? ORDER BY id", (document_id,)
+    )
+
+
+def list_vendor_aliases(conn: sqlite3.Connection, vendor_id: int) -> list[VendorAlias]:
+    return _all(
+        conn,
+        VendorAlias,
+        "SELECT * FROM vendor_aliases WHERE vendor_id = ? ORDER BY id",
+        (vendor_id,),
+    )
+
+
+_LIKE_ESCAPE = chr(92)  # a backslash, given to SQLite as the ESCAPE character
+
+
+def _like(text: str) -> str:
+    """A pattern that matches `text` anywhere, with its own % and _ taken literally."""
+    escaped = text.replace(_LIKE_ESCAPE, _LIKE_ESCAPE * 2)
+    escaped = escaped.replace("%", _LIKE_ESCAPE + "%").replace("_", _LIKE_ESCAPE + "_")
+    return f"%{escaped}%"
+
+
+def list_documents_page(
+    conn: sqlite3.Connection,
+    *,
+    status: S | None = None,
+    check: CheckCode | None = None,
+    q: str | None = None,
+    batch: str | None = None,
+    before_id: int | None = None,
+    limit: int = 50,
+) -> list[Document]:
+    """Newest first. `check` keeps documents where that check failed and was not overridden;
+    `q` looks in the file name, printed vendor, vendor and invoice number."""
+    where: list[str] = []
+    params: list[Any] = []
+    if status is not None:
+        where.append("d.status = ?")
+        params.append(status.value)
+    if batch is not None:
+        where.append("d.batch_label = ?")
+        params.append(batch)
+    if check is not None:
+        where.append(
+            "EXISTS (SELECT 1 FROM checks c WHERE c.document_id = d.id AND c.check_code = ? "
+            "AND c.passed = 0 AND c.overridden = 0)"
+        )
+        params.append(check.value)
+    if q:
+        where.append(
+            "(d.original_filename LIKE ? ESCAPE ? OR e.vendor_name_raw LIKE ? ESCAPE ? "
+            "OR e.invoice_number LIKE ? ESCAPE ? OR v.name LIKE ? ESCAPE ?)"
+        )
+        for _ in range(4):
+            params.extend([_like(q), _LIKE_ESCAPE])
+    if before_id is not None:
+        where.append("d.id < ?")
+        params.append(before_id)
+    clause = f" WHERE {' AND '.join(where)}" if where else ""
+    return _all(
+        conn,
+        Document,
+        "SELECT d.* FROM documents d LEFT JOIN entries e ON e.document_id = d.id "
+        f"LEFT JOIN vendors v ON v.id = e.vendor_id{clause} ORDER BY d.id DESC LIMIT ?",
+        (*params, limit),
+    )
+
+
+def get_line(conn: sqlite3.Connection, line_id: int) -> EntryLine:
+    return _required(
+        _one(conn, EntryLine, "SELECT * FROM entry_lines WHERE id = ?", (line_id,)), "Line"
+    )
+
+
+_LINE_COLUMNS = ("description", "quantity", "unit_price", "amount_minor", "tax_rate")
+
+
+def update_line(conn: sqlite3.Connection, line_id: int, **changes: Any) -> EntryLine:
+    bad = set(changes) - set(_LINE_COLUMNS)
+    if bad or not changes:
+        raise RepositoryError(
+            f"These line fields cannot be changed: {', '.join(sorted(bad)) or 'none given'}."
+        )
+    get_line(conn, line_id)
+    checked = {
+        column: (
+            _minor(column, value)
+            if column == "amount_minor"
+            else value
+            if column == "description"
+            else _decimal_text(column, value)
+        )
+        for column, value in changes.items()
+    }
+    assignments = ", ".join(f"{column} = ?" for column in checked)
+    conn.execute(f"UPDATE entry_lines SET {assignments} WHERE id = ?", (*checked.values(), line_id))
+    return get_line(conn, line_id)
+
+
+def add_line(conn: sqlite3.Connection, entry_id: int, line: LineInput) -> EntryLine:
+    get_entry(conn, entry_id)
+    last = conn.execute(
+        "SELECT COALESCE(MAX(line_number), 0) FROM entry_lines WHERE entry_id = ?", (entry_id,)
+    ).fetchone()[0]
+    cursor = conn.execute(
+        "INSERT INTO entry_lines (entry_id, line_number, description, quantity, unit_price, "
+        "amount_minor, tax_rate, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (
+            entry_id, last + 1, line.description,
+            _decimal_text("quantity", line.quantity),
+            _decimal_text("unit_price", line.unit_price),
+            _minor("amount_minor", line.amount_minor),
+            _decimal_text("tax_rate", line.tax_rate),
+            now(),
+        ),
+    )  # fmt: skip
+    return get_line(conn, int(cursor.lastrowid or 0))
+
+
+def delete_line(conn: sqlite3.Connection, line_id: int) -> None:
+    """Remove a line; its evidence goes with it and edits that mention it keep a null line."""
+    conn.execute("DELETE FROM entry_lines WHERE id = ?", (line_id,))
+
+
+def order_lines(conn: sqlite3.Connection, entry_id: int, line_ids: Sequence[int]) -> None:
+    """Number the entry's lines 1, 2, 3 in the order given (two passes: numbers are unique)."""
+    for position, line_id in enumerate(line_ids, start=1):
+        conn.execute(
+            "UPDATE entry_lines SET line_number = ? WHERE id = ? AND entry_id = ?",
+            (-position, line_id, entry_id),
+        )
+    conn.execute(
+        "UPDATE entry_lines SET line_number = -line_number WHERE entry_id = ? AND line_number < 0",
+        (entry_id,),
+    )
+
+
+def delete_evidence_for(
+    conn: sqlite3.Connection, entry_id: int, field: HeaderField | LineField, line_id: int | None
+) -> None:
+    """A person who changes a value becomes its source, so the model's evidence for it goes."""
+    conn.execute(
+        "DELETE FROM evidence WHERE entry_id = ? AND field = ? AND line_id IS ?",
+        (entry_id, field.value, line_id),
+    )
+
+
+def merge_vendors(conn: sqlite3.Connection, source_id: int, into_id: int) -> list[int]:
+    """Fold one vendor into another: aliases and entries move, the old name becomes an alias,
+    and the old vendor is switched off (entries and history still point at its row).
+    Returns the ids of the documents whose entries moved."""
+    if source_id == into_id:
+        raise RepositoryError("A vendor cannot be merged into itself.")
+    source, target = get_vendor(conn, source_id), get_vendor(conn, into_id)
+    if not target.is_active:
+        raise RepositoryError("The vendor to merge into is switched off.")
+    with transaction(conn):
+        moved = [
+            row["document_id"]
+            for row in conn.execute(
+                "SELECT document_id FROM entries WHERE vendor_id = ?", (source_id,)
+            )
+        ]
+        conn.execute(
+            "UPDATE vendor_aliases SET vendor_id = ? WHERE vendor_id = ?", (into_id, source_id)
+        )
+        conn.execute(
+            "INSERT OR IGNORE INTO vendor_aliases (vendor_id, alias, normalized_alias, created_at) "
+            "VALUES (?, ?, ?, ?)",
+            (into_id, source.name, source.normalized_name, now()),
+        )
+        conn.execute("UPDATE entries SET vendor_id = ? WHERE vendor_id = ?", (into_id, source_id))
+        conn.execute("UPDATE vendors SET is_active = 0 WHERE id = ?", (source_id,))
+    return moved
