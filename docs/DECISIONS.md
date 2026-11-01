@@ -391,3 +391,11 @@ Rerun with `qwen3-vl:8b-instruct` (6.2 GB, no thinking; a trivial prompt answere
 - The model takes 8.2 GB with a 16,384-token window and spills 8% to the CPU on the 10 GB card. It was fast enough here (a few seconds per page), but it is the limit on larger pages or longer documents.
 
 **Not decided here: whether to switch it on by default.** `CITETALLY_EXTRACT_MODE` stays `text_only`. The choice is between always using the vision model, using it only for pages that went through OCR (scans and photos, not text-layer PDFs), or only when OCR confidence is low. Routing by OCR confidence is Phase 5 or later work and needs a measurement on clean_pdf and scan_light first.
+
+### D-050. A printed line tax rate gets evidence (Phase 5, task 0; closes the gap in D-044)
+
+D-044 parsed a printed line tax rate but did not locate it, because `tax_rate` was not a valid evidence field. A rate the model invented would therefore not have been caught by `VALUE_IN_DOCUMENT`, and `TAX_MATCH` (which recomputes tax from the rate) would have trusted it. Fixed rather than accepted:
+- `tax_rate` is now a line field and an edit field (`LineField`, `EditField`, `docs/BACKEND_SCHEMA.md`), so a reviewer can also correct a rate and the edit is recorded.
+- Migration `0002_tax_rate_evidence.sql` rebuilds `evidence` and `field_edits` with the wider CHECK (SQLite cannot change one in place) and copies their rows. Nothing references either table. A test upgrades a database made by migration 1 and keeps its rows; the existing test that ties every CHECK to an enum still passes.
+- Grounding treats the rate as its own kind: the printed text is located on the page like any text (`7%` or `7` `%` as two words), and it is parsed with `parse_rate`, which still refuses a number with no `%` sign. There is no numeric fallback, so `9%` is never accepted because `0.09` appears elsewhere. `Grounding.line_tax_rates` is unchanged.
+- The extraction prompt is unchanged (`extract-v3`); only what happens to the rate afterwards changed. The dev-split numbers in D-047 do not move, because the golden records do not score rates.

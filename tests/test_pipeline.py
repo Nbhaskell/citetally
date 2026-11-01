@@ -427,6 +427,29 @@ def test_processing_a_finished_or_stopped_document_does_nothing_more(
     assert process(conn, failed, again).status is S.FAILED
 
 
+def test_a_printed_line_tax_rate_is_stored_and_gets_evidence_a_made_up_one_is_not_found(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    printed = pdf([*LINES, "Kibble tax 7%"])
+    reply = {**GOOD, "lines": [{**GOOD["lines"][0], "tax_rate": "7%"}]}
+    doc_id = new_document(conn, settings, printed)
+    process(conn, doc_id, services(settings, [reply]))
+    entry = repo.get_entry_for_document(conn, doc_id)
+    assert entry is not None
+    (line,) = repo.list_lines(conn, entry.id)
+    assert line.tax_rate == "0.07"
+    rate = next(e for e in repo.list_evidence(conn, entry.id) if e.field == LineField.TAX_RATE)
+    assert rate.found and rate.line_id == line.id
+
+    invented = {**GOOD, "lines": [{**GOOD["lines"][0], "tax_rate": "9%"}]}
+    other = new_document(conn, settings, pdf([*LINES, "Kibble tax 7%", "extra"]), "b.pdf")
+    process(conn, other, services(settings, [invented]))
+    second = repo.get_entry_for_document(conn, other)
+    assert second is not None
+    rate = next(e for e in repo.list_evidence(conn, second.id) if e.field == LineField.TAX_RATE)
+    assert not rate.found
+
+
 def test_running_ground_again_replaces_the_evidence_instead_of_doubling_it(
     conn: sqlite3.Connection, settings: Settings
 ) -> None:

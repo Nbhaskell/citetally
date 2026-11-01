@@ -176,10 +176,31 @@ def test_a_value_that_cannot_be_parsed_is_marked_and_may_still_be_found() -> Non
     assert value.found and not value.parsed and value.value is None and value.amount_minor is None
 
 
-def test_tax_rates_are_parsed_but_not_located() -> None:
-    result = ground(fields(lines=[{"tax_rate": "7%"}, {"tax_rate": "n/a"}, {}]), [page("7%")])
+def test_a_printed_tax_rate_is_parsed_and_located_like_any_other_value() -> None:
+    result = ground(fields(lines=[{"tax_rate": "7%"}, {"tax_rate": "n/a"}, {}]), [page("Tax 7%")])
     assert result.line_tax_rates == [Decimal("0.07"), None, None]
-    assert result.values == []  # no other fields were printed
+    rate = one(result, LineField.TAX_RATE, 0)
+    assert (rate.found, rate.parsed, rate.value) == (True, True, Decimal("0.07"))
+    assert rate.amount_minor is None
+
+
+def test_a_tax_rate_split_across_words_is_found() -> None:
+    rate = one(
+        ground(fields(lines=[{"tax_rate": "8.25%"}]), [page("Tax 8.25 %")]), LineField.TAX_RATE, 0
+    )
+    assert rate.found and rate.value == Decimal("0.0825")
+
+
+def test_a_tax_rate_the_page_does_not_print_is_reported_not_found() -> None:
+    rate = one(ground(fields(lines=[{"tax_rate": "9%"}]), [page("Tax 7%")]), LineField.TAX_RATE, 0)
+    assert not rate.found and rate.parsed and rate.value == Decimal("0.09")
+
+
+def test_a_tax_rate_that_cannot_be_read_is_marked_unparsed_but_may_be_found() -> None:
+    rate = one(
+        ground(fields(lines=[{"tax_rate": "n/a"}]), [page("Tax n/a")]), LineField.TAX_RATE, 0
+    )
+    assert rate.found and not rate.parsed and rate.value is None
 
 
 # --- which values get evidence -----------------------------------------------------------------
