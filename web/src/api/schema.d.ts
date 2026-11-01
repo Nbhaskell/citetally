@@ -361,6 +361,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/vendors/{vendor_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Vendor */
+        patch: operations["update_vendor_api_vendors__vendor_id__patch"];
+        trace?: never;
+    };
     "/api/vendors/{vendor_id}/aliases": {
         parameters: {
             query?: never;
@@ -1060,12 +1077,24 @@ export interface components {
             default_category?: string | null;
             /** Default Currency */
             default_currency: string | null;
+            /**
+             * Entry Count
+             * @default 0
+             */
+            entry_count: number;
             /** Id */
             id: number;
             /** Is Active */
             is_active: boolean;
+            /** Last Entry Date */
+            last_entry_date?: string | null;
             /** Name */
             name: string;
+            /**
+             * Waiting Count
+             * @default 0
+             */
+            waiting_count: number;
         };
         /** VendorSuggestion */
         VendorSuggestion: {
@@ -1075,6 +1104,14 @@ export interface components {
             score: number;
             /** Vendor Id */
             vendor_id: number;
+        };
+        /**
+         * VendorUpdate
+         * @description Only the fields that are sent change; `default_category: null` clears it.
+         */
+        VendorUpdate: {
+            /** Default Category */
+            default_category?: string | null;
         };
     };
     responses: never;
@@ -1781,6 +1818,41 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_vendor_api_vendors__vendor_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vendor_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

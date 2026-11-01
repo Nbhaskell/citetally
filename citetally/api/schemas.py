@@ -279,12 +279,21 @@ class VendorOut(_Out):
     default_currency: str | None
     is_active: bool
     aliases: list[str] = []
+    entry_count: int = 0
+    waiting_count: int = 0  # entries on documents still waiting for review
+    last_entry_date: str | None = None
 
 
 class VendorCreate(_In):
     name: Text
     default_category: Annotated[str, StringConstraints(max_length=40)] | None = None
     default_currency: Annotated[str, StringConstraints(pattern=r"^[A-Z]{3}$")] | None = None
+
+
+class VendorUpdate(_In):
+    """Only the fields that are sent change; `default_category: null` clears it."""
+
+    default_category: Annotated[str, StringConstraints(max_length=40)] | None = None
 
 
 class AliasCreate(_In):

@@ -476,3 +476,11 @@ Where the documents left a choice, the simplest option was taken:
 - **Keyboard** (when not typing and no dialog is open): `j` and `k` through the documents waiting, `a` approve when allowed, `r` reject, `e` first field, `g` then `p` the page picture, `?` the list.
 - **Phone width** has tabs Page, Details and Checks (a count of what is left on the last one) and the same sticky decision bar. "Show on page" switches to the page; "Fix value" to the details.
 - Reopening is offered for approved and rejected documents; an exported entry says it cannot be reopened and why; a duplicate says it is set aside.
+
+### D-056. Vendors and Exports screens (Phase 7, third slice)
+
+- **Vendor list numbers** come from one grouped query (`repository.vendor_usage`): entries on documents that are not rejected, how many of those still wait for review, and the latest entry date. A rejected document is not a purchase from the vendor, so it does not count.
+- **`PATCH /api/vendors/{id}`** changes only the default category (sending `null` clears it). A vendor's name is not editable: a different printed name is added as another name, and two vendors that are really one are merged, so history keeps meaning what it said.
+- **Merging says what will happen first**, using the numbers already on the list (entries that move, how many are waiting and will be checked again, which names carry over, that the old vendor is switched off) and says it cannot be undone from the screen. There is no merge preview endpoint because nothing in the preview needs the server to compute it.
+- **Exports ask once before writing the file**, because creating one marks the entries Exported and an exported entry cannot be reopened. The dialog says nothing is sent anywhere. Totals arrive as decimal strings per currency and are shown without becoming floats (`formatDecimal`). The first rows are shown exactly as they will be in the file, so a formula-neutralised cell is visible as such.
+- Already-exported entries are left out unless the box is ticked, and ticking it shows the duplicate-import warning in words.
