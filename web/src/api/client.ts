@@ -9,6 +9,19 @@ export type DocumentStatus = Schemas["DocumentStatus"];
 export type CheckCode = Schemas["CheckCode"];
 export type UploadResponse = Schemas["UploadResponse"];
 export type UploadResult = Schemas["UploadResult"];
+export type DocumentDetail = Schemas["DocumentDetail"];
+export type DocumentOut = Schemas["DocumentOut"];
+export type EntryOut = Schemas["EntryOut"];
+export type EntryPatch = Schemas["EntryPatch"];
+export type EntryLine = Schemas["EntryLine"];
+export type Evidence = Schemas["Evidence"];
+export type CheckOut = Schemas["CheckOut"];
+export type PageOut = Schemas["PageOut"];
+export type VendorOut = Schemas["VendorOut"];
+export type VendorSuggestion = Schemas["VendorSuggestion"];
+export type Override = Schemas["Override"];
+export type DecisionResponse = Schemas["DecisionResponse"];
+export type CategoryOut = Schemas["CategoryOut"];
 
 /** Every refusal from the API has one shape: a code, a message for a person, a request id. */
 export class ApiError extends Error {
@@ -98,6 +111,14 @@ export function queryString(query: DocumentQuery): string {
   return text ? `?${text}` : "";
 }
 
+function send<T>(method: "PATCH" | "PUT", path: string, body: unknown): Promise<T> {
+  return request<T>(path, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
 export const api = {
   status: (signal?: AbortSignal) => request<StatusResponse>("/api/status", { signal }),
   documents: (query: DocumentQuery, signal?: AbortSignal) =>
@@ -112,6 +133,35 @@ export const api = {
   loadDemo: () => post<UploadResponse>("/api/demo/load"),
   reprocess: (id: number, fromStage: "read" | "extract") =>
     post<Schemas["DocumentOut"]>(`/api/documents/${id}/reprocess`, { from_stage: fromStage }),
+  document: (id: number, signal?: AbortSignal) =>
+    request<DocumentDetail>(`/api/documents/${id}`, { signal }),
+  editEntry: (entryId: number, patch: EntryPatch) =>
+    send<DocumentDetail>("PATCH", `/api/entries/${entryId}`, patch),
+  chooseVendor: (entryId: number, choice: { vendor_id: number } | { create: true; name?: string }) =>
+    post<DocumentDetail>(
+      `/api/entries/${entryId}/vendor`,
+      "create" in choice ? choice : { vendor_id: choice.vendor_id, create: false },
+    ),
+  vendorSuggestions: (entryId: number, signal?: AbortSignal) =>
+    request<VendorSuggestion[]>(`/api/entries/${entryId}/vendor-suggestions`, { signal }),
+  vendors: (signal?: AbortSignal) => request<VendorOut[]>("/api/vendors", { signal }),
+  categories: (signal?: AbortSignal) => request<CategoryOut[]>("/api/categories", { signal }),
+  approve: (id: number, overrides: Override[], reviewSeconds?: number) =>
+    post<DecisionResponse>(`/api/documents/${id}/approve`, {
+      overrides,
+      review_seconds: reviewSeconds ?? null,
+    }),
+  reject: (id: number, reason: string, reviewSeconds?: number) =>
+    post<DecisionResponse>(`/api/documents/${id}/reject`, {
+      reason,
+      review_seconds: reviewSeconds ?? null,
+    }),
+  reopen: (id: number) => post<DecisionResponse>(`/api/documents/${id}/reopen`, {}),
+  markDuplicate: (id: number, duplicateOf: number, reviewSeconds?: number) =>
+    post<DecisionResponse>(`/api/documents/${id}/mark-duplicate`, {
+      duplicate_of: duplicateOf,
+      review_seconds: reviewSeconds ?? null,
+    }),
 };
 
 // Kept for the one caller that predates the typed client.

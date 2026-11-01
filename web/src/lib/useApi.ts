@@ -26,7 +26,7 @@ function asApiError(error: unknown): ApiError {
 export function useApi<T>(
   key: string,
   load: (signal: AbortSignal) => Promise<T>,
-  options: { pollMs?: number; poll?: boolean } = {},
+  options: { pollMs?: number; poll?: boolean; pollWhen?: (data: T) => boolean } = {},
 ): { load: Load<T>; reload: () => void; refreshing: boolean; last: T | undefined } {
   const [settled, setSettled] = useState<Settled<T> | null>(null);
   const [version, setVersion] = useState(0);
@@ -51,7 +51,9 @@ export function useApi<T>(
     return () => controller.abort();
   }, [key, version]);
 
-  const { poll, pollMs } = options;
+  const current = settled && "data" in settled.result ? settled.result.data : undefined;
+  const { pollMs, pollWhen } = options;
+  const poll = options.poll ?? (current !== undefined && pollWhen !== undefined && pollWhen(current));
   useEffect(() => {
     if (!poll || !pollMs) return;
     const timer = window.setInterval(() => setVersion((v) => v + 1), pollMs);
