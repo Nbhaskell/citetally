@@ -12,6 +12,7 @@ from citetally.models import (
     EntryLine,
     EntryType,
     Evidence,
+    ExportProfile,
     FieldEdit,
     Review,
     SourceKind,
@@ -286,3 +287,39 @@ class CategoryOut(_Out):
     code: str
     name: str
     is_active: bool
+
+
+# ---- exports -----------------------------------------------------------------------------------
+
+
+class ExportOut(_Out):
+    id: int
+    profile: ExportProfile
+    entry_count: int
+    row_count: int
+    file_name: str
+    file_sha256: str
+    created_at: str
+    download_url: str
+
+
+class ExportCreate(_In):
+    profile: ExportProfile
+    entry_ids: Annotated[list[int], Field(min_length=1, max_length=5000)] | None = None
+    include_exported: bool = False
+
+
+class ExportCreated(BaseModel):
+    export: ExportOut
+    skipped_already_exported: int
+
+
+class ExportPreview(BaseModel):
+    entry_count: int
+    row_count: int
+    totals: dict[str, str]
+    first_date: str | None
+    last_date: str | None
+    skipped_already_exported: int
+    columns: list[str]
+    sample: list[list[str]]
