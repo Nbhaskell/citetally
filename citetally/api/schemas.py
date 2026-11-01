@@ -92,6 +92,12 @@ class DocumentSummary(DocumentOut):
     currency: str | None = None
     total_minor: int | None = None
     unresolved_checks: list[CheckCode] = []
+    warnings: list[CheckCode] = []
+
+
+class DocumentCounts(BaseModel):
+    counts: dict[str, int]
+    batches: list[str] = []
 
 
 class DocumentList(_Out):

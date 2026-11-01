@@ -201,6 +201,30 @@
         "title": "DecisionResponse",
         "type": "object"
       },
+      "DocumentCounts": {
+        "properties": {
+          "batches": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Batches",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          }
+        },
+        "required": [
+          "counts"
+        ],
+        "title": "DocumentCounts",
+        "type": "object"
+      },
       "DocumentDetail": {
         "properties": {
           "checks": {
@@ -622,6 +646,14 @@
               }
             ],
             "title": "Vendor Name"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CheckCode"
+            },
+            "title": "Warnings",
+            "type": "array"
           }
         },
         "required": [
@@ -2499,9 +2531,41 @@
         ]
       }
     },
+    "/api/demo/load": {
+      "post": {
+        "description": "Queue the invented demo documents (made by `python -m tools.synthetic.demo`). Loading them\nagain finds the same files and reports them as duplicates.",
+        "operationId": "load_demo_api_demo_load_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Load Demo",
+        "tags": [
+          "documents"
+        ]
+      }
+    },
     "/api/documents": {
       "get": {
-        "description": "Newest first. `cursor` is the `next_cursor` of the previous page.",
+        "description": "Newest or oldest first. `cursor` is the `next_cursor` of the previous page.",
         "operationId": "list_documents_api_documents_get",
         "parameters": [
           {
@@ -2511,7 +2575,10 @@
             "schema": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/DocumentStatus"
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentStatus"
+                  },
+                  "type": "array"
                 },
                 {
                   "type": "null"
@@ -2598,6 +2665,20 @@
               "title": "Limit",
               "type": "integer"
             }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "newest",
+              "enum": [
+                "newest",
+                "oldest"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2663,6 +2744,38 @@
           }
         },
         "summary": "Upload",
+        "tags": [
+          "documents"
+        ]
+      }
+    },
+    "/api/documents/counts": {
+      "get": {
+        "description": "How many documents are in each status, for the Inbox chips.",
+        "operationId": "document_counts_api_documents_counts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentCounts"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        },
+        "summary": "Document Counts",
         "tags": [
           "documents"
         ]
