@@ -7,8 +7,9 @@ REQUIRED_FIELDS' job. Amounts in details are integer minor units.
 
 from __future__ import annotations
 
+import re
 import statistics
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
 from typing import Any
@@ -16,7 +17,7 @@ from typing import Any
 from citetally.checks.injection import scan
 from citetally.checks.inputs import CheckInput, Other, Outcome
 from citetally.dates import parse_date
-from citetally.models import CheckCode, HeaderField, LineField, required_fields
+from citetally.models import CheckCode, HeaderField, LineField, Page, required_fields
 from citetally.money import line_amount_minor, parse_decimal, parse_money, tax_minor
 
 MIN_WORDS = 15  # a document with fewer words than this was probably not read
@@ -129,6 +130,23 @@ def subtotal_match(i: CheckInput) -> Outcome:
     )
 
 
+_TAX_RATE = re.compile(r"tax[^\n%$\d]{0,24}\(?\s*(\d{1,2}(?:\.\d{1,3})?)\s*%", re.IGNORECASE)
+
+
+def printed_tax_rate(pages: Sequence[Page]) -> Decimal | None:
+    """The one rate the page prints beside the word "tax", as a fraction, or None.
+
+    Two different rates, or a percentage that is not beside "tax" ("save 3%"), give None: with
+    nothing certain to hold the tax against, no bound is applied.
+    """
+    rates = {
+        Decimal(found.group(1)) / 100
+        for page in pages
+        for found in _TAX_RATE.finditer(page.text or "")
+    }
+    return next(iter(rates)) if len(rates) == 1 else None
+
+
 def tax_match(i: CheckInput) -> Outcome:
     stated = i.entry.tax_total_minor
     if stated is None:
@@ -151,12 +169,20 @@ def tax_match(i: CheckInput) -> Outcome:
                 "taxed_lines": len(taxed),
             },
         )
-    # No rate is printed, so there is nothing to hold the tax against; report what it implies.
+    # No rate was read for a line. Report what the tax implies, and where the page prints one rate
+    # beside the word "tax", hold the tax against it: at most that rate on everything that could
+    # be taxed. Less is fine (some lines may be untaxed); more cannot be right.
     base = i.entry.subtotal_minor
     if base is None and i.lines:
         total, without_amount = _line_total(i)
         base = total if without_amount == 0 else None
     detail: dict[str, Any] = {"rate_printed": False, "stated": stated}
+    page_rate = printed_tax_rate(i.pages)
+    if page_rate is not None and base is not None:
+        most = tax_minor(base + (i.entry.shipping_minor or 0), page_rate)
+        detail.update({"printed_rate": str(page_rate), "most": most})
+        if stated > most + i.thresholds.tolerance_minor:
+            return Outcome(CheckCode.TAX_MATCH, False, detail)
     if base:
         implied = (Decimal(stated) / Decimal(base)).quantize(Decimal("0.0001"))
         detail["implied_rate"] = str(implied)
