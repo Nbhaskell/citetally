@@ -1,0 +1,1361 @@
+{
+  "schema": 1,
+  "note": "SYNTHETIC TEST DATA. A second invented business for the evaluation, with vendors, items, prices and names that appear nowhere in universe/facts.json. Every name, address, phone number and email is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range.",
+  "as_of": "2026-10-31",
+  "date_range": [
+    "2026-01-05",
+    "2026-10-28"
+  ],
+  "business": {
+    "name": "Juniper Ridge Bakery & Cafe",
+    "kind": "neighbourhood bakery and cafe",
+    "address": {
+      "street": "9 Cooper's Row",
+      "city": "Pinecrest",
+      "state": "WA",
+      "zip": "00388"
+    },
+    "phone": "555-0188",
+    "email": "juniperridge@example.com",
+    "default_currency": "USD",
+    "locale": "en-US",
+    "sales_tax_rate": "0.065"
+  },
+  "categories": [
+    "SUPPLIES",
+    "FOOD",
+    "CLEANING",
+    "UTILITIES",
+    "REPAIRS",
+    "INSURANCE",
+    "SOFTWARE",
+    "PROFESSIONAL",
+    "VEHICLE",
+    "MARKETING",
+    "OTHER"
+  ],
+  "vendors": [
+    {
+      "id": "V01",
+      "name": "Harvest Mill Flour Co.",
+      "aliases": [
+        "Harvest Mill Flour",
+        "HARVEST MILL FLOUR CO",
+        "Harvest Mill"
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "HM-",
+      "invoice_start": 71200,
+      "address": {
+        "street": "2 Granary Road",
+        "city": "Wheatley",
+        "state": "WA",
+        "zip": "00412"
+      },
+      "phone": "555-0121",
+      "email": "accounts@harvestmill.example.com",
+      "items": [
+        {
+          "description": "Bread flour, 50 lb sack",
+          "unit_price": "31.50",
+          "qty": [
+            2,
+            14
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Whole wheat flour, 50 lb sack",
+          "unit_price": "36.20",
+          "qty": [
+            1,
+            8
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Rye flour, 25 lb sack",
+          "unit_price": "22.75",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Cane sugar, 50 lb sack",
+          "unit_price": "42.10",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Instant yeast, 2 lb pouch",
+          "unit_price": "14.80",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Rolled oats, 25 lb sack",
+          "unit_price": "27.40",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Kosher salt, 25 lb box",
+          "unit_price": "12.60",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Delivery fuel surcharge",
+          "unit_price": "6.50",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V02",
+      "name": "Dunmore Dairy Collective",
+      "aliases": [
+        "Dunmore Dairy",
+        "DUNMORE DAIRY COLLECTIVE",
+        "Dunmore Dairy Coll."
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
+      "credit_notes": true,
+      "invoice_prefix": "DDC",
+      "invoice_start": 5530,
+      "address": {
+        "street": "81 Pasture Lane",
+        "city": "Dunmore",
+        "state": "WA",
+        "zip": "00457"
+      },
+      "phone": "555-0122",
+      "email": "billing@dunmoredairy.example.com",
+      "items": [
+        {
+          "description": "Butter, unsalted, 36 lb case",
+          "unit_price": "142.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Heavy cream, 1 gal",
+          "unit_price": "13.95",
+          "qty": [
+            2,
+            16
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Whole milk, 1 gal",
+          "unit_price": "4.85",
+          "qty": [
+            4,
+            30
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Eggs, large, 15 dozen case",
+          "unit_price": "58.40",
+          "qty": [
+            1,
+            8
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Cream cheese, 10 lb block",
+          "unit_price": "36.90",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Buttermilk, 1 gal",
+          "unit_price": "5.60",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V03",
+      "name": "Larkspur Packaging Supply",
+      "aliases": [
+        "Larkspur Packaging",
+        "LARKSPUR PACKAGING SUPPLY",
+        "Larkspur Pkg. Supply"
+      ],
+      "category": "SUPPLIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "LP-",
+      "invoice_start": 33100,
+      "address": {
+        "street": "17 Crate Street",
+        "city": "Larkspur",
+        "state": "WA",
+        "zip": "00266"
+      },
+      "phone": "555-0123",
+      "email": "orders@larkspurpkg.example.com",
+      "items": [
+        {
+          "description": "Pastry box, white, 9 x 9 x 4 in., case of 100",
+          "unit_price": "48.20",
+          "qty": [
+            1,
+            10
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Bread bag, paper window, case of 500",
+          "unit_price": "61.75",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Cake board, 10 in., pack of 50",
+          "unit_price": "19.40",
+          "qty": [
+            1,
+            8
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Kraft sticker label, roll of 1,000",
+          "unit_price": "14.25",
+          "qty": [
+            1,
+            8
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Coffee cup sleeve, case of 1,000",
+          "unit_price": "33.60",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Tissue paper, white, ream",
+          "unit_price": "9.90",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V04",
+      "name": "Cinder Oven Equipment Repair",
+      "aliases": [
+        "Cinder Oven Repair",
+        "CINDER OVEN EQUIPMENT REPAIR",
+        "Cinder Oven Equip."
+      ],
+      "category": "REPAIRS",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 15,
+      "credit_notes": false,
+      "invoice_prefix": "CO",
+      "invoice_start": 9040,
+      "address": {
+        "street": "3 Forge Court",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0124",
+      "email": "service@cinderoven.example.com",
+      "items": [
+        {
+          "description": "Service call, diagnostic",
+          "unit_price": "95.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Technician labor, hour",
+          "unit_price": "88.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Oven door gasket",
+          "unit_price": "64.50",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Thermostat probe, replacement",
+          "unit_price": "112.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Convection fan motor",
+          "unit_price": "287.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Travel charge",
+          "unit_price": "35.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V05",
+      "name": "Pinecrest Municipal Utilities",
+      "aliases": [
+        "Pinecrest Municipal",
+        "PINECREST MUNICIPAL UTILITIES",
+        "Pinecrest Muni. Util."
+      ],
+      "category": "UTILITIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 20,
+      "credit_notes": false,
+      "invoice_prefix": "UB-",
+      "invoice_start": 880100,
+      "address": {
+        "street": "1 Civic Plaza",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0125",
+      "email": "utilitybilling@pinecrest.example.com",
+      "items": [
+        {
+          "description": "Electric service, kWh",
+          "unit_price": "0.1180",
+          "qty": [
+            900,
+            3200
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Water service, CCF",
+          "unit_price": "5.4500",
+          "qty": [
+            6,
+            30
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sewer service, CCF",
+          "unit_price": "7.1000",
+          "qty": [
+            6,
+            30
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Stormwater fee, monthly",
+          "unit_price": "14.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Customer charge, monthly",
+          "unit_price": "18.50",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
+      ],
+      "tax_rate": "0.04"
+    },
+    {
+      "id": "V06",
+      "name": "Northgate Natural Gas",
+      "aliases": [
+        "Northgate Gas",
+        "NORTHGATE NATURAL GAS",
+        "Northgate Nat. Gas"
+      ],
+      "category": "UTILITIES",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 25,
+      "credit_notes": false,
+      "invoice_prefix": "NG",
+      "invoice_start": 4410,
+      "address": {
+        "street": "250 Pipeline Drive",
+        "city": "Northgate",
+        "state": "WA",
+        "zip": "00518"
+      },
+      "phone": "555-0126",
+      "email": "billing@northgategas.example.com",
+      "items": [
+        {
+          "description": "Natural gas, therm",
+          "unit_price": "1.3250",
+          "qty": [
+            120,
+            640
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Distribution charge, monthly",
+          "unit_price": "22.40",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Pipeline safety fee",
+          "unit_price": "3.75",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V07",
+      "name": "Tallow & Twine Linen Service",
+      "aliases": [
+        "Tallow and Twine Linen",
+        "TALLOW & TWINE LINEN SERVICE",
+        "Tallow & Twine"
+      ],
+      "category": "CLEANING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "TT-",
+      "invoice_start": 6020,
+      "address": {
+        "street": "44 Wash House Row",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0127",
+      "email": "accounts@tallowtwine.example.com",
+      "items": [
+        {
+          "description": "Apron rental, weekly",
+          "unit_price": "1.85",
+          "qty": [
+            12,
+            40
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Kitchen towel rental, weekly",
+          "unit_price": "0.42",
+          "qty": [
+            80,
+            240
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Table linen rental, weekly",
+          "unit_price": "3.10",
+          "qty": [
+            6,
+            30
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Stain treatment, per item",
+          "unit_price": "1.50",
+          "qty": [
+            2,
+            20
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Route service fee",
+          "unit_price": "12.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V08",
+      "name": "Brightside Janitorial Supply",
+      "aliases": [
+        "Brightside Janitorial",
+        "BRIGHTSIDE JANITORIAL SUPPLY",
+        "Brightside Jan. Supply"
+      ],
+      "category": "CLEANING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "BJ-",
+      "invoice_start": 12750,
+      "address": {
+        "street": "9 Mop Avenue",
+        "city": "Brightside",
+        "state": "WA",
+        "zip": "00230"
+      },
+      "phone": "555-0128",
+      "email": "sales@brightsidejan.example.com",
+      "items": [
+        {
+          "description": "Food-safe sanitizer, 5 gal pail",
+          "unit_price": "58.90",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Degreaser, 1 gal",
+          "unit_price": "17.25",
+          "qty": [
+            2,
+            8
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Nitrile gloves, case of 1,000",
+          "unit_price": "64.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Paper towel, case of 6 rolls",
+          "unit_price": "38.40",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Floor drain cleaner, quart",
+          "unit_price": "11.20",
+          "qty": [
+            2,
+            6
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Trash liner, case of 100",
+          "unit_price": "27.60",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V09",
+      "name": "Fernhill Mutual Insurance Co.",
+      "aliases": [
+        "Fernhill Mutual Insurance",
+        "FERNHILL MUTUAL INSURANCE CO",
+        "Fernhill Mutual"
+      ],
+      "category": "INSURANCE",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 15,
+      "credit_notes": false,
+      "invoice_prefix": "FM-",
+      "invoice_start": 705000,
+      "address": {
+        "street": "700 Policy Place",
+        "city": "Fernhill",
+        "state": "WA",
+        "zip": "00604"
+      },
+      "phone": "555-0129",
+      "email": "premiums@fernhillmutual.example.com",
+      "items": [
+        {
+          "description": "General liability premium, monthly",
+          "unit_price": "338.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Property premium, monthly",
+          "unit_price": "214.50",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Workers compensation premium, monthly",
+          "unit_price": "471.25",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Policy fee",
+          "unit_price": "15.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Equipment breakdown rider, monthly",
+          "unit_price": "42.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V10",
+      "name": "Corner Fuel & Mart",
+      "aliases": [
+        "Corner Fuel and Mart",
+        "CORNER FUEL & MART",
+        "Corner Fuel"
+      ],
+      "category": "VEHICLE",
+      "currency": "USD",
+      "entry_type": "receipt",
+      "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "",
+      "invoice_start": 0,
+      "address": {
+        "street": "1 Route 9",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00391"
+      },
+      "phone": "555-0130",
+      "email": "",
+      "items": [
+        {
+          "description": "Regular unleaded, gal",
+          "unit_price": "3.899",
+          "qty": [
+            8,
+            22
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Diesel, gal",
+          "unit_price": "4.249",
+          "qty": [
+            8,
+            20
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Windshield washer fluid",
+          "unit_price": "4.99",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Bottled water, 24 pack",
+          "unit_price": "5.49",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V11",
+      "name": "Ledger & Lantern, LLC",
+      "aliases": [
+        "Ledger and Lantern",
+        "LEDGER & LANTERN LLC",
+        "Ledger & Lantern Bookkeeping"
+      ],
+      "category": "PROFESSIONAL",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 15,
+      "credit_notes": false,
+      "invoice_prefix": "LL-",
+      "invoice_start": 1180,
+      "address": {
+        "street": "60 Counting House Way",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0131",
+      "email": "invoices@ledgerlantern.example.com",
+      "items": [
+        {
+          "description": "Monthly bookkeeping",
+          "unit_price": "425.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Payroll processing, per run",
+          "unit_price": "45.00",
+          "qty": [
+            2,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sales tax filing, quarterly",
+          "unit_price": "120.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Advisory time, hour",
+          "unit_price": "110.00",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V12",
+      "name": "Postfield Print & Signs",
+      "aliases": [
+        "Postfield Print and Signs",
+        "POSTFIELD PRINT & SIGNS",
+        "Postfield Printing"
+      ],
+      "category": "MARKETING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
+      "credit_notes": true,
+      "invoice_prefix": "PP-",
+      "invoice_start": 22400,
+      "address": {
+        "street": "5 Press Lane",
+        "city": "Postfield",
+        "state": "WA",
+        "zip": "00342"
+      },
+      "phone": "555-0132",
+      "email": "orders@postfieldprint.example.com",
+      "items": [
+        {
+          "description": "Menu cards, 8.5 x 11 in., 100 count",
+          "unit_price": "62.00",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Window decal, custom, sq ft",
+          "unit_price": "9.75",
+          "qty": [
+            4,
+            24
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Flyer, full colour, 500 count",
+          "unit_price": "88.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Banner, vinyl, 3 x 6 ft",
+          "unit_price": "74.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Design proof fee",
+          "unit_price": "25.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "V13",
+      "name": "Tillerman's Farm Stand",
+      "aliases": [
+        "Tillermans Farm Stand",
+        "TILLERMAN'S FARM STAND",
+        "Tillerman Farm"
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "receipt",
+      "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "",
+      "invoice_start": 0,
+      "address": {
+        "street": "Mile 14, Orchard Road",
+        "city": "Tillerman",
+        "state": "WA",
+        "zip": "00577"
+      },
+      "phone": "555-0133",
+      "email": "",
+      "items": [
+        {
+          "description": "Strawberries, flat",
+          "unit_price": "28.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Rhubarb, bunch",
+          "unit_price": "3.50",
+          "qty": [
+            4,
+            24
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Blueberries, 10 lb box",
+          "unit_price": "46.00",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Honey, quart",
+          "unit_price": "17.00",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Apples, 20 lb box",
+          "unit_price": "24.00",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V14",
+      "name": "Saffron Row Spice Traders, Inc.",
+      "aliases": [
+        "Saffron Row Spice Traders",
+        "SAFFRON ROW SPICE TRADERS INC",
+        "Saffron Row Spices"
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 30,
+      "credit_notes": true,
+      "invoice_prefix": "SR",
+      "invoice_start": 7790,
+      "address": {
+        "street": "12 Bazaar Street",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0134",
+      "email": "billing@saffronrow.example.com",
+      "items": [
+        {
+          "description": "Cinnamon, ground, 5 lb",
+          "unit_price": "38.50",
+          "qty": [
+            1,
+            6
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Vanilla extract, 1 gal",
+          "unit_price": "212.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Cardamom, whole, 1 lb",
+          "unit_price": "41.25",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Nutmeg, ground, 2 lb",
+          "unit_price": "29.80",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Poppy seed, 5 lb",
+          "unit_price": "26.40",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Sesame seed, 10 lb",
+          "unit_price": "31.10",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V15",
+      "name": "Dot Matrix Software Co.",
+      "aliases": [
+        "Dot Matrix Software",
+        "DOT MATRIX SOFTWARE CO",
+        "DotMatrix Software"
+      ],
+      "category": "SOFTWARE",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "DM-",
+      "invoice_start": 90010,
+      "address": {
+        "street": "2 Cloud Court",
+        "city": "Fernhill",
+        "state": "WA",
+        "zip": "00604"
+      },
+      "phone": "555-0135",
+      "email": "billing@dotmatrix.example.com",
+      "items": [
+        {
+          "description": "Point-of-sale subscription, monthly",
+          "unit_price": "79.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Online ordering add-on, monthly",
+          "unit_price": "29.00",
+          "qty": [
+            1,
+            1
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Card reader, additional",
+          "unit_price": "49.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Onboarding session, hour",
+          "unit_price": "75.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "V16",
+      "name": "Pinecrest Hardware & Lumber",
+      "aliases": [
+        "Pinecrest Hardware and Lumber",
+        "PINECREST HARDWARE & LUMBER",
+        "Pinecrest Hardware"
+      ],
+      "category": "SUPPLIES",
+      "currency": "USD",
+      "entry_type": "receipt",
+      "terms_days": 0,
+      "credit_notes": false,
+      "invoice_prefix": "",
+      "invoice_start": 0,
+      "address": {
+        "street": "88 Timber Road",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00391"
+      },
+      "phone": "555-0136",
+      "email": "",
+      "items": [
+        {
+          "description": "Shelf bracket, steel, 12 in.",
+          "unit_price": "6.49",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Wood screws, 1 lb box",
+          "unit_price": "8.95",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Work gloves, pair",
+          "unit_price": "11.50",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "LED shop bulb, 4 pack",
+          "unit_price": "12.75",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Caulk, silicone, tube",
+          "unit_price": "7.20",
+          "qty": [
+            1,
+            4
+          ],
+          "taxable": true
+        }
+      ]
+    }
+  ],
+  "unlisted_vendors": [
+    {
+      "id": "X01",
+      "name": "Wexford Restaurant Depot Direct",
+      "aliases": [
+        "Wexford Depot Direct",
+        "WEXFORD RESTAURANT DEPOT DIRECT"
+      ],
+      "category": "FOOD",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
+      "credit_notes": false,
+      "invoice_prefix": "WX-",
+      "invoice_start": 40300,
+      "address": {
+        "street": "700 Dock Road",
+        "city": "Wexford",
+        "state": "WA",
+        "zip": "00633"
+      },
+      "phone": "555-0191",
+      "email": "ar@wexforddepot.example.com",
+      "items": [
+        {
+          "description": "Parchment paper, case of 1,000 sheets",
+          "unit_price": "84.00",
+          "qty": [
+            1,
+            5
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Sheet pan, full size",
+          "unit_price": "21.50",
+          "qty": [
+            2,
+            12
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Bench scraper, steel",
+          "unit_price": "7.40",
+          "qty": [
+            2,
+            8
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Proofing basket, 10 in.",
+          "unit_price": "16.80",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": true
+        }
+      ]
+    },
+    {
+      "id": "X02",
+      "name": "Sundial Dry Cleaners",
+      "aliases": [
+        "Sundial Cleaners",
+        "SUNDIAL DRY CLEANERS"
+      ],
+      "category": "CLEANING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 10,
+      "credit_notes": false,
+      "invoice_prefix": "SD",
+      "invoice_start": 1500,
+      "address": {
+        "street": "30 Meridian Street",
+        "city": "Pinecrest",
+        "state": "WA",
+        "zip": "00389"
+      },
+      "phone": "555-0192",
+      "email": "shop@sundialclean.example.com",
+      "items": [
+        {
+          "description": "Uniform cleaning, each",
+          "unit_price": "6.50",
+          "qty": [
+            4,
+            20
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Tablecloth press, each",
+          "unit_price": "9.00",
+          "qty": [
+            2,
+            10
+          ],
+          "taxable": false
+        }
+      ]
+    },
+    {
+      "id": "X03",
+      "name": "Gable Street Signworks",
+      "aliases": [
+        "Gable Street Signs",
+        "GABLE STREET SIGNWORKS"
+      ],
+      "category": "MARKETING",
+      "currency": "USD",
+      "entry_type": "invoice",
+      "terms_days": 14,
+      "credit_notes": false,
+      "invoice_prefix": "GS-",
+      "invoice_start": 3100,
+      "address": {
+        "street": "14 Gable Street",
+        "city": "Gable",
+        "state": "WA",
+        "zip": "00655"
+      },
+      "phone": "555-0193",
+      "email": "jobs@gablesigns.example.com",
+      "items": [
+        {
+          "description": "Chalkboard sign, A-frame",
+          "unit_price": "168.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": true
+        },
+        {
+          "description": "Vinyl lettering, hour",
+          "unit_price": "65.00",
+          "qty": [
+            1,
+            3
+          ],
+          "taxable": false
+        },
+        {
+          "description": "Installation, per sign",
+          "unit_price": "40.00",
+          "qty": [
+            1,
+            2
+          ],
+          "taxable": false
+        }
+      ]
+    }
+  ]
+}

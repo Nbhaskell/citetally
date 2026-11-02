@@ -157,14 +157,16 @@ def _separate_accidental_duplicates(entries: list[Entry], rng: random.Random, fa
             return
 
 
-def plan_planting(entries: list[Entry], facts: Facts, seed: int) -> None:
-    """Give about a quarter of the documents exactly one known problem."""
+def plan_planting(
+    entries: list[Entry], facts: Facts, seed: int, share: float = PLANTED_SHARE
+) -> None:
+    """Give about a quarter of the documents (`share`) exactly one known problem."""
     rng = random.Random(f"{seed}:planting")
     medians = vendor_medians(entries)
     counts: dict[str, int] = {}
     for e in entries:
         counts[e.doc.vendor.id] = counts.get(e.doc.vendor.id, 0) + 1
-    target = round(PLANTED_SHARE * len(entries))
+    target = round(share * len(entries))
     kinds = [PLANTED_KINDS[i % len(PLANTED_KINDS)] for i in range(target)]
     taken: set[int] = set()
     stranger_serial = 100
