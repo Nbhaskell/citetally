@@ -523,7 +523,7 @@ Where the documents left a choice, the simplest option was taken:
 
 **Development split (140 documents).** Baseline twice (identical, as expected at temperature 0), forced OCR and text-and-image twice, thinking once. Written up in `eval/reports/eval_dev.md` and `eval_dev_analysis.md`. Two columns were added to the report after the first results were read (line F1 ignoring quantity, false alarms without `VALUE_IN_DOCUMENT`); they explain results and chose nothing, and the report says so.
 
-**No pipeline change was made in this phase.** The error analysis found fixable problems (Tesseract dropping single-digit quantities, shortened vendor names, a currency symbol the model adds that is not printed, tax checked only when a per-line rate was read, a PO number returned as the invoice number, image-read values that cannot be grounded). Fixing them before the held-out run would have meant re-running the development runs, and the user chose to run the held-out split on the system as it stands. They are the starting list for Phase 9 and for D-049 (image path), not work done.
+**No pipeline change was made in this phase.** The error analysis found fixable problems (Tesseract dropping single-digit quantities, shortened vendor names, a currency symbol the model adds that is not printed, tax checked only when a per-line rate was read, a PO number returned as the invoice number, image-read values that cannot be grounded). Fixing them before the held-out run would have meant re-running the development runs, and the user chose to run the held-out split on the system as it stands. They are the starting list for further work and for D-049 (image path), not work done.
 
 **Held-out split run once** (`--confirm-heldout-once`, baseline setting, commit f3353cf, clean tree, 70 documents from families T11 to T15). Reported as it came out in `eval/reports/eval_heldout.md` and `eval_heldout_analysis.md`: header fields exact 50.7% against 68.5% in development, with heavy scans at 10.7% and phone photos at 20.7%; clean PDFs 97.3%. Only the baseline was run on it, so the image path has no held-out number. The split is spent: a change made after reading it must be tested on a new sealed set.
 
@@ -542,3 +542,18 @@ The full write-up is `docs/HARDENING.md`. Three changes to the application came 
 **Audit tools are not project dependencies.** `pip-audit` and `pip-licenses` were run from a throwaway environment, so requirements files and the lock file did not change. The 13 moderate `npm audit` advisories (`minimatch`, in developer tools only) are left until those tools are upgraded; fixing them now needs a breaking upgrade of ESLint tooling for no gain to what is shipped.
 
 **Not done here.** Real disk fill, killing a real Ollama process, a full or locked SQLite file, and power loss during a write were not drilled (see `docs/HARDENING.md`). The weaknesses the evaluation found (D-059) are accuracy problems, not hardening ones, and are untouched.
+
+### D-061. Documentation and publishing preparation (Phase 10)
+
+**Screenshots and the walkthrough.** The screens were captured with the Edge browser already on the machine (`--headless --screenshot`) from a copy of the app running on a separate data folder, so no tool was added to the project and the working database was not touched. They show the invented demo documents processed by the real pipeline (Tesseract and `qwen3:8b`), including a badly misread phone photo and a file that could not be read, because the screens a visitor needs to see include the ones where the system is wrong. The "walkthrough GIF" is a slide show of six of those stills with captions (`tools/make_walkthrough.py`, Pillow only), and the README says it is not a screen recording. A real recording would need a screen-capture tool; that was not worth adding for a local demo.
+
+**Architecture diagram.** A Mermaid flowchart in the README, which GitHub renders, so it is text in the repository and cannot go stale as an image would.
+
+**README numbers cannot drift.** `tests/test_readme_numbers.py` checks that each evaluation figure quoted in the README is the one in `eval/reports/eval_dev.json` or `eval_heldout.json`. It is a substring check: it catches a changed number, not a wrongly described one.
+
+**What the README does not say.** It does not claim production use, customers or savings, and it says the software has not been tried on real documents. macOS and Linux are listed as untested.
+
+**Still open** (decisions the evidence does not make for the owner):
+- Whether the page-picture path (D-049) should become the default for scans and photos, and how its values should be grounded. The development numbers favour it; the held-out split has no run of it.
+- Whether editing a value by hand should drop the model's evidence for it (D-052). It does, today.
+- Whether to make the repository public. Nothing in Phase 10 changes its visibility; the pre-publish report is `docs/PRE_PUBLISH.md`.
