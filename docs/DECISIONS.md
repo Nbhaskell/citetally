@@ -528,3 +528,17 @@ Where the documents left a choice, the simplest option was taken:
 **Held-out split run once** (`--confirm-heldout-once`, baseline setting, commit f3353cf, clean tree, 70 documents from families T11 to T15). Reported as it came out in `eval/reports/eval_heldout.md` and `eval_heldout_analysis.md`: header fields exact 50.7% against 68.5% in development, with heavy scans at 10.7% and phone photos at 20.7%; clean PDFs 97.3%. Only the baseline was run on it, so the image path has no held-out number. The split is spent: a change made after reading it must be tested on a new sealed set.
 
 **README numbers** are copied from these reports and nowhere else; if a report is regenerated they must be checked against it.
+
+### D-060. Hardening (Phase 9): what was found and changed
+
+The full write-up is `docs/HARDENING.md`. Three changes to the application came out of it; everything else was checks and tests.
+
+- **A full or read-only disk no longer breaks an upload.** Saving the original file now fails as a plain refusal ("The file could not be saved. The disk may be full or not writable."), one result per file, with no document row for a file that was not kept. A failure while writing the page pictures fails that document at `ingest`, removes the half-written page folder and keeps the original; uploading the same file again starts fresh because a failed document is not treated as a duplicate. Before, the first was an HTTP 500 for the whole request and the second left an exception and a half-made document.
+- **The server runs without an access log** (`uvicorn.run(..., access_log=False)`). The inbox search sends what the person typed in the address, and the access log prints it, which could be a vendor name or an invoice number (rule 6). Audit events carry the request id instead. The alternative, a log filter that cuts the query string, was not chosen because a filter has to be right for every route forever and turning the log off cannot be wrong.
+- **Reviewer search text stays in the address.** Moving it to a POST body would also keep it out of browser history and any proxy, but this is a local single-user app and the change touches the API and the generated types; it is left as it is, with the access log off.
+
+**Fuzzing.** `tools/fuzz_ingest.py` (500 cases, seed 1) found no crash, hang or stray file; its counts are in `eval/reports/fuzz_ingest.json`. It uses the invented demo files as seeds. Its first run counted a refused file as an escaped exception, which was a mistake in the tool, not in the application.
+
+**Audit tools are not project dependencies.** `pip-audit` and `pip-licenses` were run from a throwaway environment, so requirements files and the lock file did not change. The 13 moderate `npm audit` advisories (`minimatch`, in developer tools only) are left until those tools are upgraded; fixing them now needs a breaking upgrade of ESLint tooling for no gain to what is shipped.
+
+**Not done here.** Real disk fill, killing a real Ollama process, a full or locked SQLite file, and power loss during a write were not drilled (see `docs/HARDENING.md`). The weaknesses the evaluation found (D-059) are accuracy problems, not hardening ones, and are untouched.

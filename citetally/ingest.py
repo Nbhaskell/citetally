@@ -18,6 +18,7 @@ import io
 import multiprocessing
 import os
 import re
+import shutil
 import sqlite3
 import tempfile
 import time
@@ -50,7 +51,7 @@ _FORMAT_FOR = {"image/png": "PNG", "image/jpeg": "JPEG"}
 
 
 class IngestRejected(Exception):
-    """The file is not a supported type. No document is created."""
+    """The file was refused and nothing was kept: an unsupported type, or no room to save it."""
 
 
 class WorkerTimeout(Exception):
@@ -117,6 +118,9 @@ def sanitize_filename(name: str) -> str:
         keep = _MAX_NAME - len(extension) - (1 if extension else 0)
         kept = (kept[:keep] if not extension else stem[:keep] + "." + extension)[:_MAX_NAME]
     return kept
+
+
+_NO_ROOM = "The file could not be saved. The disk may be full or not writable."
 
 
 def store_original(folder: Path, data: bytes) -> Path:
@@ -332,7 +336,10 @@ def ingest(
         return IngestResult(repo.get_document(conn, row.id), [], "failed")
 
     data_dir = settings.data_dir
-    store_original(data_dir / "files", data)
+    try:
+        store_original(data_dir / "files", data)
+    except OSError:  # a full or read-only disk: say so plainly, and make no row for a file not kept
+        raise IngestRejected(_NO_ROOM) from None
     row = new_row(f"files/{sha}")
 
     try:
@@ -350,10 +357,15 @@ def ingest(
 
     pages: list[PageImage] = []
     page_folder = data_dir / "pages" / str(row.id)
-    page_folder.mkdir(parents=True, exist_ok=True)
-    for number, (png, width, height) in enumerate(report["pages"], start=1):
-        (page_folder / f"{number}.png").write_bytes(png)
-        pages.append(PageImage(number, f"pages/{row.id}/{number}.png", width, height))
+    try:
+        page_folder.mkdir(parents=True, exist_ok=True)
+        for number, (png, width, height) in enumerate(report["pages"], start=1):
+            (page_folder / f"{number}.png").write_bytes(png)
+            pages.append(PageImage(number, f"pages/{row.id}/{number}.png", width, height))
+    except OSError:  # the upload is kept; uploading it again later starts fresh
+        shutil.rmtree(page_folder, ignore_errors=True)
+        _fail(conn, row.id, _NO_ROOM, request_id)
+        return IngestResult(repo.get_document(conn, row.id), [], "failed")
     document = repo.set_document_info(
         conn, row.id, source_kind=report["source_kind"], page_count=len(pages)
     )
