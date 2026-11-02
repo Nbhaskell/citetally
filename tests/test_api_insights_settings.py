@@ -175,7 +175,7 @@ def test_ages_work_without_a_time_zone_on_the_stamp() -> None:
 def test_settings_show_what_is_read_only_and_what_can_be_changed(client: TestClient) -> None:
     body = client.get("/api/settings").json()
     assert body["status"]["model_provider"] == "ollama" and body["status"]["hosted_mode"] is False
-    assert body["allow_hosted"] is False and body["extract_mode"] == "text_only"
+    assert body["allow_hosted"] is False and body["extract_mode"] == "auto"
     assert (
         body["values"]
         == body["defaults"]

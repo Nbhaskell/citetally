@@ -24,6 +24,7 @@ __all__ = [
     "ModelUnavailable",
     "OllamaProvider",
     "build_provider",
+    "build_vision_provider",
 ]
 
 
@@ -40,3 +41,16 @@ def build_provider(settings: Settings) -> ModelProvider:
             context_tokens=VISION_CONTEXT_TOKENS,
         )
     return OllamaProvider(settings.ollama_url, settings.text_model, think=settings.enable_thinking)
+
+
+def build_vision_provider(settings: Settings) -> ModelProvider | None:
+    """The model that also sees page pictures when the mode is `auto`, or None when none is set."""
+    if settings.extract_mode != "auto" or not settings.vision_model:
+        return None
+    return OllamaProvider(
+        settings.ollama_url,
+        settings.vision_model,
+        supports_vision=True,
+        think=settings.enable_thinking,
+        context_tokens=VISION_CONTEXT_TOKENS,
+    )

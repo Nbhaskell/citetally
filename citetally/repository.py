@@ -415,12 +415,16 @@ def add_page(
     ocr_engine: str | None = None,
     mean_confidence: float | None = None,
     skew_degrees: float | None = None,
+    alt_words: Sequence[Sequence[Mapping[str, Any]]] = (),
 ) -> Page:
     checked = [Word.model_validate(dict(word)).model_dump() for word in words]
+    checked_alt = [
+        [Word.model_validate(dict(w)).model_dump() for w in reading] for reading in alt_words
+    ]
     cursor = conn.execute(
         "INSERT INTO pages (document_id, page_number, image_path, width_px, height_px, "
         "read_method, ocr_engine, mean_confidence, skew_degrees, word_count, words, text, "
-        "created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "created_at, alt_words) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (
             document_id,
             page_number,
@@ -435,6 +439,7 @@ def add_page(
             json.dumps(checked),
             text,
             now(),
+            json.dumps(checked_alt),
         ),
     )
     return _required(

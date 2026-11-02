@@ -631,3 +631,51 @@ def test_invoice_number_keys_ignore_case_and_punctuation() -> None:
 def test_unreadable_dates_and_decimals_are_none(text: str | None) -> None:
     assert r._iso(text) is None
     assert r._decimal(text) is None
+
+
+# --- Stage 2: the rate printed beside the tax total bounds the tax ----------------------------
+
+
+def rate_page(text: str) -> Page:
+    return make_page(text=text)
+
+
+def test_a_tax_above_what_the_printed_rate_allows_fails_and_shows_the_most_it_could_be() -> None:
+    page = rate_page("Subtotal $100.00\nSales tax (7%) $9.00\nTotal $109.00")
+    outcome = run(
+        CheckCode.TAX_MATCH,
+        entry=make_entry(subtotal_minor=10000, tax_total_minor=900),
+        pages=[page],
+    )
+    assert not outcome.passed
+    assert (outcome.detail["printed_rate"], outcome.detail["most"], outcome.detail["stated"]) == (
+        "0.07", 700, 900,
+    )  # fmt: skip
+
+
+def test_a_tax_at_or_below_the_bound_passes_because_some_lines_may_be_untaxed() -> None:
+    page = rate_page("Sales tax (7%)")
+    for tax in (700, 350, 0):
+        entry = make_entry(subtotal_minor=10000, tax_total_minor=tax)
+        assert run(CheckCode.TAX_MATCH, entry=entry, pages=[page]).passed
+
+
+def test_shipping_counts_towards_what_may_be_taxed() -> None:
+    page = rate_page("Tax 7%")
+    entry = make_entry(subtotal_minor=10000, shipping_minor=1000, tax_total_minor=770)
+    assert run(CheckCode.TAX_MATCH, entry=entry, pages=[page]).passed
+
+
+def test_two_different_printed_rates_or_a_rate_not_beside_tax_set_no_bound() -> None:
+    entry = make_entry(subtotal_minor=10000, tax_total_minor=900)
+    two = rate_page("Tax (7%) and state tax 5%")
+    assert run(CheckCode.TAX_MATCH, entry=entry, pages=[two]).passed
+    unrelated = rate_page("Save 3% when you pay early\nTax $9.00")
+    assert run(CheckCode.TAX_MATCH, entry=entry, pages=[unrelated]).passed
+
+
+def test_a_per_line_rate_still_decides_and_the_page_rate_is_not_used() -> None:
+    page = rate_page("Tax (7%)")
+    entry = make_entry(subtotal_minor=10000, tax_total_minor=1000)
+    outcome = run(CheckCode.TAX_MATCH, entry=entry, lines=[taxed(10000, "0.10")], pages=[page])
+    assert outcome.passed and outcome.detail["rate_printed"] is True

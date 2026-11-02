@@ -13,7 +13,8 @@ import json
 import sqlite3
 import time
 from collections.abc import Callable
-from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -26,7 +27,7 @@ from citetally import repository as repo
 from citetally.checks import run_checks
 from citetally.config import Settings
 from citetally.db import transaction
-from citetally.extract import ExtractionInvalid, ExtractionTooLong, extract
+from citetally.extract import Extracted, ExtractionInvalid, ExtractionTooLong, extract
 from citetally.grounding import GroundedValue, ground
 from citetally.matching import match_document
 from citetally.models import (
@@ -46,13 +47,19 @@ from citetally.models import DocumentStatus as S
 from citetally.providers.base import ModelError, ModelProvider, ModelTimeout, ModelUnavailable
 from citetally.reading import layout, text_layer
 from citetally.reading.masking import mask_words
+from citetally.reading.merge import merge_readings
 from citetally.reading.ocr import (
     OcrEngine,
     OcrError,
     OcrTimeout,
     OcrUnavailable,
 )
-from citetally.reading.preprocess import preprocess, preprocess_words
+from citetally.reading.preprocess import (
+    WORKING_MAX_LONG_SIDE,
+    WORKING_MIN_LONG_SIDE,
+    preprocess,
+    preprocess_words,
+)
 
 IMAGE_MAX_SIDE_PX = 1568  # a larger picture only costs the model more tokens
 READ_BASE_TIMEOUT_S = 60.0
@@ -94,11 +101,33 @@ class Services:
     provider: ModelProvider
     run_checks: Callable[[sqlite3.Connection, int], None] | None = None  # tests inject one
     extract_mode: ExtractMode = ExtractMode.TEXT_ONLY
+    # With `automatic_pictures` a page read by OCR is sent with its picture to `vision_provider`,
+    # and anything else, or any failure of the vision model, goes to `provider` as text.
+    vision_provider: ModelProvider | None = None
+    automatic_pictures: bool = False
     isolate: bool = True  # read pages in a separate process; tests turn this off
     today: date | None = None  # the date the checks use; None means the real date
 
 
 # ---- reading (the part that runs in a worker) --------------------------------------------------
+
+
+# What each extra reading of a scanned page changes: Tesseract's page mode (None is the engine's
+# own) and the size the page is enlarged to. The first reading of a plan is the usual one. In a
+# trial on development scans each added reading found more of the page's true values: one reading
+# 70%, two 80%, three 83% (`tools/ocr_lab.py`).
+_READING_PLANS: dict[int, tuple[tuple[int | None, int, int], ...]] = {
+    1: ((None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),),
+    2: (
+        (None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (6, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+    ),
+    3: (
+        (None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (6, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (None, 2600, 3400),
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -108,6 +137,7 @@ class _ReadJob:
     is_pdf: bool
     min_chars: int
     ocr: OcrEngine
+    readings: int = 1
 
 
 @dataclass(frozen=True)
@@ -120,12 +150,38 @@ class _PageRead:
     skew_degrees: float | None
     width: int
     height: int
+    alt_words: list[list[Word]] = field(default_factory=list)  # each separate reading
 
 
 @dataclass(frozen=True)
 class _ReadResult:
     pages: list[_PageRead]
     error: str | None = None
+
+
+def _mean_confidence(words: list[Word]) -> float:
+    scores = [w.c for w in words if w.c is not None]
+    return sum(scores) / len(scores) if scores else 0.0
+
+
+def _extra_readings(
+    ocr: OcrEngine, image: Image.Image, plan: tuple[tuple[int | None, int, int], ...]
+) -> list[list[Word]]:
+    """The other readings of a scanned page, made at the same time. A reading that fails is left
+    out: the first reading decides whether the page could be read at all."""
+
+    def one(step: tuple[int | None, int, int]) -> list[Word] | None:
+        mode, low, high = step
+        try:
+            prepared = preprocess(image, min_long=low, max_long=high)
+            return preprocess_words(prepared, ocr.read_page(prepared.image, psm=mode).words)
+        except OcrError:
+            return None
+
+    if not plan:
+        return []
+    with ThreadPoolExecutor(max_workers=len(plan)) as pool:
+        return [words for words in pool.map(one, plan) if words is not None]
 
 
 def _read_job(job: _ReadJob) -> _ReadResult:
@@ -155,24 +211,32 @@ def _read_job(job: _ReadJob) -> _ReadResult:
             )
             continue
         try:
-            pre = preprocess(image)
-            page = job.ocr.read_page(pre.image)
+            plan = _READING_PLANS[job.readings]
+            first_pre = preprocess(image, min_long=plan[0][1], max_long=plan[0][2])
+            first = job.ocr.read_page(first_pre.image, psm=plan[0][0])
+            extras = _extra_readings(job.ocr, image, plan[1:])
         except OcrUnavailable:
             return _ReadResult([], "ocr_unavailable")
         except OcrTimeout:
             return _ReadResult([], "ocr_timeout")
         except OcrError:
             return _ReadResult([], "ocr_failed")
-        masked = mask_words(preprocess_words(pre, page.words))
+        readings = [mask_words(preprocess_words(first_pre, first.words))]
+        readings += [mask_words(words) for words in extras]
+        # The reading the others are added to is the one Tesseract was most sure of.
+        readings.sort(key=_mean_confidence, reverse=True)
+        merged = merge_readings(readings[0], readings[1:]) if len(readings) > 1 else readings[0]
+        best = _mean_confidence(readings[0])
         pages.append(
             _PageRead(
-                masked,
-                layout.build_text(masked),
+                merged,
+                layout.build_text(merged),
                 ReadMethod.OCR,
                 job.ocr.name,
-                page.mean_confidence,
-                pre.skew_degrees,
+                best if len(readings) > 1 and readings[0] else first.mean_confidence,
+                first_pre.skew_degrees,
                 *image.size,
+                alt_words=readings if len(readings) > 1 else [],
             )
         )
     return _ReadResult(pages)
@@ -189,6 +253,7 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
         is_pdf=document.mime_type == "application/pdf",
         min_chars=services.settings.text_layer_min_chars,
         ocr=services.ocr,
+        readings=services.settings.ocr_readings,
     )
     try:
         if services.isolate:
@@ -221,6 +286,7 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
                 ocr_engine=page.engine,
                 mean_confidence=page.mean_confidence,
                 skew_degrees=page.skew_degrees,
+                alt_words=[[w.model_dump() for w in reading] for reading in page.alt_words],
             )
         repo.change_status(conn, document.id, S.READ)
 
@@ -254,28 +320,47 @@ def _page_image(path: Path) -> bytes:
 def extract_stage(
     conn: sqlite3.Connection, document: Document, services: Services
 ) -> dict[str, Any]:
-    texts = [page.text for page in repo.list_pages(conn, document.id)]
+    pages = repo.list_pages(conn, document.id)
+    texts = [page.text for page in pages]
     if not any(text.strip() for text in texts):
         raise StageFailure(_MESSAGES["no_text"])
     codes = [c.code for c in repo.list_categories(conn) if c.is_active]
+    provider = services.provider
     mode = services.extract_mode
+    picture_first = (
+        services.automatic_pictures
+        and services.vision_provider is not None
+        and any(page.read_method is ReadMethod.OCR for page in pages)
+    )
+    if picture_first:
+        assert services.vision_provider is not None
+        provider, mode = services.vision_provider, ExtractMode.TEXT_AND_IMAGE
     images = None
     if mode is ExtractMode.TEXT_AND_IMAGE:
-        if not services.provider.supports_vision:
+        if not provider.supports_vision:
             raise StageFailure(_MESSAGES["no_images"])
-        images = [
-            _page_image(services.settings.data_dir / page.image_path)
-            for page in repo.list_pages(conn, document.id)
-        ]
-    try:
-        result = extract(
-            services.provider,
+        images = [_page_image(services.settings.data_dir / page.image_path) for page in pages]
+
+    def ask(chosen: ModelProvider, with_images: list[bytes] | None) -> Extracted:
+        return extract(
+            chosen,
             texts,
             codes,
             max_tokens=services.settings.extract_max_tokens,
             timeout_s=services.settings.extract_timeout_s,
-            images=images,
+            images=with_images,
         )
+
+    try:
+        try:
+            result = ask(provider, images)
+        except (ModelUnavailable, ModelTimeout, ModelError, ExtractionInvalid, ExtractionTooLong):
+            if not picture_first:
+                raise
+            # The picture could not be used (the vision model is missing, slow or confused): read
+            # the page's text instead, and record that this is what was done.
+            provider, mode = services.provider, ExtractMode.TEXT_ONLY
+            result = ask(provider, None)
     except ModelUnavailable:
         raise StageFailure(_MESSAGES["model_down"]) from None
     except ModelTimeout:
@@ -293,8 +378,8 @@ def extract_stage(
         extraction = repo.add_extraction(
             conn,
             document.id,
-            provider=Provider(services.provider.name),
-            model=services.provider.model,
+            provider=Provider(provider.name),
+            model=provider.model,
             extract_mode=mode,
             prompt_version=result.prompt_version,
             fields=fields.model_dump(mode="json"),
@@ -320,7 +405,7 @@ def extract_stage(
         repo.change_status(conn, document.id, S.EXTRACTED)
 
     payload: dict[str, Any] = {
-        "provider": services.provider.name,
+        "provider": provider.name,
         "extract_mode": mode.value,
         "attempt": result.attempts,
     }
@@ -356,10 +441,15 @@ def ground_stage(
         [Word.model_validate(w) for w in json.loads(page.words)]
         for page in repo.list_pages(conn, document.id)
     ]
+    alternatives = [
+        [[Word.model_validate(w) for w in reading] for reading in json.loads(page.alt_words)]
+        for page in repo.list_pages(conn, document.id)
+    ]
     settings = services.settings
     result = ground(
         fields,
         pages,
+        alternatives=alternatives,
         locale=settings.locale,
         currency=settings.default_currency,
         threshold=settings.grounding_match_threshold,
@@ -402,6 +492,8 @@ def ground_stage(
         )
 
     with transaction(conn):
+        if HeaderField.INVOICE_NUMBER in result.rejected:
+            repo.update_entry(conn, entry.id, invoice_number=None)
         repo.update_entry(
             conn,
             entry.id,
@@ -441,7 +533,10 @@ def match_stage(conn: sqlite3.Connection, document: Document, services: Services
     if entry is None or extraction is None:
         raise StageFailure(_MESSAGES["match"])
     fields = ExtractedFields.model_validate_json(extraction.fields)
-    matched = match_document(conn, entry.vendor_name_raw, fields.category_suggestion)
+    page_text = " ".join(page.text for page in repo.list_pages(conn, document.id) if page.text)
+    matched = match_document(
+        conn, entry.vendor_name_raw, fields.category_suggestion, page_text=page_text
+    )
     vendor = matched.vendor
     repo.update_entry(
         conn,

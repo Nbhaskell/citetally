@@ -61,7 +61,20 @@ def load_runs(split: str) -> dict[str, dict[int, dict[str, Any]]]:
             continue
         meta = json.loads(meta_file.read_text(encoding="utf-8"))
         records = read_records(meta_file.parent / "records.jsonl")
-        found[meta["variant"]][_pass_of(name)] = {"meta": meta, "records": records, "name": name}
+        if (
+            "replay_of" in meta
+        ):  # a replay re-runs only the later stages, so it is not reported here
+            continue
+        known = found[meta["variant"]].get(_pass_of(name))
+        if known is None:
+            found[meta["variant"]][_pass_of(name)] = {
+                "meta": meta,
+                "records": records,
+                "name": name,
+            }
+        else:  # runs of one setting that each took some conditions are one run of the split
+            known["records"].update(records)
+            known["name"] += "+" + name
     return found
 
 
@@ -147,10 +160,10 @@ def compare_variants(
 # ---- the report --------------------------------------------------------------------------------
 
 
-def build(split: str) -> dict[str, Any]:
+def build(split: str, only: Sequence[str] | None = None) -> dict[str, Any]:
     items_list = load_suite(split, unseal=split in {"heldout", "sealed"}).items
     items = {i.id: i for i in items_list}
-    runs = load_runs(split)
+    runs = {v: r for v, r in load_runs(split).items() if only is None or v in only}
     if "baseline" not in runs:
         raise SystemExit(f"There is no baseline run of the {split} split under eval/runs/.")
     scored: dict[str, dict[int, list[dict[str, Any]]]] = {
@@ -277,6 +290,7 @@ def render(report: dict[str, Any]) -> str:
                 str(s["documents"]),
                 str(s["failed"]),
                 pct(s["header_field_exact"]),
+                pct(s["header_value_exact"]),
                 pct(s["money_exact"]),
                 "–" if s["line_f1"] is None else f"{s['line_f1'] * 100:.1f}%",
                 pct(s["planted_recall"]),
@@ -286,14 +300,17 @@ def render(report: dict[str, Any]) -> str:
         )
     out.append(
         table(
-            ["Condition", "Docs", "Failed", "Header fields exact", "Money exact", "Line F1",
+            ["Condition", "Docs", "Failed", "Header fields exact", "Header value exact*", "Money exact", "Line F1",
              "Planted caught", "Clean docs with a blocking false alarm", "Values found on page"],
             rows,
         )
     )  # fmt: skip
     out.append("")
     out.append(
-        "Percentages show the 95% Wilson interval in brackets. A document that failed counts every printed field as wrong."
+        "Percentages show the 95% Wilson interval in brackets. A document that failed counts every printed field as wrong. "
+        "*Header value exact counts a field right when it means what the page says: the same amount (a missing "
+        '"$" is not a different amount), the same date, otherwise the same words. It was added after the first '
+        "results were read; the target is judged on the stricter exact-text column."
     )
 
     if first.get("by_level"):
@@ -303,6 +320,7 @@ def render(report: dict[str, Any]) -> str:
                 key.replace("_", " ").replace("/", ", "),
                 str(s["documents"]),
                 pct(s["header_field_exact"], interval=False),
+                pct(s["header_value_exact"], interval=False),
                 "–" if s["line_f1"] is None else f"{s['line_f1'] * 100:.1f}%",
                 pct(s["planted_recall"], interval=False),
                 pct(s["clean_any_blocking_alarm"], interval=False),
@@ -311,7 +329,7 @@ def render(report: dict[str, Any]) -> str:
         ]
         out.append(
             table(
-                ["Condition, level", "Docs", "Header fields exact", "Line F1", "Planted caught",
+                ["Condition, level", "Docs", "Header fields exact", "Header value exact*", "Line F1", "Planted caught",
                  "Clean false alarm"],
                 rows,
             )
@@ -441,6 +459,7 @@ def render(report: dict[str, Any]) -> str:
                     variant,
                     str(s_["documents"]),
                     pct(s_["header_field_exact"], interval=False),
+                    pct(s_["header_value_exact"], interval=False),
                     "–" if s_["line_f1"] is None else f"{s_['line_f1'] * 100:.1f}%",
                     "–" if core is None else f"{core * 100:.1f}%",
                     pct(s_["planted_recall"], interval=False),
@@ -453,7 +472,7 @@ def render(report: dict[str, Any]) -> str:
             )
     out.append(
         table(
-            ["Condition", "Setting", "Docs", "Header fields exact", "Line F1",
+            ["Condition", "Setting", "Docs", "Header fields exact", "Header value exact*", "Line F1",
              "Line F1, quantity ignored*", "Planted caught", "Clean false alarm",
              "Clean false alarm without VALUE_IN_DOCUMENT*", "Median s per page"],
             rows,
@@ -487,12 +506,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("--name", default="dev", help="report name: eval_<name>.md and .json")
     parser.add_argument("--split", choices=list(SPLITS), default="tuned")
+    parser.add_argument("--variants", nargs="+", help="report only these settings (and baseline)")
     args = parser.parse_args(argv)
     lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK}.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2
-    report = build(args.split)
+    report = build(args.split, None if not args.variants else ["baseline", *args.variants])
     REPORTS.mkdir(parents=True, exist_ok=True)
     (REPORTS / f"eval_{args.name}.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     text = render(report)

@@ -52,7 +52,7 @@ class OcrPage:
 class OcrEngine(Protocol):
     name: str
 
-    def read_page(self, image: Image.Image) -> OcrPage: ...
+    def read_page(self, image: Image.Image, *, psm: int | None = None) -> OcrPage: ...
 
 
 def find_tesseract(configured: str = "") -> str | None:
@@ -163,17 +163,18 @@ class TesseractOcr:
         ]  # fmt: skip
         return self._runner(args, self._timeout_s)
 
-    def read_page(self, image: Image.Image) -> OcrPage:
+    def read_page(self, image: Image.Image, *, psm: int | None = None) -> OcrPage:
         exe = find_tesseract(self._command)
         if exe is None:
             raise OcrUnavailable("Tesseract was not found.")
+        mode = psm or self._psm
         with tempfile.TemporaryDirectory(prefix="citetally-ocr-") as folder:
             path = Path(folder) / "page.png"
             image.convert("L").save(path, "PNG")
             try:
-                output = self._read(exe, path, self._psm)
+                output = self._read(exe, path, mode)
             except OcrTimeout:
-                if self._fallback_psm is None:
+                if self._fallback_psm is None or self._fallback_psm == mode:
                     raise
                 output = self._read(exe, path, self._fallback_psm)
         return parse_tsv(output, image.width, image.height)
@@ -188,9 +189,11 @@ class FakeOcr:
         self._pages = list(pages)
         self._error = error
         self.calls: list[tuple[int, int]] = []
+        self.modes: list[int | None] = []
 
-    def read_page(self, image: Image.Image) -> OcrPage:
+    def read_page(self, image: Image.Image, *, psm: int | None = None) -> OcrPage:
         self.calls.append(image.size)
+        self.modes.append(psm)
         if self._error is not None:
             raise self._error
         if not self._pages:

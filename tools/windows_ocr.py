@@ -61,7 +61,7 @@ async def _recognise(png: bytes, width: int, height: int) -> list[Word]:
 class WindowsOcrEngine:
     name = "windows"
 
-    def read_page(self, image: Image.Image) -> OcrPage:
+    def read_page(self, image: Image.Image, *, psm: int | None = None) -> OcrPage:
         try:
             from winrt.windows.media.ocr import OcrEngine as WindowsOcr
         except ImportError as error:

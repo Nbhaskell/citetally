@@ -48,12 +48,30 @@ SEALED_LOCK = RUNS / "SEALED_RUN.lock"
 # What each variant changes, as environment names. Anything not listed is the default.
 VARIANTS: dict[str, dict[str, str]] = {
     "baseline": {},
+    # The product as it is after Stage 2: its own defaults, nothing overridden.
+    "final": {},
     # Digital PDFs normally use their text layer. This ignores it, so the page is read by OCR.
     "forced_ocr": {"CITETALLY_TEXT_LAYER_MIN_CHARS": "1000000000"},
     # The model also sees the page picture.
     "text_and_image": {
         "CITETALLY_EXTRACT_MODE": "text_and_image",
         "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
+    },
+    # Each scanned page is read in two or three ways (Tesseract page modes and sizes).
+    "ocr2": {"CITETALLY_OCR_READINGS": "2"},
+    "ocr3": {"CITETALLY_OCR_READINGS": "3"},
+    # Scanned pages are read three ways and sent with their picture to the vision model; a PDF
+    # with a text layer goes to the text model as text.
+    "auto3": {
+        "CITETALLY_EXTRACT_MODE": "auto",
+        "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
+        "CITETALLY_OCR_READINGS": "3",
+    },
+    # The model also sees the page picture, and each scanned page is read three ways.
+    "image_ocr3": {
+        "CITETALLY_EXTRACT_MODE": "text_and_image",
+        "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
+        "CITETALLY_OCR_READINGS": "3",
     },
     # The model thinks before it answers; the token budget and timeout are raised with it.
     "thinking": {

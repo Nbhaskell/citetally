@@ -260,6 +260,7 @@ class Page(_Row):
     words: str  # JSON text, see Word
     text: str
     created_at: str
+    alt_words: str = "[]"  # JSON text: each separate reading of the page, a list of word lists
 
 
 class Extraction(_Row):

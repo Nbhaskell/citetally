@@ -36,7 +36,7 @@ def test_defaults_match_the_docs() -> None:
     assert s.port == 8200
     assert s.model_provider == "ollama"
     assert s.text_model == "qwen3:8b"
-    assert s.vision_model == ""
+    assert s.vision_model == "qwen3-vl:8b-instruct"
     assert s.ocr_engine == "tesseract"
     assert s.allow_hosted is False
     assert s.synthetic_data is True
@@ -114,13 +114,25 @@ def test_bad_grounding_and_locale_settings_are_refused(
         make()
 
 
-def test_image_mode_is_off_by_default_and_needs_a_vision_model(
+def test_scans_get_their_picture_by_default_and_always_picture_mode_needs_a_vision_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.delenv("CITETALLY_EXTRACT_MODE", raising=False)
-    assert make().extract_mode == "text_only"
-    monkeypatch.setenv("CITETALLY_EXTRACT_MODE", "text_and_image")
+    monkeypatch.delenv("CITETALLY_VISION_MODEL", raising=False)
+    assert make().extract_mode == "auto" and make().vision_model == "qwen3-vl:8b-instruct"
+    assert make().ocr_readings == 3
     with pytest.raises(ValidationError):
-        make()
-    monkeypatch.setenv("CITETALLY_VISION_MODEL", "qwen3-vl:8b")
+        Settings(_env_file=None, CITETALLY_EXTRACT_MODE="text_and_image", CITETALLY_VISION_MODEL="")
+    monkeypatch.setenv("CITETALLY_EXTRACT_MODE", "text_and_image")
     assert make().extract_mode == "text_and_image"
+
+
+def test_auto_mode_needs_no_vision_model_but_text_and_image_still_does() -> None:
+    assert (
+        Settings(
+            _env_file=None, CITETALLY_EXTRACT_MODE="auto", CITETALLY_VISION_MODEL=""
+        ).extract_mode
+        == "auto"
+    )
+    with pytest.raises(ValueError, match="VISION_MODEL"):
+        Settings(_env_file=None, CITETALLY_EXTRACT_MODE="text_and_image", CITETALLY_VISION_MODEL="")

@@ -95,11 +95,16 @@ def _img(array: Gray) -> Image.Image:
     return Image.fromarray(np.clip(array, 0, 255).astype(np.uint8), "L")
 
 
-def to_working_size(image: Image.Image) -> Image.Image:
-    """Grey, and enlarged or reduced so the long side is 1800 to 2400 pixels."""
+def to_working_size(
+    image: Image.Image,
+    min_long: int = WORKING_MIN_LONG_SIDE,
+    max_long: int = WORKING_MAX_LONG_SIDE,
+) -> Image.Image:
+    """Grey, and enlarged or reduced so the long side is 1800 to 2400 pixels (or `min_long` to
+    `max_long`)."""
     gray = image.convert("L")
     long_side = max(gray.size)
-    target = min(max(long_side, WORKING_MIN_LONG_SIDE), WORKING_MAX_LONG_SIDE)
+    target = min(max(long_side, min_long), max_long)
     if target == long_side:
         return gray
     scale = target / long_side
@@ -253,9 +258,11 @@ def preprocess(
     *,
     whiten_outside: bool = True,
     median_size: int = 3,
+    min_long: int = WORKING_MIN_LONG_SIDE,
+    max_long: int = WORKING_MAX_LONG_SIDE,
 ) -> Preprocessed:
     """Clean one page image for OCR and record how it was turned."""
-    working = to_working_size(image)
+    working = to_working_size(image, min_long, max_long)
     mask = page_mask(working)
     gray = remove_speckle(flatten_light(working), median_size)
     if whiten_outside:  # a desk around a photographed page becomes plain white
