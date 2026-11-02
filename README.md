@@ -10,7 +10,23 @@ Citetally is an AI review desk for invoices and receipts at a small business. PD
 
 ## Status
 
-Phases 0 to 2 are built: repository and tooling, the invented business with 210 labelled invoices, receipts and credit notes in four conditions (the golden set), and the data layer (SQL migrations, enums and models kept in step with the schema document, the document state machine, repositories and audit events). The API answers `/api/status` and a React page shows it. Nothing reads a document yet. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
+Phases 0 to 8 are built: repository and tooling, the invented business with 210 labelled documents in four conditions (the golden set), the data layer, document reading (text layer and OCR), model extraction with grounding, the checks, the review and approval screens, vendors, exports, insights and settings, and the evaluation. Phases 9 (hardening) and 10 (documentation) remain, so this is still a work in progress. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
+
+## How well it reads (measured on invented documents)
+
+The numbers come from `eval/reports/`; the development split (140 documents) was used to look at errors, and the held-out split (70 documents, different layouts) was run once, after the development numbers were written down, on the system as shipped (OCR text and the local `qwen3:8b` model). Percent of printed header fields read exactly:
+
+| Documents | Development | Held-out (one run) |
+|---|---|---|
+| Clean PDFs | 94.7% | 97.3% |
+| Light scans | 92.1% | 80.0% |
+| Heavy scans | 41.8% | 10.7% |
+| Phone photos | 42.7% | 20.7% |
+| All | 68.5% | 50.7% |
+
+In short: clean PDFs work, and degraded scans and photos do not on the default path. On the development split, also giving the model the page image brought heavy scans to 94.1% and phone photos to 97.8%, but values read from the picture cannot yet be found in the OCR text, so every such document is flagged for review; that setting was not run on the held-out split. Across all conditions the checks blocked 67.3% (development) and 80.7% (held-out) of clean documents, so a person still reviews most of them. Everything is a person's decision to approve; nothing is paid, posted or sent.
+
+These are invented documents with generated noise, 17 or 18 per condition on the held-out split, one machine and one model. Read the intervals and limits in `eval/reports/eval_dev.md`, `eval/reports/eval_heldout.md` and the two analysis files beside them before quoting a number.
 
 ## Run it (Windows, PowerShell)
 

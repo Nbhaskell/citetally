@@ -518,3 +518,13 @@ Where the documents left a choice, the simplest option was taken:
 **Settings made so the ablations are fair.** `CITETALLY_ENABLE_THINKING`, `CITETALLY_EXTRACT_MAX_TOKENS` and `CITETALLY_EXTRACT_TIMEOUT_S` are real settings now (defaults unchanged: off, 2,000, 180). A model that thinks first spends tokens and time before answering, so the thinking variant raises the budget and the timeout; otherwise the comparison would measure the budget, not the thinking. Forced OCR sets the text-layer threshold above any page, so digital PDFs are read as scans. The OCR engines were compared in Phase 3 (`eval/reports/ocr_bakeoff.json`) and are not run again here.
 
 **Determinism.** The model runs at temperature 0 with seed 0, and OCR is deterministic, so repeated passes are expected to be nearly identical. The pass-to-pass spread therefore measures machine noise, not the spread between documents, which the bootstrap covers. The report says so.
+
+### D-059. Phase 8 results: what was frozen, what was run once, and what was left unfixed
+
+**Development split (140 documents).** Baseline twice (identical, as expected at temperature 0), forced OCR and text-and-image twice, thinking once. Written up in `eval/reports/eval_dev.md` and `eval_dev_analysis.md`. Two columns were added to the report after the first results were read (line F1 ignoring quantity, false alarms without `VALUE_IN_DOCUMENT`); they explain results and chose nothing, and the report says so.
+
+**No pipeline change was made in this phase.** The error analysis found fixable problems (Tesseract dropping single-digit quantities, shortened vendor names, a currency symbol the model adds that is not printed, tax checked only when a per-line rate was read, a PO number returned as the invoice number, image-read values that cannot be grounded). Fixing them before the held-out run would have meant re-running the development runs, and the user chose to run the held-out split on the system as it stands. They are the starting list for Phase 9 and for D-049 (image path), not work done.
+
+**Held-out split run once** (`--confirm-heldout-once`, baseline setting, commit f3353cf, clean tree, 70 documents from families T11 to T15). Reported as it came out in `eval/reports/eval_heldout.md` and `eval_heldout_analysis.md`: header fields exact 50.7% against 68.5% in development, with heavy scans at 10.7% and phone photos at 20.7%; clean PDFs 97.3%. Only the baseline was run on it, so the image path has no held-out number. The split is spent: a change made after reading it must be tested on a new sealed set.
+
+**README numbers** are copied from these reports and nowhere else; if a report is regenerated they must be checked against it.
