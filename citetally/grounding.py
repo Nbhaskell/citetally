@@ -45,6 +45,7 @@ _KINDS: dict[HeaderField | LineField, Kind] = {
     LineField.TAX_RATE: "rate",
 }
 _HEADER_ORDER = tuple(HeaderField)
+_MONEY_FIELDS = frozenset(f for f, kind in _KINDS.items() if kind == "money")
 _LINE_ORDER = (
     LineField.DESCRIPTION,
     LineField.QUANTITY,
@@ -98,6 +99,7 @@ class _Page:
     words: Sequence[Word]
     order: list[int]  # word positions in reading order, empty words left out
     norm: dict[int, str]
+    loose: dict[int, str]  # the same words without brackets and sentence punctuation around them
     claimed: set[int]
 
 
@@ -118,14 +120,25 @@ def _normalise(text: str) -> str:
     return "".join(unicodedata.normalize("NFKC", text).casefold().split())
 
 
+_OPENING = "([{<\"'"
+_CLOSING = ")]}>\"'.,;:"
+
+
+def _trim(text: str) -> str:
+    """A word without the brackets and sentence punctuation around it: "(6.5%)" is "6.5%"."""
+    trimmed = text.lstrip(_OPENING).rstrip(_CLOSING)
+    return trimmed or text
+
+
 def _digits(text: str) -> str:
     return "".join(ch for ch in text if ch.isdigit())
 
 
 def _make_page(number: int, words: Sequence[Word]) -> _Page:
     norm = {i: _normalise(clean_token(word.t)) for i, word in enumerate(words)}
+    loose = {i: _trim(text) for i, text in norm.items()}
     order = [i for line in line_indices(words) for i in line if norm[i]]
-    return _Page(number, words, order, norm, set())
+    return _Page(number, words, order, norm, loose, set())
 
 
 def _distance(a: str, b: str, limit: int) -> int:
@@ -145,8 +158,12 @@ def _distance(a: str, b: str, limit: int) -> int:
     return previous[-1]
 
 
-def _search(page: _Page, target: str, threshold: float) -> _Candidate | None:
-    """The best run of words that spells `target`, or None."""
+def _search(
+    page: _Page, target: str, threshold: float, *, loose: bool = False
+) -> _Candidate | None:
+    """The best run of words that spells `target`, or None. `loose` ignores the brackets and
+    sentence punctuation around each page word."""
+    words = page.loose if loose else page.norm
     size = len(target)
     limit = int((1 - threshold) * size) if size <= _MAX_FUZZY_CHARS else 0
     target_digits = _digits(target)
@@ -155,7 +172,7 @@ def _search(page: _Page, target: str, threshold: float) -> _Candidate | None:
     for start in range(len(order)):
         joined = ""
         for end in range(start, len(order)):
-            joined += page.norm[order[end]]
+            joined += words[order[end]]
             if len(joined) > size + limit:
                 break
             if len(joined) < size - limit:
@@ -278,7 +295,77 @@ def ground(
         parse_rate(rate, locale) if (rate := _text(line.tax_rate)) is not None else None
         for line in fields.lines
     ]
-    return Grounding(values=values, line_tax_rates=rates, currency=document_currency)
+    return Grounding(
+        values=_settle(values, indexed, locale, currency),
+        line_tax_rates=rates,
+        currency=document_currency,
+    )
+
+
+def _occurrences(pages: Sequence[_Page], wanted: Decimal, locale: str, currency: str) -> int:
+    """How many single words on the page read as exactly this amount."""
+    count = 0
+    for page in pages:
+        for position in page.order:
+            parsed = parse_money(clean_token(page.words[position].t), locale, currency)
+            if parsed is not None and parsed.value == wanted:
+                count += 1
+    return count
+
+
+def _label_left(page: _Page, value: GroundedValue) -> str:
+    """The few words printed to the left of a located value on its line, lower case."""
+    if None in (value.x0, value.y0, value.y1):
+        return ""
+    assert value.x0 is not None and value.y0 is not None and value.y1 is not None
+    middle = (value.y0 + value.y1) / 2
+    tolerance = max(value.y1 - value.y0, 1e-6) * 0.7
+    left = [
+        word
+        for word in page.words
+        if abs((word.y0 + word.y1) / 2 - middle) <= tolerance and word.x1 <= value.x0 + 1e-6
+    ]
+    left.sort(key=lambda word: word.x0)
+    return " ".join(clean_token(word.t) for word in left[-4:]).casefold()
+
+
+def _settle(
+    values: list[GroundedValue], pages: Sequence[_Page], locale: str, currency: str
+) -> list[GroundedValue]:
+    """Drop what the page does not support and the entry does not use.
+
+    - A currency symbol the model returned but the page does not print. The entry's currency comes
+      from the amounts and the business's default, never from this field, so reporting it as a
+      missing value would only make a correct document fail.
+    - A subtotal and a total that are the same amount when the page prints that amount fewer times
+      than there are fields claiming it. The model copied one into the other. The printed label
+      says which: a label with "sub" in it is the subtotal, so the total was the copy; otherwise
+      the subtotal was. A page that prints the amount for each claim keeps all of them.
+    """
+    by_field = {v.field: v for v in values if v.line_index is None}
+    total = by_field.get(HeaderField.TOTAL)
+    subtotal = by_field.get(HeaderField.SUBTOTAL)
+    dropped: GroundedValue | None = None
+    if (
+        subtotal is not None
+        and total is not None
+        and subtotal.found
+        and total.found
+        and isinstance(subtotal.value, Decimal)
+        and subtotal.value == total.value
+    ):
+        claims = sum(
+            1 for v in values if v.found and v.field in _MONEY_FIELDS and v.value == subtotal.value
+        )
+        if _occurrences(pages, subtotal.value, locale, currency) < claims:
+            page = next((p for p in pages if p.number == subtotal.page_number), None)
+            label = _label_left(page, subtotal) if page is not None else ""
+            dropped = total if "sub" in label else subtotal
+    return [
+        v
+        for v in values
+        if not (v.field == HeaderField.CURRENCY and not v.found) and v is not dropped
+    ]
 
 
 def _ground_one(
@@ -299,6 +386,11 @@ def _ground_one(
 
     target = _normalise(text)
     found = [c for page in pages if (c := _search(page, target, threshold)) is not None]
+    if not found and kind != "money" and field != HeaderField.CURRENCY:
+        # "(6.5%)" or "INV-77:" is the printed value with punctuation around it. Money is left
+        # alone: "($70.00)" is a credit, and "$70.00" must not be read from it.
+        trimmed = _trim(target)
+        found = [c for page in pages if (c := _search(page, trimmed, threshold, loose=True))]
     candidate = min(found, key=lambda c: c.rank, default=None)
     if candidate is None and field == HeaderField.CURRENCY:
         candidate = min(

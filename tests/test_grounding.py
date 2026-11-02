@@ -253,3 +253,66 @@ def test_a_busy_page_with_long_values_is_grounded_quickly() -> None:
 @pytest.mark.parametrize("pages", [[], [[]]])
 def test_a_document_with_no_words_finds_nothing_and_does_not_fail(pages: list[list[Word]]) -> None:
     assert not one(ground(fields(total="$1.00"), pages), HeaderField.TOTAL).found
+
+
+# --- Stage 2: things printed with brackets, and values the page does not hold ---------------------
+
+
+def test_a_rate_printed_in_brackets_is_found_but_an_amount_in_brackets_is_not_a_positive_one() -> None:
+    words = page("Sales tax (6.5%) $4.55", "Total ($70.00)")
+    result = ground(
+        fields(tax_total="$4.55", total="$70.00", lines=[{"description": "x", "tax_rate": "6.5%"}]),
+        [words],
+    )
+    assert one(result, LineField.TAX_RATE, 0).found  # "(6.5%)" is the printed rate
+    assert not one(result, HeaderField.TOTAL).found  # "($70.00)" is a credit, not "$70.00"
+
+
+def test_punctuation_after_a_value_does_not_hide_it() -> None:
+    words = page("Invoice INV-77: dated, March 3, 2026;", "PO PO-5.")
+    result = ground(fields(invoice_number="INV-77", po_number="PO-5"), [words])
+    assert one(result, HeaderField.INVOICE_NUMBER).found and one(result, HeaderField.PO_NUMBER).found
+
+
+def test_a_currency_symbol_that_is_not_printed_is_not_reported_as_a_missing_value() -> None:
+    """The currency the entry uses comes from the amounts and the default, never from this
+    field, so an unprinted symbol must not make a clean document fail VALUE_IN_DOCUMENT."""
+    words = page("Total due 140.00", "Tax 9.10")
+    result = ground(fields(currency="$", total="140.00", tax_total="9.10"), [words])
+    assert not [v for v in result.values if v.field == HeaderField.CURRENCY]
+    assert result.currency == "USD"
+
+
+def test_a_printed_currency_symbol_is_still_located() -> None:
+    result = ground(fields(currency="$", total="$140.00"), [page("Total due $140.00")])
+    assert one(result, HeaderField.CURRENCY).found
+
+
+def test_a_subtotal_that_is_the_total_copied_is_dropped_when_the_page_prints_it_once() -> None:
+    words = page("Item 2 x 70.00", "Total due $140.00")
+    result = ground(fields(subtotal="$140.00", total="$140.00"), [words])
+    assert not [v for v in result.values if v.field == HeaderField.SUBTOTAL]
+    assert one(result, HeaderField.TOTAL).found
+
+
+def test_a_subtotal_equal_to_the_total_is_kept_when_the_page_prints_both() -> None:
+    words = page("Subtotal $140.00", "Total due $140.00")
+    result = ground(fields(subtotal="$140.00", total="$140.00"), [words])
+    assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found
+
+
+def test_a_one_line_receipt_that_prints_the_amount_three_times_keeps_all_three_claims() -> None:
+    words = page("Windshield fluid 54.57", "Subtotal $54.57", "Total $54.57")
+    result = ground(
+        fields(subtotal="54.57", total="54.57", lines=[{"description": "Windshield fluid", "amount": "54.57"}]),
+        [words],
+    )
+    assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found
+    assert one(result, LineField.AMOUNT, 0).found
+
+
+def test_when_the_one_printed_amount_is_labelled_subtotal_it_is_the_total_that_was_copied() -> None:
+    words = page("Parts and labour", "Subtotal $175.96")
+    result = ground(fields(subtotal="$175.96", total="$175.96"), [words])
+    assert one(result, HeaderField.SUBTOTAL).found
+    assert not [v for v in result.values if v.field == HeaderField.TOTAL]
