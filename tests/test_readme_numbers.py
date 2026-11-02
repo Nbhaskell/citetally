@@ -89,3 +89,22 @@ def test_the_sizes_quoted_match_the_reports() -> None:
     assert f"({first_pass(DEV)['documents']} documents)" in README
     assert f"{first_pass(HELD)['documents']} documents" in README
     assert f"{first_pass(HELD)['all']['planted_recall']['n']} planted problems" in README
+
+
+def stage2(name: str) -> dict[str, Any]:
+    report = load(f"stage2_{name}")
+    passes = report["variants"]["final"]["passes"]
+    out: dict[str, Any] = passes[min(passes, key=int)]
+    return out
+
+
+def test_the_stage_2_numbers_match_the_stage_2_reports() -> None:
+    for name in ("tuned", "dev2"):
+        final = stage2(name)
+        for condition in ("clean_pdf", "scan_light", "scan_heavy", "phone_photo"):
+            assert pct(final["by_condition"][condition]["header_field_exact"]["rate"]) in README
+        assert pct(final["all"]["clean_any_blocking_alarm"]["rate"]) in README
+    assert (
+        f"about {round(stage2('dev2')['all']['seconds_per_page_median'])} seconds per page"
+        in README
+    )

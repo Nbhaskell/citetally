@@ -581,3 +581,49 @@ A target missed is reported as missed. Targets 3 and 4 depend on a reviewer and 
 
 **The pilot (after the sealed run).** The reviewer takes 40 documents from the sealed set, in a mix of conditions, reviews each in the app (the app records `review_seconds`), then types the same documents' vendor, number, date, lines and total into a spreadsheet, timing each. The report compares medians, and counts approved entries whose values differ from the answer key (each is a wrong value approved), noting which carried an override. One reviewer, the person who built the system: stated as a limit.
 
+
+
+### D-063. Stage 2: the fixes, what each did, and what is still open
+
+**Method.** Everything was developed and measured on the two development sets (the first set's 140 documents and `dev2`'s 100). The sealed set and its key were not opened. Fixes to the code that runs after the model (grounding, vendor matching, the checks) were measured with a replay tool (`tools/evaluation/replay.py`): it re-runs those stages on a saved run's pages and model answers, with nothing read again, so the same inputs go through different code and the result shows which documents changed and in which direction. On unchanged code it reproduces the baseline exactly (checked on both sets). Changes to how pages are read or what the model sees were measured with new full runs. Percentages are of the documents each run covered.
+
+**Fixes to code after the model** (cumulative, replayed on the baseline runs; first set, then `dev2`):
+
+| Change | Effect |
+|---|---|
+| Values printed with brackets or punctuation (`(6.5%)`, `INV-77:`) are found; an unprinted currency symbol is not reported as a missing value; a subtotal the model copied from the total (the page prints that amount fewer times than fields claim it) is dropped | clean documents blocked 67.3% to 60.2% and 87.1% to 80.0%; no document worse |
+| A shortened vendor name is matched when the page prints the whole known name or alias (the model's words must all be part of that name) | blocked 58.2% and 78.6% cumulative; none worse |
+| A number the page labels customer, account, policy or purchase order is not accepted as the invoice number ("Order no." is left alone: one layout uses it for the invoice) | planted problems caught 66.7% and 66.7% cumulative, from 59.5% and 63.3% |
+| The tax total is held against the one rate printed beside the word "tax" (at most that rate on subtotal and shipping) | planted caught 69.0% (first set) |
+
+Costs seen: three printed subtotals whose second copy OCR had lost now read as "not found" instead of "right", so money exact fell 0.5 and 0.4 points. The currency change narrows rule 5 in one place: the model's currency symbol is not used for the entry (the amounts and the default decide), so an unprinted one is dropped and not reported.
+
+**Reading scanned pages more than once** (`CITETALLY_OCR_READINGS`, default 3; `citetally/reading/merge.py`, `tools/ocr_lab.py`). On 90 development scans and photos (the model not involved), the share of a page's true values found in the OCR words was 70.4% for one reading, 80.0% for two, 83.3% for three and 84.9% for four. The three are the usual reading, block mode and a larger copy, made at the same time. The words of the most confident reading, plus any word another reading has where it has none, make the page the model reads and the review screen shows. Every separate reading is kept in `pages.alt_words` (migration 0003, `docs/BACKEND_SCHEMA.md`), and grounding looks for each value in all of them, so a misread digit in one reading does not hide what another got right and every value is still located at a real place. Merging alone finds less (76.7% to 78.4%) because it keeps one reading's version of a word. On text-only runs the three readings changed header accuracy little (first set +0.7 points, `dev2` +3.9 on scans and photos) but moved line items from 8.3% to 22.8% and from 12.0% to 22.0% F1.
+
+**The picture path** (resolves D-049). The `auto` extract mode (now the default) sends a page read by OCR to a vision model together with its picture, and everything else (text-layer PDFs) to the text model. If the vision model is missing, slow or confused for a document, the text model reads that page instead, and the extraction records what was actually used. Heavy scans and phone photos, three readings plus picture against the code fixes alone: header fields exact 43.3% to 91.2% (`dev2`, 50 documents) and 42.2% to 93.5% (first set, 69); line items 5.5% to 89.0% and 1.2% to 78.9% F1; planted problems caught 56.2% to 71.4% and 55.0% to 84.2%. Light scans (`dev2`, 30): 87.6% to 99.5%, 54.9% to 100.0% F1, and clean documents blocked 60.9% to 13.0%. Settings now default to `auto`, `qwen3-vl:8b-instruct` and three readings; `CITETALLY_EXTRACT_MODE=text_only` restores the old behaviour.
+
+**Final development runs** (the product's own defaults, one pass each, no failed documents; baseline then final):
+
+| | First set (140) | `dev2` (100) |
+|---|---|---|
+| Header fields exact | 68.5% to 96.8% | 66.3% to 95.9% |
+| Line items F1 | 28.3% to 88.6% | 28.2% to 92.3% |
+| Planted problems caught | 59.5% to 87.2% | 63.3% to 83.3% |
+| Clean documents blocked | 67.3% to 49.0% | 87.1% to 42.9% |
+| Median seconds per page | 7.5 to 15.4 | 7.5 to 17.1 |
+
+Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo): first set 96.9%, 99.6%, 93.6%, 96.9%; `dev2` 96.9%, 99.5%, 89.9%, 96.0%. Reports: `eval/reports/eval_stage2_tuned.md` and `eval_stage2_dev2.md`. With one pass the harness cannot call a difference "real" (D-058). The two baseline passes were identical on every headline measure and the model runs at temperature 0, so the bootstrap intervals exclude zero by a wide margin, but a second pass of the final setting was not run.
+
+**A measure added after reading results.** Header value exact counts a field right when it means what the page says (the same amount, the same date, otherwise the same words), because the strict exact-text measure counts a missing "$" as wrong. Both are in every report; the target below is judged on the strict one.
+
+**Targets (D-062), on the development sets.**
+1. Header fields at least 90% exact in each condition: met in all four on the first set; met in three on `dev2`, with heavy scans at 89.9% (84 to 94).
+2. Clean documents blocked at most 30%: **not met**, 49.0% and 42.9%. Almost all of it is one check: 34 of the 48 blocked clean documents (first set) and 22 of 30 (`dev2`) fail only `VALUE_IN_DOCUMENT`. The picture path reads the right values but OCR cannot place them on the poorest pages, and the rule that a value must be located has not been changed.
+3. and 4. (review time, wrong values approved) need the pilot and are not measured yet.
+
+**Considered and not done.** Accepting a value the picture supplied but OCR cannot locate, when the page's own arithmetic agrees, would bring the blocked share to 11.4% and 14.3%. But 3 of the 22 and 2 of the 34 documents it would accept held a wrong value (a wrong vendor, date or number that arithmetic does not cover), which is the failure target 4 exists to prevent. Limiting it to amounts, quantities and rates unblocks only 4 documents on each set (blocked 37.1% and 44.9%). Neither was adopted. A re-ask of the model for values that were not found would help the few model slips (a due date read as 2036) and was not built.
+
+**Open, for the owner.**
+- The remaining gap is locating image-read values. A way that keeps rule 5: have the vision model say where a value is, read that crop again at high resolution with OCR, and count the value as located only if the crop reads as the same text. It is a new feature with its own measurement; whether to build it is the decision.
+- Speed and hardware. The picture path costs a median of about 17 seconds per page on this machine against about 7.5. The 8 GB vision model shares a 10 GB graphics card with other programs, and runs were several times slower when the card was full; the README says so.
+- The held-out split and the sealed set are untouched by any of this. The sealed run is still to come.

@@ -61,7 +61,20 @@ def load_runs(split: str) -> dict[str, dict[int, dict[str, Any]]]:
             continue
         meta = json.loads(meta_file.read_text(encoding="utf-8"))
         records = read_records(meta_file.parent / "records.jsonl")
-        found[meta["variant"]][_pass_of(name)] = {"meta": meta, "records": records, "name": name}
+        if (
+            "replay_of" in meta
+        ):  # a replay re-runs only the later stages, so it is not reported here
+            continue
+        known = found[meta["variant"]].get(_pass_of(name))
+        if known is None:
+            found[meta["variant"]][_pass_of(name)] = {
+                "meta": meta,
+                "records": records,
+                "name": name,
+            }
+        else:  # runs of one setting that each took some conditions are one run of the split
+            known["records"].update(records)
+            known["name"] += "+" + name
     return found
 
 
@@ -147,10 +160,10 @@ def compare_variants(
 # ---- the report --------------------------------------------------------------------------------
 
 
-def build(split: str) -> dict[str, Any]:
+def build(split: str, only: Sequence[str] | None = None) -> dict[str, Any]:
     items_list = load_suite(split, unseal=split in {"heldout", "sealed"}).items
     items = {i.id: i for i in items_list}
-    runs = load_runs(split)
+    runs = {v: r for v, r in load_runs(split).items() if only is None or v in only}
     if "baseline" not in runs:
         raise SystemExit(f"There is no baseline run of the {split} split under eval/runs/.")
     scored: dict[str, dict[int, list[dict[str, Any]]]] = {
@@ -493,12 +506,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("--name", default="dev", help="report name: eval_<name>.md and .json")
     parser.add_argument("--split", choices=list(SPLITS), default="tuned")
+    parser.add_argument("--variants", nargs="+", help="report only these settings (and baseline)")
     args = parser.parse_args(argv)
     lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK}.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2
-    report = build(args.split)
+    report = build(args.split, None if not args.variants else ["baseline", *args.variants])
     REPORTS.mkdir(parents=True, exist_ok=True)
     (REPORTS / f"eval_{args.name}.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     text = render(report)
