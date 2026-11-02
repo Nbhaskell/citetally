@@ -388,6 +388,37 @@ def test_the_held_out_split_stays_sealed_without_the_flag_and_after_one_run(
     )
 
 
+def test_the_sealed_split_stays_sealed_without_its_own_flag_and_after_one_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(running, "RUNS", tmp_path)
+    monkeypatch.setattr(running, "SEALED_LOCK", tmp_path / "SEALED_RUN.lock")
+    assert running.main(["--split", "sealed"]) == 2
+    assert running.main(["--split", "sealed", "--confirm-heldout-once"]) == 2  # the other flag
+    assert not (tmp_path / "SEALED_RUN.lock").exists()
+    assert running.main(["--split", "sealed", "--confirm-sealed-once", "--limit", "3"]) == 2
+    (tmp_path / "SEALED_RUN.lock").write_text("sealed-baseline-p1", encoding="utf-8")
+    assert (
+        running.main(["--split", "sealed", "--confirm-sealed-once", "--variant", "thinking"]) == 2
+    )
+
+
+def test_the_new_splits_load_with_their_own_business_and_the_sealed_one_only_on_purpose() -> None:
+    from tools.evaluation.suites import load_suite
+
+    dev2 = load_suite("dev2")
+    assert (
+        len(dev2.items) == 100
+        and dev2.facts.business.name != load_suite("tuned").facts.business.name
+    )
+    with pytest.raises(PermissionError):
+        load_suite("sealed")
+    with pytest.raises(PermissionError):
+        load_suite("heldout")
+    with pytest.raises(ValueError):
+        load_suite("nonsense")
+
+
 def test_variants_only_change_settings_and_all_of_them_are_valid() -> None:
     for name, env in running.VARIANTS.items():
         settings = Settings(_env_file=None, **env)  # type: ignore[arg-type]

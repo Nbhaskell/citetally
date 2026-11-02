@@ -557,3 +557,27 @@ The full write-up is `docs/HARDENING.md`. Three changes to the application came 
 - Whether the page-picture path (D-049) should become the default for scans and photos, and how its values should be grounded. The development numbers favour it; the held-out split has no run of it.
 - Whether editing a value by hand should drop the model's evidence for it (D-052). It does, today.
 - Whether to make the repository public. Nothing in Phase 10 changes its visibility; the pre-publish report is `docs/PRE_PUBLISH.md`.
+
+### D-062. Making the product useful: the targets, a second business, and a sealed set made first
+
+**Why.** After Phase 10 the evidence said the system reads clean PDFs and little else by default, blocks most clean documents, and has never been compared with typing the invoice in by hand. The held-out split is spent and its failures have been read, so any fix needs a new test that was written first. There are no real documents, so the new tests are invented, and the plan below says what that does and does not show.
+
+**Targets, fixed here before any fix or result.** Judged on the sealed run, one run, reported as it comes out:
+1. Printed header fields read exactly: at least 90% in each of the four conditions (clean PDF, light scan, heavy scan, phone photo), the point estimate over the condition's documents with its 95% interval shown beside it. The levels of damage inside a condition are reported separately and do not move the target.
+2. Clean documents wrongly blocked (any blocking check failing with nothing planted): at most 30%.
+3. A person finishes a document in under half the time of typing it by hand (pilot, below).
+4. No wrong value approved without a recorded override (pilot).
+A target missed is reported as missed. Targets 3 and 4 depend on a reviewer and are measured after the sealed run, on documents from it.
+
+**A second invented business.** `universe/facts_ridge.json` is a bakery and cafe with 16 listed and 3 unlisted vendors, new items, prices, names and aliases, none shared with the first business. The first set's vendors, catalogues and the system's vendor matching grew up together; this separates them.
+
+**Ten new layouts, three levels of damage** (`tools/synthetic/fresh_*.py`). The new layouts add what the first fifteen lack: descriptions that wrap, the total printed twice, stamps over values, pen annotations, remittance blocks and tear-off stubs, account summaries with other numbers and dates, ageing figures, white text on dark bands, a watermark, barcodes, a receipt number. Anything extra on a page is labelled for what it is, so it is a fair distractor and not a second right answer. Conditions now have levels: light scans mild, typical, harsh; heavy scans typical, harsh; phone photos mild (a sharp 2400 x 3000 photo in good light, which the first set never had), typical, harsh. Typical and harsh are the first set's two damage profiles, so results can be compared with it.
+
+**Two sets.** `dev2` (T16 to T20, 100 documents) is where fixes are made and measured. `sealed` (T21 to T25, 250 documents: 50 clean, 75 light scans, 50 heavy scans, 75 phone photos; 75 with a planted problem, 6 or more of each kind) has layouts the dev2 work never uses.
+
+**Sealing by commit and reveal.** The sealed key is written under `data/synthetic/sealed/` (git-ignored) and only the SHA-256 of its contents is committed (`eval/golden/citetally_v2_sealed.sha256`), before any fix. `python -m tools.synthetic.fresh_build --suite sealed --verify` regenerates it and compares, and a test fails if the generator ever stops reproducing that hash. The runner refuses the sealed split without `--confirm-sealed-once`, a one-time lock, and a key that matches the hash. Rules for whoever builds the fixes: do not open the sealed documents or key, do not look at sealed results before the run, and never change the generator after the hash is committed (a change to what is drawn but not to the key does not alter the hash, so this rests on the rule and not only on the test).
+
+**What it still cannot show.** The documents are invented by the person who built the system, with generated noise. A different generator and business make them unseen and a little less alike, not blind. There is no real handwriting (pen notes are jittered print), no multi-page document and no document in another language or currency. Passing the targets on these would be evidence the fixes work on harder invented documents, not that the product works on real ones.
+
+**The pilot (after the sealed run).** The reviewer takes 40 documents from the sealed set, in a mix of conditions, reviews each in the app (the app records `review_seconds`), then types the same documents' vendor, number, date, lines and total into a spreadsheet, timing each. The report compares medians, and counts approved entries whose values differ from the answer key (each is a wrong value approved), noting which carried an override. One reviewer, the person who built the system: stated as a limit.
+

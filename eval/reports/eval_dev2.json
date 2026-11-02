@@ -1,0 +1,7785 @@
+{
+ "split": "dev2",
+ "variants": {
+  "baseline": {
+   "meta": {
+    "run_id": "dev2-baseline-p1",
+    "split": "dev2",
+    "variant": "baseline",
+    "variant_settings": {},
+    "started_at": "2026-11-02T17:32:07+00:00",
+    "commit": "9dbc37cc2c2aa24da427e74a4376f69a58e2970f",
+    "tree_changed": true,
+    "golden_file": "eval\\golden\\citetally_v2_dev2.json",
+    "golden_sha256": "74087ca2551c2267d94ffe2e98b58ef85e7f58f5b46eef0778305ceca156ef6a",
+    "provider": "ollama",
+    "text_model": "qwen3:8b",
+    "vision_model": "",
+    "extract_mode": "text_only",
+    "enable_thinking": false,
+    "extract_max_tokens": 2000,
+    "text_layer_min_chars": 80,
+    "ocr_engine": "tesseract",
+    "tesseract": "tesseract v5.4.0.20240606",
+    "prompt_version": "extract-v3",
+    "temperature": 0.0,
+    "seed": 0,
+    "machine": "Windows 11, Python 3.13.15",
+    "vendors_seeded": 16,
+    "history_entries": 86,
+    "history_padded": 16,
+    "documents": 100,
+    "finished_at": "2026-11-02T17:50:06+00:00",
+    "records_sha256": "866c9a1962393903c02ebd3b118739d661bcdcacb7564a7e8bd238f9817e510b"
+   },
+   "passes": {
+    "1": {
+     "documents": 100,
+     "all": {
+      "documents": 100,
+      "failed": 0,
+      "header_field_exact": {
+       "n": 641,
+       "k": 425,
+       "rate": 0.663,
+       "low": 0.6256,
+       "high": 0.6986
+      },
+      "header_invented": 27,
+      "header_by_field": {
+       "currency": {
+        "n": 100,
+        "k": 90,
+        "rate": 0.9,
+        "low": 0.8256,
+        "high": 0.9448,
+        "wrong": 7,
+        "missing": 3,
+        "invented": 0
+       },
+       "discount": {
+        "n": 20,
+        "k": 8,
+        "rate": 0.4,
+        "low": 0.2188,
+        "high": 0.6134,
+        "wrong": 7,
+        "missing": 5,
+        "invented": 1
+       },
+       "due_date": {
+        "n": 70,
+        "k": 48,
+        "rate": 0.6857,
+        "low": 0.5697,
+        "high": 0.7824,
+        "wrong": 19,
+        "missing": 3,
+        "invented": 4
+       },
+       "entry_date": {
+        "n": 100,
+        "k": 72,
+        "rate": 0.72,
+        "low": 0.6251,
+        "high": 0.7986,
+        "wrong": 26,
+        "missing": 2,
+        "invented": 0
+       },
+       "invoice_number": {
+        "n": 98,
+        "k": 72,
+        "rate": 0.7347,
+        "low": 0.6396,
+        "high": 0.812,
+        "wrong": 22,
+        "missing": 4,
+        "invented": 2
+       },
+       "po_number": {
+        "n": 18,
+        "k": 10,
+        "rate": 0.5556,
+        "low": 0.3372,
+        "high": 0.7544,
+        "wrong": 5,
+        "missing": 3,
+        "invented": 3
+       },
+       "shipping": {
+        "n": 20,
+        "k": 7,
+        "rate": 0.35,
+        "low": 0.1812,
+        "high": 0.5671,
+        "wrong": 6,
+        "missing": 7,
+        "invented": 1
+       },
+       "subtotal": {
+        "n": 60,
+        "k": 36,
+        "rate": 0.6,
+        "low": 0.4737,
+        "high": 0.7143,
+        "wrong": 16,
+        "missing": 8,
+        "invented": 14
+       },
+       "tax_total": {
+        "n": 55,
+        "k": 29,
+        "rate": 0.5273,
+        "low": 0.3979,
+        "high": 0.6531,
+        "wrong": 14,
+        "missing": 12,
+        "invented": 2
+       },
+       "total": {
+        "n": 100,
+        "k": 70,
+        "rate": 0.7,
+        "low": 0.6042,
+        "high": 0.7811,
+        "wrong": 19,
+        "missing": 11,
+        "invented": 0
+       },
+       "vendor_name": {
+        "n": 100,
+        "k": 73,
+        "rate": 0.73,
+        "low": 0.6357,
+        "high": 0.8073,
+        "wrong": 26,
+        "missing": 1,
+        "invented": 0
+       }
+      },
+      "money_exact": {
+       "n": 255,
+       "k": 169,
+       "rate": 0.6627,
+       "low": 0.6027,
+       "high": 0.718
+      },
+      "money_by_field": {
+       "discount": {
+        "n": 20,
+        "k": 9,
+        "rate": 0.45,
+        "low": 0.2582,
+        "high": 0.6579
+       },
+       "shipping": {
+        "n": 20,
+        "k": 9,
+        "rate": 0.45,
+        "low": 0.2582,
+        "high": 0.6579
+       },
+       "subtotal": {
+        "n": 60,
+        "k": 41,
+        "rate": 0.6833,
+        "low": 0.5577,
+        "high": 0.7869
+       },
+       "tax_total": {
+        "n": 55,
+        "k": 33,
+        "rate": 0.6,
+        "low": 0.4681,
+        "high": 0.7188
+       },
+       "total": {
+        "n": 100,
+        "k": 77,
+        "rate": 0.77,
+        "low": 0.6785,
+        "high": 0.8416
+       }
+      },
+      "line_precision": 0.2411,
+      "line_recall": 0.3407,
+      "line_f1": 0.2824,
+      "line_core_f1": 0.3817,
+      "normalised": {
+       "date_right": {
+        "n": 100,
+        "k": 72,
+        "rate": 0.72,
+        "low": 0.6251,
+        "high": 0.7986
+       },
+       "currency_right": {
+        "n": 100,
+        "k": 99,
+        "rate": 0.99,
+        "low": 0.9455,
+        "high": 0.9982
+       },
+       "type_right": {
+        "n": 100,
+        "k": 97,
+        "rate": 0.97,
+        "low": 0.9155,
+        "high": 0.9897
+       },
+       "vendor_right": {
+        "n": 100,
+        "k": 79,
+        "rate": 0.79,
+        "low": 0.7002,
+        "high": 0.8583
+       }
+      },
+      "planted_recall": {
+       "n": 30,
+       "k": 19,
+       "rate": 0.6333,
+       "low": 0.4551,
+       "high": 0.7813
+      },
+      "planted_recall_by_code": {
+       "AMOUNT_OUTLIER": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "CURRENCY_CHECK": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "DATE_SANITY": {
+        "n": 4,
+        "k": 3,
+        "rate": 0.75,
+        "low": 0.3006,
+        "high": 0.9544
+       },
+       "DUPLICATE_SUSPECT": {
+        "n": 6,
+        "k": 1,
+        "rate": 0.1667,
+        "low": 0.0301,
+        "high": 0.5635
+       },
+       "LINE_MATH": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "REQUIRED_FIELDS": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "SUSPICIOUS_TEXT": {
+        "n": 2,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.6576
+       },
+       "TAX_MATCH": {
+        "n": 3,
+        "k": 2,
+        "rate": 0.6667,
+        "low": 0.2077,
+        "high": 0.9385
+       },
+       "TOTAL_MATCH": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "UNKNOWN_VENDOR": {
+        "n": 2,
+        "k": 2,
+        "rate": 1.0,
+        "low": 0.3424,
+        "high": 1.0
+       }
+      },
+      "planted_recall_by_kind": {
+       "amount_outlier": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "currency_mismatch": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "due_before_entry": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "duplicate_content": {
+        "n": 3,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+       },
+       "duplicate_invoice_number": {
+        "n": 3,
+        "k": 1,
+        "rate": 0.3333,
+        "low": 0.0615,
+        "high": 0.7923
+       },
+       "future_date": {
+        "n": 2,
+        "k": 2,
+        "rate": 1.0,
+        "low": 0.3424,
+        "high": 1.0
+       },
+       "injection_text": {
+        "n": 2,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.6576
+       },
+       "line_math": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "missing_invoice_number": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "tax_mismatch": {
+        "n": 3,
+        "k": 2,
+        "rate": 0.6667,
+        "low": 0.2077,
+        "high": 0.9385
+       },
+       "total_mismatch": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "unknown_vendor": {
+        "n": 2,
+        "k": 2,
+        "rate": 1.0,
+        "low": 0.3424,
+        "high": 1.0
+       }
+      },
+      "clean_documents": 70,
+      "clean_any_blocking_alarm": {
+       "n": 70,
+       "k": 61,
+       "rate": 0.8714,
+       "low": 0.7734,
+       "high": 0.9309
+      },
+      "clean_alarm_without_value_in_document": {
+       "n": 70,
+       "k": 51,
+       "rate": 0.7286,
+       "low": 0.6146,
+       "high": 0.8188
+      },
+      "false_alarm_by_check": {
+       "REQUIRED_FIELDS": {
+        "n": 70,
+        "k": 23,
+        "rate": 0.3286,
+        "low": 0.23,
+        "high": 0.445
+       },
+       "VALUE_IN_DOCUMENT": {
+        "n": 70,
+        "k": 41,
+        "rate": 0.5857,
+        "low": 0.4688,
+        "high": 0.6937
+       },
+       "LINE_MATH": {
+        "n": 70,
+        "k": 18,
+        "rate": 0.2571,
+        "low": 0.1693,
+        "high": 0.3703
+       },
+       "SUBTOTAL_MATCH": {
+        "n": 70,
+        "k": 21,
+        "rate": 0.3,
+        "low": 0.2054,
+        "high": 0.4154
+       },
+       "TAX_MATCH": {
+        "n": 70,
+        "k": 6,
+        "rate": 0.0857,
+        "low": 0.0399,
+        "high": 0.1747
+       },
+       "TOTAL_MATCH": {
+        "n": 70,
+        "k": 19,
+        "rate": 0.2714,
+        "low": 0.1812,
+        "high": 0.3854
+       },
+       "DUPLICATE_SUSPECT": {
+        "n": 70,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.052
+       },
+       "UNKNOWN_VENDOR": {
+        "n": 70,
+        "k": 17,
+        "rate": 0.2429,
+        "low": 0.1575,
+        "high": 0.355
+       },
+       "AMOUNT_OUTLIER": {
+        "n": 70,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.052
+       },
+       "DATE_SANITY": {
+        "n": 70,
+        "k": 2,
+        "rate": 0.0286,
+        "low": 0.0079,
+        "high": 0.0983
+       },
+       "CURRENCY_CHECK": {
+        "n": 70,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.052
+       },
+       "LOW_READ_QUALITY": {
+        "n": 70,
+        "k": 28,
+        "rate": 0.4,
+        "low": 0.2933,
+        "high": 0.5171
+       },
+       "AMBIGUOUS_FORMAT": {
+        "n": 70,
+        "k": 1,
+        "rate": 0.0143,
+        "low": 0.0025,
+        "high": 0.0766
+       },
+       "SUSPICIOUS_TEXT": {
+        "n": 70,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.052
+       }
+      },
+      "collateral_alarms_on_planted": {
+       "LINE_MATH": 5,
+       "LOW_READ_QUALITY": 7,
+       "REQUIRED_FIELDS": 5,
+       "SUBTOTAL_MATCH": 9,
+       "TAX_MATCH": 2,
+       "TOTAL_MATCH": 7,
+       "UNKNOWN_VENDOR": 4,
+       "VALUE_IN_DOCUMENT": 17
+      },
+      "values_found": {
+       "n": 2228,
+       "k": 2064,
+       "rate": 0.9264,
+       "low": 0.9148,
+       "high": 0.9365
+      },
+      "seconds_per_page_median": 9.5,
+      "input_tokens_mean": 878,
+      "output_tokens_mean": 378
+     },
+     "by_condition": {
+      "clean_pdf": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 127,
+        "k": 123,
+        "rate": 0.9685,
+        "low": 0.9218,
+        "high": 0.9877
+       },
+       "header_invented": 4,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 14,
+         "k": 12,
+         "rate": 0.8571,
+         "low": 0.6006,
+         "high": 0.9599,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 19,
+         "k": 19,
+         "rate": 1.0,
+         "low": 0.8318,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 12,
+         "rate": 1.0,
+         "low": 0.7575,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 3
+        },
+        "tax_total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 0,
+         "missing": 1,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 50,
+        "k": 49,
+        "rate": 0.98,
+        "low": 0.895,
+        "high": 0.9965
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0
+        },
+        "shipping": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 12,
+         "rate": 1.0,
+         "low": 0.7575,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "total": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.9342,
+       "line_recall": 1.0,
+       "line_f1": 0.966,
+       "line_core_f1": 0.966,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911
+        }
+       },
+       "planted_recall": {
+        "n": 7,
+        "k": 4,
+        "rate": 0.5714,
+        "low": 0.2505,
+        "high": 0.8418
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DATE_SANITY": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "TAX_MATCH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "due_before_entry": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_content": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "tax_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 13,
+       "clean_any_blocking_alarm": {
+        "n": 13,
+        "k": 8,
+        "rate": 0.6154,
+        "low": 0.3552,
+        "high": 0.8229
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 13,
+        "k": 2,
+        "rate": 0.1538,
+        "low": 0.0433,
+        "high": 0.4223
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 13,
+         "k": 7,
+         "rate": 0.5385,
+         "low": 0.2914,
+         "high": 0.7679
+        },
+        "LINE_MATH": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "TAX_MATCH": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "TOTAL_MATCH": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "DATE_SANITY": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "CURRENCY_CHECK": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "LOW_READ_QUALITY": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "TOTAL_MATCH": 1,
+        "VALUE_IN_DOCUMENT": 3
+       },
+       "values_found": {
+        "n": 448,
+        "k": 436,
+        "rate": 0.9732,
+        "low": 0.9538,
+        "high": 0.9846
+       },
+       "seconds_per_page_median": 7.1,
+       "input_tokens_mean": 848,
+       "output_tokens_mean": 352
+      },
+      "scan_light": {
+       "documents": 30,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 186,
+        "k": 160,
+        "rate": 0.8602,
+        "low": 0.8031,
+        "high": 0.9028
+       },
+       "header_invented": 8,
+       "header_by_field": {
+        "currency": {
+         "n": 30,
+         "k": 30,
+         "rate": 1.0,
+         "low": 0.8865,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7,
+         "wrong": 2,
+         "missing": 2,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 20,
+         "k": 18,
+         "rate": 0.9,
+         "low": 0.699,
+         "high": 0.9721,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 1
+        },
+        "entry_date": {
+         "n": 30,
+         "k": 23,
+         "rate": 0.7667,
+         "low": 0.5907,
+         "high": 0.8821,
+         "wrong": 7,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 30,
+         "k": 28,
+         "rate": 0.9333,
+         "low": 0.7868,
+         "high": 0.9815,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7,
+         "wrong": 2,
+         "missing": 2,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 18,
+         "k": 16,
+         "rate": 0.8889,
+         "low": 0.672,
+         "high": 0.969,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 5
+        },
+        "tax_total": {
+         "n": 15,
+         "k": 13,
+         "rate": 0.8667,
+         "low": 0.6212,
+         "high": 0.9626,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 2
+        },
+        "total": {
+         "n": 30,
+         "k": 28,
+         "rate": 0.9333,
+         "low": 0.7868,
+         "high": 0.9815,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 30,
+         "k": 29,
+         "rate": 0.9667,
+         "low": 0.8333,
+         "high": 0.9941,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 75,
+        "k": 69,
+        "rate": 0.92,
+        "low": 0.8363,
+        "high": 0.9628
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 6,
+         "k": 3,
+         "rate": 0.5,
+         "low": 0.1876,
+         "high": 0.8124
+        },
+        "shipping": {
+         "n": 6,
+         "k": 4,
+         "rate": 0.6667,
+         "low": 0.3,
+         "high": 0.9032
+        },
+        "subtotal": {
+         "n": 18,
+         "k": 18,
+         "rate": 1.0,
+         "low": 0.8241,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 15,
+         "k": 14,
+         "rate": 0.9333,
+         "low": 0.7018,
+         "high": 0.9881
+        },
+        "total": {
+         "n": 30,
+         "k": 30,
+         "rate": 1.0,
+         "low": 0.8865,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.2551,
+       "line_recall": 0.3012,
+       "line_f1": 0.2762,
+       "line_core_f1": 0.5967,
+       "normalised": {
+        "date_right": {
+         "n": 30,
+         "k": 23,
+         "rate": 0.7667,
+         "low": 0.5907,
+         "high": 0.8821
+        },
+        "currency_right": {
+         "n": 30,
+         "k": 30,
+         "rate": 1.0,
+         "low": 0.8865,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 30,
+         "k": 29,
+         "rate": 0.9667,
+         "low": 0.8333,
+         "high": 0.9941
+        },
+        "vendor_right": {
+         "n": 30,
+         "k": 30,
+         "rate": 1.0,
+         "low": 0.8865,
+         "high": 1.0
+        }
+       },
+       "planted_recall": {
+        "n": 7,
+        "k": 6,
+        "rate": 0.8571,
+        "low": 0.4869,
+        "high": 0.9743
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "TOTAL_MATCH": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "currency_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "total_mismatch": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 23,
+       "clean_any_blocking_alarm": {
+        "n": 23,
+        "k": 20,
+        "rate": 0.8696,
+        "low": 0.6787,
+        "high": 0.9546
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 23,
+        "k": 18,
+        "rate": 0.7826,
+        "low": 0.581,
+        "high": 0.9034
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 23,
+         "k": 7,
+         "rate": 0.3043,
+         "low": 0.156,
+         "high": 0.5087
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 23,
+         "k": 13,
+         "rate": 0.5652,
+         "low": 0.3681,
+         "high": 0.7437
+        },
+        "LINE_MATH": {
+         "n": 23,
+         "k": 8,
+         "rate": 0.3478,
+         "low": 0.1881,
+         "high": 0.5511
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 23,
+         "k": 7,
+         "rate": 0.3043,
+         "low": 0.156,
+         "high": 0.5087
+        },
+        "TAX_MATCH": {
+         "n": 23,
+         "k": 4,
+         "rate": 0.1739,
+         "low": 0.0698,
+         "high": 0.3714
+        },
+        "TOTAL_MATCH": {
+         "n": 23,
+         "k": 6,
+         "rate": 0.2609,
+         "low": 0.1255,
+         "high": 0.4647
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "DATE_SANITY": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "CURRENCY_CHECK": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "LOW_READ_QUALITY": {
+         "n": 23,
+         "k": 6,
+         "rate": 0.2609,
+         "low": 0.1255,
+         "high": 0.4647
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 23,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1431
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "VALUE_IN_DOCUMENT": 4
+       },
+       "values_found": {
+        "n": 565,
+        "k": 527,
+        "rate": 0.9327,
+        "low": 0.909,
+        "high": 0.9506
+       },
+       "seconds_per_page_median": 9.1,
+       "input_tokens_mean": 837,
+       "output_tokens_mean": 318
+      },
+      "scan_heavy": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 129,
+        "k": 44,
+        "rate": 0.3411,
+        "low": 0.2649,
+        "high": 0.4264
+       },
+       "header_invented": 6,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 13,
+         "rate": 0.65,
+         "low": 0.4329,
+         "high": 0.8188,
+         "wrong": 4,
+         "missing": 3,
+         "invented": 0
+        },
+        "discount": {
+         "n": 4,
+         "k": 1,
+         "rate": 0.25,
+         "low": 0.0456,
+         "high": 0.6994,
+         "wrong": 2,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 14,
+         "k": 7,
+         "rate": 0.5,
+         "low": 0.268,
+         "high": 0.732,
+         "wrong": 6,
+         "missing": 1,
+         "invented": 3
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 7,
+         "rate": 0.35,
+         "low": 0.1812,
+         "high": 0.5671,
+         "wrong": 11,
+         "missing": 2,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 19,
+         "k": 7,
+         "rate": 0.3684,
+         "low": 0.1915,
+         "high": 0.5896,
+         "wrong": 8,
+         "missing": 4,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 4,
+         "k": 2,
+         "rate": 0.5,
+         "low": 0.15,
+         "high": 0.85,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 2
+        },
+        "shipping": {
+         "n": 4,
+         "k": 1,
+         "rate": 0.25,
+         "low": 0.0456,
+         "high": 0.6994,
+         "wrong": 2,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 2,
+         "rate": 0.1667,
+         "low": 0.047,
+         "high": 0.448,
+         "wrong": 5,
+         "missing": 5,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 12,
+         "k": 2,
+         "rate": 0.1667,
+         "low": 0.047,
+         "high": 0.448,
+         "wrong": 4,
+         "missing": 6,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 7,
+         "rate": 0.35,
+         "low": 0.1812,
+         "high": 0.5671,
+         "wrong": 6,
+         "missing": 7,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 8,
+         "rate": 0.4,
+         "low": 0.2188,
+         "high": 0.6134,
+         "wrong": 11,
+         "missing": 1,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 52,
+        "k": 16,
+        "rate": 0.3077,
+        "low": 0.1991,
+        "high": 0.4427
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 4,
+         "k": 1,
+         "rate": 0.25,
+         "low": 0.0456,
+         "high": 0.6994
+        },
+        "shipping": {
+         "n": 4,
+         "k": 1,
+         "rate": 0.25,
+         "low": 0.0456,
+         "high": 0.6994
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 2,
+         "rate": 0.1667,
+         "low": 0.047,
+         "high": 0.448
+        },
+        "tax_total": {
+         "n": 12,
+         "k": 3,
+         "rate": 0.25,
+         "low": 0.0889,
+         "high": 0.5323
+        },
+        "total": {
+         "n": 20,
+         "k": 9,
+         "rate": 0.45,
+         "low": 0.2582,
+         "high": 0.6579
+        }
+       },
+       "line_precision": 0.0,
+       "line_recall": 0.0,
+       "line_f1": 0.0,
+       "line_core_f1": 0.0216,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 7,
+         "rate": 0.35,
+         "low": 0.1812,
+         "high": 0.5671
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 18,
+         "rate": 0.9,
+         "low": 0.699,
+         "high": 0.9721
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 10,
+         "rate": 0.5,
+         "low": 0.2993,
+         "high": 0.7007
+        }
+       },
+       "planted_recall": {
+        "n": 6,
+        "k": 3,
+        "rate": 0.5,
+        "low": 0.1876,
+        "high": 0.8124
+       },
+       "planted_recall_by_code": {
+        "DUPLICATE_SUSPECT": {
+         "n": 3,
+         "k": 1,
+         "rate": 0.3333,
+         "low": 0.0615,
+         "high": 0.7923
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        }
+       },
+       "planted_recall_by_kind": {
+        "duplicate_content": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 14,
+       "clean_any_blocking_alarm": {
+        "n": 14,
+        "k": 14,
+        "rate": 1.0,
+        "low": 0.7847,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 14,
+        "k": 13,
+        "rate": 0.9286,
+        "low": 0.6853,
+        "high": 0.9873
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 14,
+         "k": 9,
+         "rate": 0.6429,
+         "low": 0.3876,
+         "high": 0.8366
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 14,
+         "k": 9,
+         "rate": 0.6429,
+         "low": 0.3876,
+         "high": 0.8366
+        },
+        "LINE_MATH": {
+         "n": 14,
+         "k": 4,
+         "rate": 0.2857,
+         "low": 0.1172,
+         "high": 0.5465
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 14,
+         "k": 4,
+         "rate": 0.2857,
+         "low": 0.1172,
+         "high": 0.5465
+        },
+        "TAX_MATCH": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "TOTAL_MATCH": {
+         "n": 14,
+         "k": 7,
+         "rate": 0.5,
+         "low": 0.268,
+         "high": 0.732
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 14,
+         "k": 7,
+         "rate": 0.5,
+         "low": 0.268,
+         "high": 0.732
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "DATE_SANITY": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "CURRENCY_CHECK": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "LOW_READ_QUALITY": {
+         "n": 14,
+         "k": 10,
+         "rate": 0.7143,
+         "low": 0.4535,
+         "high": 0.8828
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "LOW_READ_QUALITY": 4,
+        "REQUIRED_FIELDS": 4,
+        "SUBTOTAL_MATCH": 1,
+        "UNKNOWN_VENDOR": 3,
+        "VALUE_IN_DOCUMENT": 1
+       },
+       "values_found": {
+        "n": 465,
+        "k": 429,
+        "rate": 0.9226,
+        "low": 0.8947,
+        "high": 0.9436
+       },
+       "seconds_per_page_median": 10.3,
+       "input_tokens_mean": 1011,
+       "output_tokens_mean": 439
+      },
+      "phone_photo": {
+       "documents": 30,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 199,
+        "k": 98,
+        "rate": 0.4925,
+        "low": 0.4238,
+        "high": 0.5614
+       },
+       "header_invented": 9,
+       "header_by_field": {
+        "currency": {
+         "n": 30,
+         "k": 28,
+         "rate": 0.9333,
+         "low": 0.7868,
+         "high": 0.9815,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 6,
+         "k": 1,
+         "rate": 0.1667,
+         "low": 0.0301,
+         "high": 0.5635,
+         "wrong": 3,
+         "missing": 2,
+         "invented": 1
+        },
+        "due_date": {
+         "n": 22,
+         "k": 11,
+         "rate": 0.5,
+         "low": 0.3072,
+         "high": 0.6928,
+         "wrong": 9,
+         "missing": 2,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 30,
+         "k": 22,
+         "rate": 0.7333,
+         "low": 0.5555,
+         "high": 0.8582,
+         "wrong": 8,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 30,
+         "k": 18,
+         "rate": 0.6,
+         "low": 0.4232,
+         "high": 0.7541,
+         "wrong": 12,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 9,
+         "k": 3,
+         "rate": 0.3333,
+         "low": 0.1206,
+         "high": 0.6458,
+         "wrong": 4,
+         "missing": 2,
+         "invented": 1
+        },
+        "shipping": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903,
+         "wrong": 2,
+         "missing": 4,
+         "invented": 1
+        },
+        "subtotal": {
+         "n": 18,
+         "k": 6,
+         "rate": 0.3333,
+         "low": 0.1628,
+         "high": 0.5625,
+         "wrong": 9,
+         "missing": 3,
+         "invented": 6
+        },
+        "tax_total": {
+         "n": 18,
+         "k": 5,
+         "rate": 0.2778,
+         "low": 0.125,
+         "high": 0.5087,
+         "wrong": 9,
+         "missing": 4,
+         "invented": 0
+        },
+        "total": {
+         "n": 30,
+         "k": 15,
+         "rate": 0.5,
+         "low": 0.3315,
+         "high": 0.6685,
+         "wrong": 11,
+         "missing": 4,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 30,
+         "k": 17,
+         "rate": 0.5667,
+         "low": 0.392,
+         "high": 0.7262,
+         "wrong": 13,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 78,
+        "k": 35,
+        "rate": 0.4487,
+        "low": 0.3433,
+        "high": 0.5589
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 6,
+         "k": 1,
+         "rate": 0.1667,
+         "low": 0.0301,
+         "high": 0.5635
+        },
+        "shipping": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903
+        },
+        "subtotal": {
+         "n": 18,
+         "k": 9,
+         "rate": 0.5,
+         "low": 0.2903,
+         "high": 0.7097
+        },
+        "tax_total": {
+         "n": 18,
+         "k": 7,
+         "rate": 0.3889,
+         "low": 0.2031,
+         "high": 0.6138
+        },
+        "total": {
+         "n": 30,
+         "k": 18,
+         "rate": 0.6,
+         "low": 0.4232,
+         "high": 0.7541
+        }
+       },
+       "line_precision": 0.0784,
+       "line_recall": 0.1212,
+       "line_f1": 0.0952,
+       "line_core_f1": 0.1508,
+       "normalised": {
+        "date_right": {
+         "n": 30,
+         "k": 22,
+         "rate": 0.7333,
+         "low": 0.5555,
+         "high": 0.8582
+        },
+        "currency_right": {
+         "n": 30,
+         "k": 29,
+         "rate": 0.9667,
+         "low": 0.8333,
+         "high": 0.9941
+        },
+        "type_right": {
+         "n": 30,
+         "k": 30,
+         "rate": 1.0,
+         "low": 0.8865,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 30,
+         "k": 20,
+         "rate": 0.6667,
+         "low": 0.4878,
+         "high": 0.8077
+        }
+       },
+       "planted_recall": {
+        "n": 10,
+        "k": 6,
+        "rate": 0.6,
+        "low": 0.3127,
+        "high": 0.8318
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "LINE_MATH": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "TAX_MATCH": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "TOTAL_MATCH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "currency_mismatch": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "due_before_entry": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "tax_mismatch": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "total_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 20,
+       "clean_any_blocking_alarm": {
+        "n": 20,
+        "k": 19,
+        "rate": 0.95,
+        "low": 0.7639,
+        "high": 0.9911
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 20,
+        "k": 18,
+        "rate": 0.9,
+        "low": 0.699,
+        "high": 0.9721
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 20,
+         "k": 7,
+         "rate": 0.35,
+         "low": 0.1812,
+         "high": 0.5671
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 20,
+         "k": 12,
+         "rate": 0.6,
+         "low": 0.3866,
+         "high": 0.7812
+        },
+        "LINE_MATH": {
+         "n": 20,
+         "k": 6,
+         "rate": 0.3,
+         "low": 0.1455,
+         "high": 0.519
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 20,
+         "k": 9,
+         "rate": 0.45,
+         "low": 0.2582,
+         "high": 0.6579
+        },
+        "TAX_MATCH": {
+         "n": 20,
+         "k": 1,
+         "rate": 0.05,
+         "low": 0.0089,
+         "high": 0.2361
+        },
+        "TOTAL_MATCH": {
+         "n": 20,
+         "k": 6,
+         "rate": 0.3,
+         "low": 0.1455,
+         "high": 0.519
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 20,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1611
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 20,
+         "k": 9,
+         "rate": 0.45,
+         "low": 0.2582,
+         "high": 0.6579
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 20,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1611
+        },
+        "DATE_SANITY": {
+         "n": 20,
+         "k": 2,
+         "rate": 0.1,
+         "low": 0.0279,
+         "high": 0.301
+        },
+        "CURRENCY_CHECK": {
+         "n": 20,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1611
+        },
+        "LOW_READ_QUALITY": {
+         "n": 20,
+         "k": 12,
+         "rate": 0.6,
+         "low": 0.3866,
+         "high": 0.7812
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 20,
+         "k": 1,
+         "rate": 0.05,
+         "low": 0.0089,
+         "high": 0.2361
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 20,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1611
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 3,
+        "LOW_READ_QUALITY": 3,
+        "REQUIRED_FIELDS": 1,
+        "SUBTOTAL_MATCH": 8,
+        "TAX_MATCH": 2,
+        "TOTAL_MATCH": 6,
+        "UNKNOWN_VENDOR": 1,
+        "VALUE_IN_DOCUMENT": 9
+       },
+       "values_found": {
+        "n": 750,
+        "k": 672,
+        "rate": 0.896,
+        "low": 0.8721,
+        "high": 0.9159
+       },
+       "seconds_per_page_median": 10.6,
+       "input_tokens_mean": 850,
+       "output_tokens_mean": 413
+      }
+     },
+     "by_level": {
+      "clean_pdf/clean": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 127,
+        "k": 123,
+        "rate": 0.9685,
+        "low": 0.9218,
+        "high": 0.9877
+       },
+       "header_invented": 4,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 14,
+         "k": 12,
+         "rate": 0.8571,
+         "low": 0.6006,
+         "high": 0.9599,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 19,
+         "k": 19,
+         "rate": 1.0,
+         "low": 0.8318,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 12,
+         "rate": 1.0,
+         "low": 0.7575,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 3
+        },
+        "tax_total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 0,
+         "missing": 1,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 50,
+        "k": 49,
+        "rate": 0.98,
+        "low": 0.895,
+        "high": 0.9965
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0
+        },
+        "shipping": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0
+        },
+        "subtotal": {
+         "n": 12,
+         "k": 12,
+         "rate": 1.0,
+         "low": 0.7575,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "total": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.9342,
+       "line_recall": 1.0,
+       "line_f1": 0.966,
+       "line_core_f1": 0.966,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911
+        }
+       },
+       "planted_recall": {
+        "n": 7,
+        "k": 4,
+        "rate": 0.5714,
+        "low": 0.2505,
+        "high": 0.8418
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DATE_SANITY": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "TAX_MATCH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "due_before_entry": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_content": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "tax_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 13,
+       "clean_any_blocking_alarm": {
+        "n": 13,
+        "k": 8,
+        "rate": 0.6154,
+        "low": 0.3552,
+        "high": 0.8229
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 13,
+        "k": 2,
+        "rate": 0.1538,
+        "low": 0.0433,
+        "high": 0.4223
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 13,
+         "k": 7,
+         "rate": 0.5385,
+         "low": 0.2914,
+         "high": 0.7679
+        },
+        "LINE_MATH": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "TAX_MATCH": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "TOTAL_MATCH": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 13,
+         "k": 1,
+         "rate": 0.0769,
+         "low": 0.0137,
+         "high": 0.3331
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "DATE_SANITY": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "CURRENCY_CHECK": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "LOW_READ_QUALITY": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 13,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2281
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "TOTAL_MATCH": 1,
+        "VALUE_IN_DOCUMENT": 3
+       },
+       "values_found": {
+        "n": 448,
+        "k": 436,
+        "rate": 0.9732,
+        "low": 0.9538,
+        "high": 0.9846
+       },
+       "seconds_per_page_median": 7.1,
+       "input_tokens_mean": 848,
+       "output_tokens_mean": 352
+      },
+      "phone_photo/harsh": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 69,
+        "k": 14,
+        "rate": 0.2029,
+        "low": 0.1249,
+        "high": 0.3122
+       },
+       "header_invented": 5,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 1
+        },
+        "due_date": {
+         "n": 8,
+         "k": 1,
+         "rate": 0.125,
+         "low": 0.0224,
+         "high": 0.4709,
+         "wrong": 6,
+         "missing": 1,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 4,
+         "rate": 0.4,
+         "low": 0.1682,
+         "high": 0.6873,
+         "wrong": 6,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 3,
+         "rate": 0.3,
+         "low": 0.1078,
+         "high": 0.6032,
+         "wrong": 7,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345,
+         "wrong": 3,
+         "missing": 2,
+         "invented": 1
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 0,
+         "missing": 2,
+         "invented": 1
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903,
+         "wrong": 3,
+         "missing": 3,
+         "invented": 2
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7,
+         "wrong": 2,
+         "missing": 2,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 1,
+         "rate": 0.1,
+         "low": 0.0179,
+         "high": 0.4042,
+         "wrong": 6,
+         "missing": 3,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 3,
+         "rate": 0.3,
+         "low": 0.1078,
+         "high": 0.6032,
+         "wrong": 7,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 26,
+        "k": 3,
+        "rate": 0.1154,
+        "low": 0.04,
+        "high": 0.2898
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7
+        },
+        "total": {
+         "n": 10,
+         "k": 1,
+         "rate": 0.1,
+         "low": 0.0179,
+         "high": 0.4042
+        }
+       },
+       "line_precision": 0.0943,
+       "line_recall": 0.1562,
+       "line_f1": 0.1176,
+       "line_core_f1": 0.1176,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 4,
+         "rate": 0.4,
+         "low": 0.1682,
+         "high": 0.6873
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 4,
+         "rate": 0.4,
+         "low": 0.1682,
+         "high": 0.6873
+        }
+       },
+       "planted_recall": {
+        "n": 0,
+        "k": 0,
+        "rate": null,
+        "low": null,
+        "high": null
+       },
+       "planted_recall_by_code": {},
+       "planted_recall_by_kind": {},
+       "clean_documents": 10,
+       "clean_any_blocking_alarm": {
+        "n": 10,
+        "k": 10,
+        "rate": 1.0,
+        "low": 0.7225,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 10,
+        "k": 10,
+        "rate": 1.0,
+        "low": 0.7225,
+        "high": 1.0
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 10,
+         "k": 6,
+         "rate": 0.6,
+         "low": 0.3127,
+         "high": 0.8318
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 10,
+         "k": 6,
+         "rate": 0.6,
+         "low": 0.3127,
+         "high": 0.8318
+        },
+        "LINE_MATH": {
+         "n": 10,
+         "k": 2,
+         "rate": 0.2,
+         "low": 0.0567,
+         "high": 0.5098
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 10,
+         "k": 5,
+         "rate": 0.5,
+         "low": 0.2366,
+         "high": 0.7634
+        },
+        "TAX_MATCH": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        },
+        "TOTAL_MATCH": {
+         "n": 10,
+         "k": 3,
+         "rate": 0.3,
+         "low": 0.1078,
+         "high": 0.6032
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 10,
+         "k": 6,
+         "rate": 0.6,
+         "low": 0.3127,
+         "high": 0.8318
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        },
+        "DATE_SANITY": {
+         "n": 10,
+         "k": 2,
+         "rate": 0.2,
+         "low": 0.0567,
+         "high": 0.5098
+        },
+        "CURRENCY_CHECK": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        },
+        "LOW_READ_QUALITY": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 10,
+         "k": 1,
+         "rate": 0.1,
+         "low": 0.0179,
+         "high": 0.4042
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        }
+       },
+       "collateral_alarms_on_planted": {},
+       "values_found": {
+        "n": 232,
+        "k": 216,
+        "rate": 0.931,
+        "low": 0.8909,
+        "high": 0.9571
+       },
+       "seconds_per_page_median": 10.2,
+       "input_tokens_mean": 829,
+       "output_tokens_mean": 415
+      },
+      "phone_photo/mild": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 65,
+        "k": 52,
+        "rate": 0.8,
+        "low": 0.6873,
+        "high": 0.8792
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 8,
+         "k": 7,
+         "rate": 0.875,
+         "low": 0.5291,
+         "high": 0.9776,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 5,
+         "rate": 0.8333,
+         "low": 0.4365,
+         "high": 0.9699,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 2
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 3,
+         "rate": 0.5,
+         "low": 0.1876,
+         "high": 0.8124,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 6,
+         "rate": 0.6,
+         "low": 0.3127,
+         "high": 0.8318,
+         "wrong": 4,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 26,
+        "k": 20,
+        "rate": 0.7692,
+        "low": 0.5795,
+        "high": 0.8897
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 3,
+         "rate": 0.5,
+         "low": 0.1876,
+         "high": 0.8124
+        },
+        "total": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.0741,
+       "line_recall": 0.1176,
+       "line_f1": 0.0909,
+       "line_core_f1": 0.2273,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        }
+       },
+       "planted_recall": {
+        "n": 5,
+        "k": 4,
+        "rate": 0.8,
+        "low": 0.3755,
+        "high": 0.9638
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "TOTAL_MATCH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "total_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 5,
+       "clean_any_blocking_alarm": {
+        "n": 5,
+        "k": 5,
+        "rate": 1.0,
+        "low": 0.5655,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 5,
+        "k": 4,
+        "rate": 0.8,
+        "low": 0.3755,
+        "high": 0.9638
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 5,
+         "k": 4,
+         "rate": 0.8,
+         "low": 0.3755,
+         "high": 0.9638
+        },
+        "LINE_MATH": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "TAX_MATCH": {
+         "n": 5,
+         "k": 1,
+         "rate": 0.2,
+         "low": 0.0362,
+         "high": 0.6245
+        },
+        "TOTAL_MATCH": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "DATE_SANITY": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "CURRENCY_CHECK": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "LOW_READ_QUALITY": {
+         "n": 5,
+         "k": 1,
+         "rate": 0.2,
+         "low": 0.0362,
+         "high": 0.6245
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 2,
+        "SUBTOTAL_MATCH": 3,
+        "TAX_MATCH": 2,
+        "TOTAL_MATCH": 2,
+        "VALUE_IN_DOCUMENT": 5
+       },
+       "values_found": {
+        "n": 279,
+        "k": 243,
+        "rate": 0.871,
+        "low": 0.8265,
+        "high": 0.9053
+       },
+       "seconds_per_page_median": 10.8,
+       "input_tokens_mean": 886,
+       "output_tokens_mean": 433
+      },
+      "phone_photo/typical": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 65,
+        "k": 32,
+        "rate": 0.4923,
+        "low": 0.3746,
+        "high": 0.6108
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 6,
+         "k": 3,
+         "rate": 0.5,
+         "low": 0.1876,
+         "high": 0.8124,
+         "wrong": 2,
+         "missing": 1,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 5,
+         "rate": 0.5,
+         "low": 0.2366,
+         "high": 0.7634,
+         "wrong": 5,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 3,
+         "k": 2,
+         "rate": 0.6667,
+         "low": 0.2077,
+         "high": 0.9385,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 1,
+         "rate": 0.1667,
+         "low": 0.0301,
+         "high": 0.5635,
+         "wrong": 5,
+         "missing": 0,
+         "invented": 2
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903,
+         "wrong": 4,
+         "missing": 2,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 5,
+         "rate": 0.5,
+         "low": 0.2366,
+         "high": 0.7634,
+         "wrong": 4,
+         "missing": 1,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 26,
+        "k": 12,
+        "rate": 0.4615,
+        "low": 0.2876,
+        "high": 0.6454
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 3,
+         "rate": 0.5,
+         "low": 0.1876,
+         "high": 0.8124
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7
+        },
+        "total": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922
+        }
+       },
+       "line_precision": 0.0652,
+       "line_recall": 0.0909,
+       "line_f1": 0.0759,
+       "line_core_f1": 0.1013,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "type_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        }
+       },
+       "planted_recall": {
+        "n": 5,
+        "k": 2,
+        "rate": 0.4,
+        "low": 0.1176,
+        "high": 0.7693
+       },
+       "planted_recall_by_code": {
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "TAX_MATCH": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        }
+       },
+       "planted_recall_by_kind": {
+        "currency_mismatch": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "due_before_entry": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "tax_mismatch": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        }
+       },
+       "clean_documents": 5,
+       "clean_any_blocking_alarm": {
+        "n": 5,
+        "k": 4,
+        "rate": 0.8,
+        "low": 0.3755,
+        "high": 0.9638
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 5,
+        "k": 4,
+        "rate": 0.8,
+        "low": 0.3755,
+        "high": 0.9638
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 5,
+         "k": 1,
+         "rate": 0.2,
+         "low": 0.0362,
+         "high": 0.6245
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "LINE_MATH": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "TAX_MATCH": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "TOTAL_MATCH": {
+         "n": 5,
+         "k": 1,
+         "rate": 0.2,
+         "low": 0.0362,
+         "high": 0.6245
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 5,
+         "k": 1,
+         "rate": 0.2,
+         "low": 0.0362,
+         "high": 0.6245
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "DATE_SANITY": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "CURRENCY_CHECK": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "LOW_READ_QUALITY": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 5,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.4345
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "LOW_READ_QUALITY": 3,
+        "REQUIRED_FIELDS": 1,
+        "SUBTOTAL_MATCH": 5,
+        "TOTAL_MATCH": 4,
+        "UNKNOWN_VENDOR": 1,
+        "VALUE_IN_DOCUMENT": 4
+       },
+       "values_found": {
+        "n": 239,
+        "k": 213,
+        "rate": 0.8912,
+        "low": 0.8454,
+        "high": 0.9247
+       },
+       "seconds_per_page_median": 9.7,
+       "input_tokens_mean": 837,
+       "output_tokens_mean": 392
+      },
+      "scan_heavy/harsh": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 65,
+        "k": 4,
+        "rate": 0.0615,
+        "low": 0.0242,
+        "high": 0.1478
+       },
+       "header_invented": 4,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 5,
+         "rate": 0.5,
+         "low": 0.2366,
+         "high": 0.7634,
+         "wrong": 2,
+         "missing": 3,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903,
+         "wrong": 5,
+         "missing": 1,
+         "invented": 2
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775,
+         "wrong": 8,
+         "missing": 2,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 1,
+         "rate": 0.1,
+         "low": 0.0179,
+         "high": 0.4042,
+         "wrong": 6,
+         "missing": 3,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 2
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903,
+         "wrong": 3,
+         "missing": 3,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543,
+         "wrong": 3,
+         "missing": 4,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 2,
+         "rate": 0.2,
+         "low": 0.0567,
+         "high": 0.5098,
+         "wrong": 3,
+         "missing": 5,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 1,
+         "rate": 0.1,
+         "low": 0.0179,
+         "high": 0.4042,
+         "wrong": 8,
+         "missing": 1,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 27,
+        "k": 3,
+        "rate": 0.1111,
+        "low": 0.0385,
+        "high": 0.2806
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3903
+        },
+        "tax_total": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "total": {
+         "n": 10,
+         "k": 3,
+         "rate": 0.3,
+         "low": 0.1078,
+         "high": 0.6032
+        }
+       },
+       "line_precision": 0.0,
+       "line_recall": 0.0,
+       "line_f1": 0.0,
+       "line_core_f1": 0.0,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2775
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 2,
+         "rate": 0.2,
+         "low": 0.0567,
+         "high": 0.5098
+        }
+       },
+       "planted_recall": {
+        "n": 3,
+        "k": 0,
+        "rate": 0.0,
+        "low": 0.0,
+        "high": 0.5615
+       },
+       "planted_recall_by_code": {
+        "DUPLICATE_SUSPECT": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        }
+       },
+       "planted_recall_by_kind": {
+        "duplicate_content": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        }
+       },
+       "clean_documents": 7,
+       "clean_any_blocking_alarm": {
+        "n": 7,
+        "k": 7,
+        "rate": 1.0,
+        "low": 0.6457,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 7,
+        "k": 7,
+        "rate": 1.0,
+        "low": 0.6457,
+        "high": 1.0
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 7,
+         "k": 7,
+         "rate": 1.0,
+         "low": 0.6457,
+         "high": 1.0
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 7,
+         "k": 4,
+         "rate": 0.5714,
+         "low": 0.2505,
+         "high": 0.8418
+        },
+        "LINE_MATH": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 7,
+         "k": 1,
+         "rate": 0.1429,
+         "low": 0.0257,
+         "high": 0.5131
+        },
+        "TAX_MATCH": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "TOTAL_MATCH": {
+         "n": 7,
+         "k": 3,
+         "rate": 0.4286,
+         "low": 0.1582,
+         "high": 0.7495
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 7,
+         "k": 5,
+         "rate": 0.7143,
+         "low": 0.3589,
+         "high": 0.9178
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "DATE_SANITY": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "CURRENCY_CHECK": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "LOW_READ_QUALITY": {
+         "n": 7,
+         "k": 7,
+         "rate": 1.0,
+         "low": 0.6457,
+         "high": 1.0
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "LOW_READ_QUALITY": 3,
+        "REQUIRED_FIELDS": 3,
+        "UNKNOWN_VENDOR": 3
+       },
+       "values_found": {
+        "n": 227,
+        "k": 203,
+        "rate": 0.8943,
+        "low": 0.8475,
+        "high": 0.9279
+       },
+       "seconds_per_page_median": 10.8,
+       "input_tokens_mean": 1165,
+       "output_tokens_mean": 412
+      },
+      "scan_heavy/typical": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 64,
+        "k": 40,
+        "rate": 0.625,
+        "low": 0.5025,
+        "high": 0.7333
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 8,
+         "k": 7,
+         "rate": 0.875,
+         "low": 0.5291,
+         "high": 0.9776,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 1
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 9,
+         "k": 6,
+         "rate": 0.6667,
+         "low": 0.3542,
+         "high": 0.8794,
+         "wrong": 2,
+         "missing": 1,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7,
+         "wrong": 2,
+         "missing": 2,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 5,
+         "k": 2,
+         "rate": 0.4,
+         "low": 0.1176,
+         "high": 0.7693,
+         "wrong": 1,
+         "missing": 2,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 5,
+         "rate": 0.5,
+         "low": 0.2366,
+         "high": 0.7634,
+         "wrong": 3,
+         "missing": 2,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 25,
+        "k": 13,
+        "rate": 0.52,
+        "low": 0.335,
+        "high": 0.6997
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 2,
+         "rate": 0.3333,
+         "low": 0.0968,
+         "high": 0.7
+        },
+        "tax_total": {
+         "n": 5,
+         "k": 3,
+         "rate": 0.6,
+         "low": 0.2307,
+         "high": 0.8824
+        },
+        "total": {
+         "n": 10,
+         "k": 6,
+         "rate": 0.6,
+         "low": 0.3127,
+         "high": 0.8318
+        }
+       },
+       "line_precision": 0.0,
+       "line_recall": 0.0,
+       "line_f1": 0.0,
+       "line_core_f1": 0.043,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        }
+       },
+       "planted_recall": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "planted_recall_by_code": {
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 7,
+       "clean_any_blocking_alarm": {
+        "n": 7,
+        "k": 7,
+        "rate": 1.0,
+        "low": 0.6457,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 7,
+        "k": 6,
+        "rate": 0.8571,
+        "low": 0.4869,
+        "high": 0.9743
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 7,
+         "k": 5,
+         "rate": 0.7143,
+         "low": 0.3589,
+         "high": 0.9178
+        },
+        "LINE_MATH": {
+         "n": 7,
+         "k": 4,
+         "rate": 0.5714,
+         "low": 0.2505,
+         "high": 0.8418
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 7,
+         "k": 3,
+         "rate": 0.4286,
+         "low": 0.1582,
+         "high": 0.7495
+        },
+        "TAX_MATCH": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "TOTAL_MATCH": {
+         "n": 7,
+         "k": 4,
+         "rate": 0.5714,
+         "low": 0.2505,
+         "high": 0.8418
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "DATE_SANITY": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "CURRENCY_CHECK": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "LOW_READ_QUALITY": {
+         "n": 7,
+         "k": 3,
+         "rate": 0.4286,
+         "low": 0.1582,
+         "high": 0.7495
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LOW_READ_QUALITY": 1,
+        "REQUIRED_FIELDS": 1,
+        "SUBTOTAL_MATCH": 1,
+        "VALUE_IN_DOCUMENT": 1
+       },
+       "values_found": {
+        "n": 238,
+        "k": 226,
+        "rate": 0.9496,
+        "low": 0.914,
+        "high": 0.9709
+       },
+       "seconds_per_page_median": 10.2,
+       "input_tokens_mean": 857,
+       "output_tokens_mean": 466
+      },
+      "scan_light/harsh": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 60,
+        "k": 53,
+        "rate": 0.8833,
+        "low": 0.7782,
+        "high": 0.9423
+       },
+       "header_invented": 4,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 0,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 6,
+         "k": 5,
+         "rate": 0.8333,
+         "low": 0.4365,
+         "high": 0.9699,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 1
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 0,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 2
+        },
+        "tax_total": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "total": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 24,
+        "k": 22,
+        "rate": 0.9167,
+        "low": 0.7415,
+        "high": 0.9768
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 4,
+         "k": 4,
+         "rate": 1.0,
+         "low": 0.5101,
+         "high": 1.0
+        },
+        "total": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.1333,
+       "line_recall": 0.16,
+       "line_f1": 0.1455,
+       "line_core_f1": 0.5818,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 7,
+         "rate": 0.7,
+         "low": 0.3968,
+         "high": 0.8922
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "planted_recall": {
+        "n": 3,
+        "k": 3,
+        "rate": 1.0,
+        "low": 0.4385,
+        "high": 1.0
+       },
+       "planted_recall_by_code": {
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "TOTAL_MATCH": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "currency_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "total_mismatch": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 7,
+       "clean_any_blocking_alarm": {
+        "n": 7,
+        "k": 5,
+        "rate": 0.7143,
+        "low": 0.3589,
+        "high": 0.9178
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 7,
+        "k": 4,
+        "rate": 0.5714,
+        "low": 0.2505,
+        "high": 0.8418
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 7,
+         "k": 3,
+         "rate": 0.4286,
+         "low": 0.1582,
+         "high": 0.7495
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "LINE_MATH": {
+         "n": 7,
+         "k": 3,
+         "rate": 0.4286,
+         "low": 0.1582,
+         "high": 0.7495
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "TAX_MATCH": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "TOTAL_MATCH": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "DATE_SANITY": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "CURRENCY_CHECK": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "LOW_READ_QUALITY": {
+         "n": 7,
+         "k": 2,
+         "rate": 0.2857,
+         "low": 0.0822,
+         "high": 0.6411
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 7,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3543
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "VALUE_IN_DOCUMENT": 1
+       },
+       "values_found": {
+        "n": 180,
+        "k": 174,
+        "rate": 0.9667,
+        "low": 0.9292,
+        "high": 0.9846
+       },
+       "seconds_per_page_median": 9.0,
+       "input_tokens_mean": 826,
+       "output_tokens_mean": 305
+      },
+      "scan_light/mild": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 61,
+        "k": 52,
+        "rate": 0.8525,
+        "low": 0.7428,
+        "high": 0.9204
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 5,
+         "rate": 0.8333,
+         "low": 0.4365,
+         "high": 0.9699,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 1
+        },
+        "tax_total": {
+         "n": 5,
+         "k": 4,
+         "rate": 0.8,
+         "low": 0.3755,
+         "high": 0.9638,
+         "wrong": 0,
+         "missing": 1,
+         "invented": 1
+        },
+        "total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 25,
+        "k": 22,
+        "rate": 0.88,
+        "low": 0.7004,
+        "high": 0.9583
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "shipping": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 5,
+         "k": 4,
+         "rate": 0.8,
+         "low": 0.3755,
+         "high": 0.9638
+        },
+        "total": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.4375,
+       "line_recall": 0.5185,
+       "line_f1": 0.4746,
+       "line_core_f1": 0.7797,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "planted_recall": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "planted_recall_by_code": {
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        }
+       },
+       "planted_recall_by_kind": {
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 8,
+       "clean_any_blocking_alarm": {
+        "n": 8,
+        "k": 8,
+        "rate": 1.0,
+        "low": 0.6756,
+        "high": 1.0
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 8,
+        "k": 7,
+        "rate": 0.875,
+        "low": 0.5291,
+        "high": 0.9776
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 8,
+         "k": 8,
+         "rate": 1.0,
+         "low": 0.6756,
+         "high": 1.0
+        },
+        "LINE_MATH": {
+         "n": 8,
+         "k": 3,
+         "rate": 0.375,
+         "low": 0.1368,
+         "high": 0.6943
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 8,
+         "k": 1,
+         "rate": 0.125,
+         "low": 0.0224,
+         "high": 0.4709
+        },
+        "TAX_MATCH": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "TOTAL_MATCH": {
+         "n": 8,
+         "k": 4,
+         "rate": 0.5,
+         "low": 0.2152,
+         "high": 0.7848
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "DATE_SANITY": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "CURRENCY_CHECK": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "LOW_READ_QUALITY": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "VALUE_IN_DOCUMENT": 1
+       },
+       "values_found": {
+        "n": 188,
+        "k": 167,
+        "rate": 0.8883,
+        "low": 0.8353,
+        "high": 0.9258
+       },
+       "seconds_per_page_median": 8.4,
+       "input_tokens_mean": 828,
+       "output_tokens_mean": 310
+      },
+      "scan_light/typical": {
+       "documents": 10,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 65,
+        "k": 55,
+        "rate": 0.8462,
+        "low": 0.7394,
+        "high": 0.9142
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 8,
+         "k": 7,
+         "rate": 0.875,
+         "low": 0.5291,
+         "high": 0.9776,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 5,
+         "rate": 0.8333,
+         "low": 0.4365,
+         "high": 0.9699,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 2
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 5,
+         "rate": 0.8333,
+         "low": 0.4365,
+         "high": 0.9699,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "total": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 26,
+        "k": 25,
+        "rate": 0.9615,
+        "low": 0.8111,
+        "high": 0.9932
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 2,
+         "k": 2,
+         "rate": 1.0,
+         "low": 0.3424,
+         "high": 1.0
+        },
+        "shipping": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "subtotal": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 6,
+         "rate": 1.0,
+         "low": 0.6097,
+         "high": 1.0
+        },
+        "total": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "line_precision": 0.1944,
+       "line_recall": 0.2258,
+       "line_f1": 0.209,
+       "line_core_f1": 0.4478,
+       "normalised": {
+        "date_right": {
+         "n": 10,
+         "k": 8,
+         "rate": 0.8,
+         "low": 0.4902,
+         "high": 0.9433
+        },
+        "currency_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 10,
+         "k": 9,
+         "rate": 0.9,
+         "low": 0.5958,
+         "high": 0.9821
+        },
+        "vendor_right": {
+         "n": 10,
+         "k": 10,
+         "rate": 1.0,
+         "low": 0.7225,
+         "high": 1.0
+        }
+       },
+       "planted_recall": {
+        "n": 2,
+        "k": 2,
+        "rate": 1.0,
+        "low": 0.3424,
+        "high": 1.0
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 8,
+       "clean_any_blocking_alarm": {
+        "n": 8,
+        "k": 7,
+        "rate": 0.875,
+        "low": 0.5291,
+        "high": 0.9776
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 8,
+        "k": 7,
+        "rate": 0.875,
+        "low": 0.5291,
+        "high": 0.9776
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 8,
+         "k": 3,
+         "rate": 0.375,
+         "low": 0.1368,
+         "high": 0.6943
+        },
+        "LINE_MATH": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 8,
+         "k": 4,
+         "rate": 0.5,
+         "low": 0.2152,
+         "high": 0.7848
+        },
+        "TAX_MATCH": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "TOTAL_MATCH": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "DATE_SANITY": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "CURRENCY_CHECK": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "LOW_READ_QUALITY": {
+         "n": 8,
+         "k": 2,
+         "rate": 0.25,
+         "low": 0.0715,
+         "high": 0.5907
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 8,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.3244
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "VALUE_IN_DOCUMENT": 2
+       },
+       "values_found": {
+        "n": 197,
+        "k": 186,
+        "rate": 0.9442,
+        "low": 0.9028,
+        "high": 0.9685
+       },
+       "seconds_per_page_median": 10.3,
+       "input_tokens_mean": 858,
+       "output_tokens_mean": 339
+      }
+     },
+     "by_family": {
+      "T16": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 184,
+        "k": 106,
+        "rate": 0.5761,
+        "low": 0.5038,
+        "high": 0.6452
+       },
+       "header_invented": 3,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 18,
+         "rate": 0.9,
+         "low": 0.699,
+         "high": 0.9721,
+         "wrong": 2,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 20,
+         "k": 8,
+         "rate": 0.4,
+         "low": 0.2188,
+         "high": 0.6134,
+         "wrong": 7,
+         "missing": 5,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 5,
+         "missing": 1,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881,
+         "wrong": 5,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 19,
+         "k": 14,
+         "rate": 0.7368,
+         "low": 0.5121,
+         "high": 0.8819,
+         "wrong": 5,
+         "missing": 0,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 8,
+         "k": 5,
+         "rate": 0.625,
+         "low": 0.3057,
+         "high": 0.8632,
+         "wrong": 1,
+         "missing": 2,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 20,
+         "k": 7,
+         "rate": 0.35,
+         "low": 0.1812,
+         "high": 0.5671,
+         "wrong": 6,
+         "missing": 7,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 20,
+         "k": 10,
+         "rate": 0.5,
+         "low": 0.2993,
+         "high": 0.7007,
+         "wrong": 7,
+         "missing": 3,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 17,
+         "k": 8,
+         "rate": 0.4706,
+         "low": 0.2617,
+         "high": 0.6904,
+         "wrong": 5,
+         "missing": 4,
+         "invented": 2
+        },
+        "total": {
+         "n": 20,
+         "k": 11,
+         "rate": 0.55,
+         "low": 0.3421,
+         "high": 0.7418,
+         "wrong": 7,
+         "missing": 2,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 6,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 97,
+        "k": 57,
+        "rate": 0.5876,
+        "low": 0.4882,
+        "high": 0.6804
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 20,
+         "k": 9,
+         "rate": 0.45,
+         "low": 0.2582,
+         "high": 0.6579
+        },
+        "shipping": {
+         "n": 20,
+         "k": 9,
+         "rate": 0.45,
+         "low": 0.2582,
+         "high": 0.6579
+        },
+        "subtotal": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545
+        },
+        "tax_total": {
+         "n": 17,
+         "k": 9,
+         "rate": 0.5294,
+         "low": 0.3096,
+         "high": 0.7383
+        },
+        "total": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193
+        }
+       },
+       "line_precision": 0.1795,
+       "line_recall": 0.3043,
+       "line_f1": 0.2258,
+       "line_core_f1": 0.2688,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 17,
+         "rate": 0.85,
+         "low": 0.6396,
+         "high": 0.9476
+        }
+       },
+       "planted_recall": {
+        "n": 11,
+        "k": 6,
+        "rate": 0.5455,
+        "low": 0.2801,
+        "high": 0.7873
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DATE_SANITY": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 2,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.6576
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "TOTAL_MATCH": {
+         "n": 3,
+         "k": 3,
+         "rate": 1.0,
+         "low": 0.4385,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "due_before_entry": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "duplicate_content": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "total_mismatch": {
+         "n": 3,
+         "k": 3,
+         "rate": 1.0,
+         "low": 0.4385,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 9,
+       "clean_any_blocking_alarm": {
+        "n": 9,
+        "k": 8,
+        "rate": 0.8889,
+        "low": 0.565,
+        "high": 0.9801
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 9,
+        "k": 8,
+        "rate": 0.8889,
+        "low": 0.565,
+        "high": 0.9801
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 9,
+         "k": 3,
+         "rate": 0.3333,
+         "low": 0.1206,
+         "high": 0.6458
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 9,
+         "k": 6,
+         "rate": 0.6667,
+         "low": 0.3542,
+         "high": 0.8794
+        },
+        "LINE_MATH": {
+         "n": 9,
+         "k": 4,
+         "rate": 0.4444,
+         "low": 0.1888,
+         "high": 0.7333
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 9,
+         "k": 2,
+         "rate": 0.2222,
+         "low": 0.0632,
+         "high": 0.5474
+        },
+        "TAX_MATCH": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "TOTAL_MATCH": {
+         "n": 9,
+         "k": 5,
+         "rate": 0.5556,
+         "low": 0.2667,
+         "high": 0.8112
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 9,
+         "k": 2,
+         "rate": 0.2222,
+         "low": 0.0632,
+         "high": 0.5474
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "DATE_SANITY": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "CURRENCY_CHECK": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "LOW_READ_QUALITY": {
+         "n": 9,
+         "k": 3,
+         "rate": 0.3333,
+         "low": 0.1206,
+         "high": 0.6458
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 9,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2991
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 2,
+        "LOW_READ_QUALITY": 1,
+        "REQUIRED_FIELDS": 1,
+        "SUBTOTAL_MATCH": 4,
+        "TAX_MATCH": 1,
+        "TOTAL_MATCH": 2,
+        "UNKNOWN_VENDOR": 1,
+        "VALUE_IN_DOCUMENT": 5
+       },
+       "values_found": {
+        "n": 593,
+        "k": 531,
+        "rate": 0.8954,
+        "low": 0.8682,
+        "high": 0.9176
+       },
+       "seconds_per_page_median": 9.8,
+       "input_tokens_mean": 912,
+       "output_tokens_mean": 464
+      },
+      "T17": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 122,
+        "k": 91,
+        "rate": 0.7459,
+        "low": 0.662,
+        "high": 0.8148
+       },
+       "header_invented": 2,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193,
+         "wrong": 3,
+         "missing": 1,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881,
+         "wrong": 4,
+         "missing": 1,
+         "invented": 0
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193,
+         "wrong": 3,
+         "missing": 1,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 5,
+         "missing": 1,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 2
+        },
+        "subtotal": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 3,
+         "missing": 3,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193,
+         "wrong": 2,
+         "missing": 2,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 5,
+         "missing": 1,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 41,
+        "k": 31,
+        "rate": 0.7561,
+        "low": 0.6066,
+        "high": 0.8617
+       },
+       "money_by_field": {
+        "subtotal": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545
+        },
+        "tax_total": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "total": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193
+        }
+       },
+       "line_precision": 0.2857,
+       "line_recall": 0.3333,
+       "line_f1": 0.3077,
+       "line_core_f1": 0.4308,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911
+        },
+        "type_right": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        }
+       },
+       "planted_recall": {
+        "n": 6,
+        "k": 4,
+        "rate": 0.6667,
+        "low": 0.3,
+        "high": 0.9032
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "currency_mismatch": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 14,
+       "clean_any_blocking_alarm": {
+        "n": 14,
+        "k": 13,
+        "rate": 0.9286,
+        "low": 0.6853,
+        "high": 0.9873
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 14,
+        "k": 10,
+        "rate": 0.7143,
+        "low": 0.4535,
+        "high": 0.8828
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 14,
+         "k": 3,
+         "rate": 0.2143,
+         "low": 0.0757,
+         "high": 0.4759
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 14,
+         "k": 8,
+         "rate": 0.5714,
+         "low": 0.3259,
+         "high": 0.7862
+        },
+        "LINE_MATH": {
+         "n": 14,
+         "k": 6,
+         "rate": 0.4286,
+         "low": 0.2138,
+         "high": 0.6741
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 14,
+         "k": 6,
+         "rate": 0.4286,
+         "low": 0.2138,
+         "high": 0.6741
+        },
+        "TAX_MATCH": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "TOTAL_MATCH": {
+         "n": 14,
+         "k": 1,
+         "rate": 0.0714,
+         "low": 0.0127,
+         "high": 0.3147
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 14,
+         "k": 5,
+         "rate": 0.3571,
+         "low": 0.1634,
+         "high": 0.6124
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "DATE_SANITY": {
+         "n": 14,
+         "k": 2,
+         "rate": 0.1429,
+         "low": 0.0401,
+         "high": 0.3994
+        },
+        "CURRENCY_CHECK": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "LOW_READ_QUALITY": {
+         "n": 14,
+         "k": 4,
+         "rate": 0.2857,
+         "low": 0.1172,
+         "high": 0.5465
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 14,
+         "k": 1,
+         "rate": 0.0714,
+         "low": 0.0127,
+         "high": 0.3147
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 1,
+        "LOW_READ_QUALITY": 1,
+        "SUBTOTAL_MATCH": 2,
+        "TOTAL_MATCH": 1,
+        "VALUE_IN_DOCUMENT": 6
+       },
+       "values_found": {
+        "n": 382,
+        "k": 350,
+        "rate": 0.9162,
+        "low": 0.8841,
+        "high": 0.94
+       },
+       "seconds_per_page_median": 9.7,
+       "input_tokens_mean": 1006,
+       "output_tokens_mean": 323
+      },
+      "T18": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 139,
+        "k": 87,
+        "rate": 0.6259,
+        "low": 0.5431,
+        "high": 0.7019
+       },
+       "header_invented": 4,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 19,
+         "rate": 0.95,
+         "low": 0.7639,
+         "high": 0.9911,
+         "wrong": 1,
+         "missing": 0,
+         "invented": 0
+        },
+        "discount": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "due_date": {
+         "n": 15,
+         "k": 7,
+         "rate": 0.4667,
+         "low": 0.2481,
+         "high": 0.6988,
+         "wrong": 7,
+         "missing": 1,
+         "invented": 2
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545,
+         "wrong": 6,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 20,
+         "k": 13,
+         "rate": 0.65,
+         "low": 0.4329,
+         "high": 0.8188,
+         "wrong": 7,
+         "missing": 0,
+         "invented": 0
+        },
+        "po_number": {
+         "n": 5,
+         "k": 3,
+         "rate": 0.6,
+         "low": 0.2307,
+         "high": 0.8824,
+         "wrong": 1,
+         "missing": 1,
+         "invented": 0
+        },
+        "shipping": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "subtotal": {
+         "n": 20,
+         "k": 12,
+         "rate": 0.6,
+         "low": 0.3866,
+         "high": 0.7812,
+         "wrong": 6,
+         "missing": 2,
+         "invented": 0
+        },
+        "tax_total": {
+         "n": 19,
+         "k": 12,
+         "rate": 0.6316,
+         "low": 0.4104,
+         "high": 0.8085,
+         "wrong": 5,
+         "missing": 2,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 13,
+         "rate": 0.65,
+         "low": 0.4329,
+         "high": 0.8188,
+         "wrong": 5,
+         "missing": 2,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 13,
+         "rate": 0.65,
+         "low": 0.4329,
+         "high": 0.8188,
+         "wrong": 7,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 59,
+        "k": 43,
+        "rate": 0.7288,
+        "low": 0.604,
+        "high": 0.8256
+       },
+       "money_by_field": {
+        "discount": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null
+        },
+        "shipping": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null
+        },
+        "subtotal": {
+         "n": 20,
+         "k": 13,
+         "rate": 0.65,
+         "low": 0.4329,
+         "high": 0.8188
+        },
+        "tax_total": {
+         "n": 19,
+         "k": 15,
+         "rate": 0.7895,
+         "low": 0.5667,
+         "high": 0.9149
+        },
+        "total": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        }
+       },
+       "line_precision": 0.1682,
+       "line_recall": 0.2609,
+       "line_f1": 0.2045,
+       "line_core_f1": 0.3523,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 14,
+         "rate": 0.7,
+         "low": 0.481,
+         "high": 0.8545
+        }
+       },
+       "planted_recall": {
+        "n": 6,
+        "k": 4,
+        "rate": 0.6667,
+        "low": 0.3,
+        "high": 0.9032
+       },
+       "planted_recall_by_code": {
+        "AMOUNT_OUTLIER": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 2,
+         "k": 1,
+         "rate": 0.5,
+         "low": 0.0945,
+         "high": 0.9055
+        },
+        "TAX_MATCH": {
+         "n": 3,
+         "k": 2,
+         "rate": 0.6667,
+         "low": 0.2077,
+         "high": 0.9385
+        }
+       },
+       "planted_recall_by_kind": {
+        "amount_outlier": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_content": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "duplicate_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "tax_mismatch": {
+         "n": 3,
+         "k": 2,
+         "rate": 0.6667,
+         "low": 0.2077,
+         "high": 0.9385
+        }
+       },
+       "clean_documents": 14,
+       "clean_any_blocking_alarm": {
+        "n": 14,
+        "k": 13,
+        "rate": 0.9286,
+        "low": 0.6853,
+        "high": 0.9873
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 14,
+        "k": 10,
+        "rate": 0.7143,
+        "low": 0.4535,
+        "high": 0.8828
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 14,
+         "k": 3,
+         "rate": 0.2143,
+         "low": 0.0757,
+         "high": 0.4759
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 14,
+         "k": 10,
+         "rate": 0.7143,
+         "low": 0.4535,
+         "high": 0.8828
+        },
+        "LINE_MATH": {
+         "n": 14,
+         "k": 4,
+         "rate": 0.2857,
+         "low": 0.1172,
+         "high": 0.5465
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 14,
+         "k": 8,
+         "rate": 0.5714,
+         "low": 0.3259,
+         "high": 0.7862
+        },
+        "TAX_MATCH": {
+         "n": 14,
+         "k": 2,
+         "rate": 0.1429,
+         "low": 0.0401,
+         "high": 0.3994
+        },
+        "TOTAL_MATCH": {
+         "n": 14,
+         "k": 2,
+         "rate": 0.1429,
+         "low": 0.0401,
+         "high": 0.3994
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 14,
+         "k": 4,
+         "rate": 0.2857,
+         "low": 0.1172,
+         "high": 0.5465
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "DATE_SANITY": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "CURRENCY_CHECK": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "LOW_READ_QUALITY": {
+         "n": 14,
+         "k": 3,
+         "rate": 0.2143,
+         "low": 0.0757,
+         "high": 0.4759
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 14,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2153
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LINE_MATH": 2,
+        "LOW_READ_QUALITY": 3,
+        "REQUIRED_FIELDS": 3,
+        "SUBTOTAL_MATCH": 2,
+        "TOTAL_MATCH": 1,
+        "UNKNOWN_VENDOR": 2,
+        "VALUE_IN_DOCUMENT": 5
+       },
+       "values_found": {
+        "n": 514,
+        "k": 478,
+        "rate": 0.93,
+        "low": 0.9046,
+        "high": 0.949
+       },
+       "seconds_per_page_median": 10.7,
+       "input_tokens_mean": 849,
+       "output_tokens_mean": 435
+      },
+      "T19": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 104,
+        "k": 75,
+        "rate": 0.7212,
+        "low": 0.6283,
+        "high": 0.7983
+       },
+       "header_invented": 7,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 15,
+         "k": 12,
+         "rate": 0.8,
+         "low": 0.5481,
+         "high": 0.9295,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 1
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193,
+         "wrong": 4,
+         "missing": 0,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 19,
+         "k": 15,
+         "rate": 0.7895,
+         "low": 0.5667,
+         "high": 0.9149,
+         "wrong": 4,
+         "missing": 0,
+         "invented": 1
+        },
+        "po_number": {
+         "n": 4,
+         "k": 1,
+         "rate": 0.25,
+         "low": 0.0456,
+         "high": 0.6994,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 1
+        },
+        "subtotal": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 4
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 1,
+         "rate": 0.1667,
+         "low": 0.0301,
+         "high": 0.5635,
+         "wrong": 2,
+         "missing": 3,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881,
+         "wrong": 3,
+         "missing": 2,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881,
+         "wrong": 5,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 26,
+        "k": 16,
+        "rate": 0.6154,
+        "low": 0.4253,
+        "high": 0.7757
+       },
+       "money_by_field": {
+        "subtotal": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null
+        },
+        "tax_total": {
+         "n": 6,
+         "k": 1,
+         "rate": 0.1667,
+         "low": 0.0301,
+         "high": 0.5635
+        },
+        "total": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        }
+       },
+       "line_precision": 0.2533,
+       "line_recall": 0.3016,
+       "line_f1": 0.2754,
+       "line_core_f1": 0.4203,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        }
+       },
+       "planted_recall": {
+        "n": 5,
+        "k": 4,
+        "rate": 0.8,
+        "low": 0.3755,
+        "high": 0.9638
+       },
+       "planted_recall_by_code": {
+        "CURRENCY_CHECK": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DATE_SANITY": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "REQUIRED_FIELDS": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "planted_recall_by_kind": {
+        "currency_mismatch": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "duplicate_content": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "future_date": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "missing_invoice_number": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "unknown_vendor": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 15,
+       "clean_any_blocking_alarm": {
+        "n": 15,
+        "k": 11,
+        "rate": 0.7333,
+        "low": 0.4805,
+        "high": 0.891
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 15,
+        "k": 10,
+        "rate": 0.6667,
+        "low": 0.4171,
+        "high": 0.8482
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 15,
+         "k": 5,
+         "rate": 0.3333,
+         "low": 0.1518,
+         "high": 0.5829
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 15,
+         "k": 5,
+         "rate": 0.3333,
+         "low": 0.1518,
+         "high": 0.5829
+        },
+        "LINE_MATH": {
+         "n": 15,
+         "k": 1,
+         "rate": 0.0667,
+         "low": 0.0119,
+         "high": 0.2982
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 15,
+         "k": 1,
+         "rate": 0.0667,
+         "low": 0.0119,
+         "high": 0.2982
+        },
+        "TAX_MATCH": {
+         "n": 15,
+         "k": 1,
+         "rate": 0.0667,
+         "low": 0.0119,
+         "high": 0.2982
+        },
+        "TOTAL_MATCH": {
+         "n": 15,
+         "k": 6,
+         "rate": 0.4,
+         "low": 0.1982,
+         "high": 0.6425
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 15,
+         "k": 5,
+         "rate": 0.3333,
+         "low": 0.1518,
+         "high": 0.5829
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        },
+        "DATE_SANITY": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        },
+        "CURRENCY_CHECK": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        },
+        "LOW_READ_QUALITY": {
+         "n": 15,
+         "k": 5,
+         "rate": 0.3333,
+         "low": 0.1518,
+         "high": 0.5829
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 15,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.2039
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "TAX_MATCH": 1,
+        "TOTAL_MATCH": 2,
+        "VALUE_IN_DOCUMENT": 1
+       },
+       "values_found": {
+        "n": 375,
+        "k": 361,
+        "rate": 0.9627,
+        "low": 0.9383,
+        "high": 0.9776
+       },
+       "seconds_per_page_median": 8.9,
+       "input_tokens_mean": 872,
+       "output_tokens_mean": 336
+      },
+      "T20": {
+       "documents": 20,
+       "failed": 0,
+       "header_field_exact": {
+        "n": 92,
+        "k": 66,
+        "rate": 0.7174,
+        "low": 0.6181,
+        "high": 0.7992
+       },
+       "header_invented": 11,
+       "header_by_field": {
+        "currency": {
+         "n": 20,
+         "k": 17,
+         "rate": 0.85,
+         "low": 0.6396,
+         "high": 0.9476,
+         "wrong": 1,
+         "missing": 2,
+         "invented": 0
+        },
+        "due_date": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 1
+        },
+        "entry_date": {
+         "n": 20,
+         "k": 11,
+         "rate": 0.55,
+         "low": 0.3421,
+         "high": 0.7418,
+         "wrong": 8,
+         "missing": 1,
+         "invented": 0
+        },
+        "invoice_number": {
+         "n": 20,
+         "k": 16,
+         "rate": 0.8,
+         "low": 0.584,
+         "high": 0.9193,
+         "wrong": 1,
+         "missing": 3,
+         "invented": 0
+        },
+        "subtotal": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null,
+         "wrong": 0,
+         "missing": 0,
+         "invented": 10
+        },
+        "tax_total": {
+         "n": 12,
+         "k": 7,
+         "rate": 0.5833,
+         "low": 0.3195,
+         "high": 0.8067,
+         "wrong": 2,
+         "missing": 3,
+         "invented": 0
+        },
+        "total": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881,
+         "wrong": 2,
+         "missing": 3,
+         "invented": 0
+        },
+        "vendor_name": {
+         "n": 20,
+         "k": 17,
+         "rate": 0.85,
+         "low": 0.6396,
+         "high": 0.9476,
+         "wrong": 3,
+         "missing": 0,
+         "invented": 0
+        }
+       },
+       "money_exact": {
+        "n": 32,
+        "k": 22,
+        "rate": 0.6875,
+        "low": 0.5143,
+        "high": 0.8205
+       },
+       "money_by_field": {
+        "subtotal": {
+         "n": 0,
+         "k": 0,
+         "rate": null,
+         "low": null,
+         "high": null
+        },
+        "tax_total": {
+         "n": 12,
+         "k": 7,
+         "rate": 0.5833,
+         "low": 0.3195,
+         "high": 0.8067
+        },
+        "total": {
+         "n": 20,
+         "k": 15,
+         "rate": 0.75,
+         "low": 0.5313,
+         "high": 0.8881
+        }
+       },
+       "line_precision": 0.3797,
+       "line_recall": 0.5357,
+       "line_f1": 0.4444,
+       "line_core_f1": 0.4889,
+       "normalised": {
+        "date_right": {
+         "n": 20,
+         "k": 11,
+         "rate": 0.55,
+         "low": 0.3421,
+         "high": 0.7418
+        },
+        "currency_right": {
+         "n": 20,
+         "k": 20,
+         "rate": 1.0,
+         "low": 0.8389,
+         "high": 1.0
+        },
+        "type_right": {
+         "n": 20,
+         "k": 18,
+         "rate": 0.9,
+         "low": 0.699,
+         "high": 0.9721
+        },
+        "vendor_right": {
+         "n": 20,
+         "k": 18,
+         "rate": 0.9,
+         "low": 0.699,
+         "high": 0.9721
+        }
+       },
+       "planted_recall": {
+        "n": 2,
+        "k": 1,
+        "rate": 0.5,
+        "low": 0.0945,
+        "high": 0.9055
+       },
+       "planted_recall_by_code": {
+        "LINE_MATH": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        }
+       },
+       "planted_recall_by_kind": {
+        "injection_text": {
+         "n": 1,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.7935
+        },
+        "line_math": {
+         "n": 1,
+         "k": 1,
+         "rate": 1.0,
+         "low": 0.2065,
+         "high": 1.0
+        }
+       },
+       "clean_documents": 18,
+       "clean_any_blocking_alarm": {
+        "n": 18,
+        "k": 16,
+        "rate": 0.8889,
+        "low": 0.672,
+        "high": 0.969
+       },
+       "clean_alarm_without_value_in_document": {
+        "n": 18,
+        "k": 13,
+        "rate": 0.7222,
+        "low": 0.4913,
+        "high": 0.875
+       },
+       "false_alarm_by_check": {
+        "REQUIRED_FIELDS": {
+         "n": 18,
+         "k": 9,
+         "rate": 0.5,
+         "low": 0.2903,
+         "high": 0.7097
+        },
+        "VALUE_IN_DOCUMENT": {
+         "n": 18,
+         "k": 12,
+         "rate": 0.6667,
+         "low": 0.4375,
+         "high": 0.8372
+        },
+        "LINE_MATH": {
+         "n": 18,
+         "k": 3,
+         "rate": 0.1667,
+         "low": 0.0584,
+         "high": 0.3922
+        },
+        "SUBTOTAL_MATCH": {
+         "n": 18,
+         "k": 4,
+         "rate": 0.2222,
+         "low": 0.09,
+         "high": 0.4521
+        },
+        "TAX_MATCH": {
+         "n": 18,
+         "k": 3,
+         "rate": 0.1667,
+         "low": 0.0584,
+         "high": 0.3922
+        },
+        "TOTAL_MATCH": {
+         "n": 18,
+         "k": 5,
+         "rate": 0.2778,
+         "low": 0.125,
+         "high": 0.5087
+        },
+        "DUPLICATE_SUSPECT": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        },
+        "UNKNOWN_VENDOR": {
+         "n": 18,
+         "k": 1,
+         "rate": 0.0556,
+         "low": 0.0099,
+         "high": 0.2576
+        },
+        "AMOUNT_OUTLIER": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        },
+        "DATE_SANITY": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        },
+        "CURRENCY_CHECK": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        },
+        "LOW_READ_QUALITY": {
+         "n": 18,
+         "k": 13,
+         "rate": 0.7222,
+         "low": 0.4913,
+         "high": 0.875
+        },
+        "AMBIGUOUS_FORMAT": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        },
+        "SUSPICIOUS_TEXT": {
+         "n": 18,
+         "k": 0,
+         "rate": 0.0,
+         "low": 0.0,
+         "high": 0.1759
+        }
+       },
+       "collateral_alarms_on_planted": {
+        "LOW_READ_QUALITY": 2,
+        "REQUIRED_FIELDS": 1,
+        "SUBTOTAL_MATCH": 1,
+        "TOTAL_MATCH": 1,
+        "UNKNOWN_VENDOR": 1
+       },
+       "values_found": {
+        "n": 364,
+        "k": 344,
+        "rate": 0.9451,
+        "low": 0.9167,
+        "high": 0.9642
+       },
+       "seconds_per_page_median": 7.6,
+       "input_tokens_mean": 752,
+       "output_tokens_mean": 331
+      }
+     }
+    }
+   },
+   "headline_by_pass": {
+    "header_accuracy": [
+     0.6860079365079365
+    ],
+    "line_f1": [
+     0.33142368742368744
+    ],
+    "planted_caught": [
+     0.6333333333333333
+    ],
+    "clean_alarm": [
+     0.8714285714285714
+    ]
+   }
+  }
+ },
+ "comparisons": {},
+ "reading_list": {
+  "failed_to_process": [],
+  "planted_problem_missed": [
+   "d2-inv-0002 (injection_text, clean_pdf)",
+   "d2-inv-0007 (duplicate_content, scan_heavy)",
+   "d2-inv-0008 (duplicate_invoice_number, phone_photo)",
+   "d2-inv-0009 (due_before_entry, phone_photo)",
+   "d2-inv-0012 (missing_invoice_number, clean_pdf)",
+   "d2-inv-0028 (currency_mismatch, phone_photo)",
+   "d2-inv-0032 (duplicate_invoice_number, scan_light)",
+   "d2-inv-0047 (tax_mismatch, phone_photo)",
+   "d2-inv-0055 (duplicate_content, scan_heavy)",
+   "d2-inv-0068 (duplicate_content, clean_pdf)",
+   "d2-rcp-0003 (injection_text, scan_heavy)"
+  ],
+  "false_alarm_on_clean_document": [
+   "d2-inv-0003 (LINE_MATH, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0010 (REQUIRED_FIELDS, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0013 (LINE_MATH, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0014 (SUBTOTAL_MATCH, TOTAL_MATCH; scan_light)",
+   "d2-inv-0016 (LINE_MATH, SUBTOTAL_MATCH, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0017 (REQUIRED_FIELDS, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0019 (LINE_MATH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0020 (REQUIRED_FIELDS, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0021 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-inv-0022 (VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0024 (LINE_MATH, REQUIRED_FIELDS; scan_light)",
+   "d2-inv-0025 (LINE_MATH, TOTAL_MATCH; scan_heavy)",
+   "d2-inv-0026 (REQUIRED_FIELDS, UNKNOWN_VENDOR; scan_heavy)",
+   "d2-inv-0027 (LINE_MATH, SUBTOTAL_MATCH, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0029 (SUBTOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0033 (LINE_MATH, SUBTOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0034 (VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0035 (LINE_MATH, SUBTOTAL_MATCH, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0036 (REQUIRED_FIELDS, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0038 (SUBTOTAL_MATCH; phone_photo)",
+   "d2-inv-0039 (LINE_MATH, SUBTOTAL_MATCH, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0041 (LINE_MATH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0042 (SUBTOTAL_MATCH; scan_light)",
+   "d2-inv-0045 (REQUIRED_FIELDS, SUBTOTAL_MATCH, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0048 (REQUIRED_FIELDS, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0050 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-inv-0051 (SUBTOTAL_MATCH, TAX_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0052 (LINE_MATH, SUBTOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0053 (REQUIRED_FIELDS, SUBTOTAL_MATCH; scan_light)",
+   "d2-inv-0054 (LINE_MATH, SUBTOTAL_MATCH, TOTAL_MATCH, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0056 (VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0058 (LINE_MATH, SUBTOTAL_MATCH, TOTAL_MATCH, UNKNOWN_VENDOR, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0059 (SUBTOTAL_MATCH, TAX_MATCH, VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-inv-0060 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-inv-0063 (VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0064 (REQUIRED_FIELDS, TOTAL_MATCH, UNKNOWN_VENDOR; scan_heavy)",
+   "d2-inv-0067 (REQUIRED_FIELDS, TOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-inv-0069 (UNKNOWN_VENDOR; clean_pdf)",
+   "d2-inv-0071 (TOTAL_MATCH; scan_light)",
+   "d2-inv-0072 (LINE_MATH, SUBTOTAL_MATCH, TAX_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-inv-0074 (REQUIRED_FIELDS, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-inv-0075 (TOTAL_MATCH, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0076 (REQUIRED_FIELDS, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0077 (REQUIRED_FIELDS, UNKNOWN_VENDOR; phone_photo)",
+   "d2-inv-0080 (TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-rcp-0001 (LINE_MATH, REQUIRED_FIELDS, TAX_MATCH; scan_light)",
+   "d2-rcp-0002 (REQUIRED_FIELDS; scan_heavy)",
+   "d2-rcp-0004 (SUBTOTAL_MATCH, TAX_MATCH, TOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-rcp-0005 (LINE_MATH, SUBTOTAL_MATCH, TOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-rcp-0006 (REQUIRED_FIELDS, SUBTOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-rcp-0007 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-rcp-0009 (REQUIRED_FIELDS, TAX_MATCH, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-rcp-0010 (REQUIRED_FIELDS, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-rcp-0012 (REQUIRED_FIELDS, TOTAL_MATCH, VALUE_IN_DOCUMENT; scan_heavy)",
+   "d2-rcp-0013 (REQUIRED_FIELDS, UNKNOWN_VENDOR; scan_heavy)",
+   "d2-rcp-0014 (LINE_MATH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-rcp-0016 (SUBTOTAL_MATCH, TOTAL_MATCH, VALUE_IN_DOCUMENT; phone_photo)",
+   "d2-rcp-0017 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-rcp-0018 (VALUE_IN_DOCUMENT; clean_pdf)",
+   "d2-rcp-0019 (REQUIRED_FIELDS, VALUE_IN_DOCUMENT; scan_light)",
+   "d2-rcp-0020 (REQUIRED_FIELDS; scan_light)"
+  ],
+  "header_value_invented": [
+   "d2-inv-0005",
+   "d2-inv-0012",
+   "d2-inv-0013",
+   "d2-inv-0029",
+   "d2-inv-0036",
+   "d2-inv-0043",
+   "d2-inv-0055",
+   "d2-inv-0058",
+   "d2-inv-0061",
+   "d2-inv-0064",
+   "d2-inv-0070",
+   "d2-inv-0072",
+   "d2-inv-0073",
+   "d2-inv-0078",
+   "d2-rcp-0004",
+   "d2-rcp-0005",
+   "d2-rcp-0006",
+   "d2-rcp-0008",
+   "d2-rcp-0011",
+   "d2-rcp-0012",
+   "d2-rcp-0014",
+   "d2-rcp-0015",
+   "d2-rcp-0016",
+   "d2-rcp-0017",
+   "d2-rcp-0020"
+  ]
+ }
+}
