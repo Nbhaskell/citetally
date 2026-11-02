@@ -103,8 +103,57 @@ def _similarity(a: str, b: str) -> float:
     return 2 * total / (len(left) + len(right))
 
 
+def _tokens(text: str) -> list[str]:
+    """The words of a text as `normalize_name` reads them, with the legal suffixes kept."""
+    plain = unicodedata.normalize("NFKD", text)
+    plain = "".join(ch for ch in plain if not unicodedata.combining(ch))
+    plain = "".join(
+        ch for ch in plain.casefold() if ch not in "'`" and unicodedata.category(ch) != "Pf"
+    ).replace("&", " and ")
+    return re.sub(r"[\W_]+", " ", plain).split()
+
+
+def _contains(page: Sequence[str], name: Sequence[str]) -> bool:
+    size = len(name)
+    return size > 0 and any(page[i : i + size] == list(name) for i in range(len(page) - size + 1))
+
+
+def _match_on_page(
+    printed: str, page_text: str, vendors: Sequence[Vendor], aliases: Sequence[VendorAlias]
+) -> VendorMatch | None:
+    """The model copied part of a name; the page prints the whole of a known one.
+
+    A vendor counts only when its full name (or an alias) appears word for word on the page and
+    every word the model copied is one of that name's words, so a known vendor merely mentioned
+    in a remark is not mistaken for the issuer. Exactly one such vendor is applied; several are
+    left for the reviewer.
+    """
+    page = _tokens(page_text)
+    wanted = _tokens(printed)
+    if not wanted or not page:
+        return None
+    active = {v.id: v for v in vendors if v.is_active}
+    found: dict[int, VendorMatchMethod] = {}
+    for vendor in active.values():
+        name = vendor.normalized_name.split()
+        if set(wanted) <= set(name) and _contains(page, name):
+            found[vendor.id] = VendorMatchMethod.EXACT
+    for each in aliases:
+        name = each.normalized_alias.split()
+        if each.vendor_id in active and set(wanted) <= set(name) and _contains(page, name):
+            found.setdefault(each.vendor_id, VendorMatchMethod.ALIAS)
+    if len(found) != 1:
+        return None
+    ((vendor_id, method),) = found.items()
+    return VendorMatch(vendor_id, method, 1.0, ())
+
+
 def match_vendor(
-    printed: str | None, vendors: Sequence[Vendor], aliases: Sequence[VendorAlias]
+    printed: str | None,
+    vendors: Sequence[Vendor],
+    aliases: Sequence[VendorAlias],
+    *,
+    page_text: str | None = None,
 ) -> VendorMatch:
     none = VendorMatch(None, None, None, ())
     normalized = normalize_name(printed) if printed else ""
@@ -117,6 +166,11 @@ def match_vendor(
     for found in aliases:
         if found.vendor_id in active and found.normalized_alias == normalized:
             return VendorMatch(found.vendor_id, VendorMatchMethod.ALIAS, 1.0, ())
+
+    if page_text and printed:
+        on_page = _match_on_page(printed, page_text, vendors, aliases)
+        if on_page is not None:
+            return on_page
 
     names: dict[int, list[str]] = {vid: [v.normalized_name] for vid, v in active.items()}
     for found in aliases:
@@ -147,11 +201,15 @@ def choose_category(
 
 
 def match_document(
-    conn: sqlite3.Connection, printed_vendor: str | None, category_suggestion: str | None
+    conn: sqlite3.Connection,
+    printed_vendor: str | None,
+    category_suggestion: str | None,
+    *,
+    page_text: str | None = None,
 ) -> Matched:
     """Match the printed vendor and choose a category, reading what is needed from the database."""
     vendors = repo.list_vendors(conn)
-    match = match_vendor(printed_vendor, vendors, repo.list_aliases(conn))
+    match = match_vendor(printed_vendor, vendors, repo.list_aliases(conn), page_text=page_text)
     known = next((v for v in vendors if v.id == match.vendor_id), None)
     categories = {c.code: c.id for c in repo.list_categories(conn) if c.is_active}
     return Matched(match, choose_category(known, category_suggestion, categories))

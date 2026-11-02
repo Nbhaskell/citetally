@@ -202,3 +202,50 @@ def test_match_document_reads_vendors_aliases_and_categories_from_the_database(
 def test_an_inactive_category_is_not_offered(conn: sqlite3.Connection) -> None:
     conn.execute("UPDATE categories SET is_active = 0 WHERE code = 'FOOD'")
     assert match_document(conn, "Nobody", "FOOD").category.category_id is None
+
+
+# --- Stage 2: the model copied only part of a name the page prints in full -----------------------
+
+
+PAGE = "Tanager Fuel & Convenience\n1 Route 9\nReceipt R-40512\nBill to Kestrel Hollow Plumbing"
+
+
+def test_a_shortened_name_is_matched_when_the_page_prints_the_whole_known_name() -> None:
+    match = match_vendor("Fuel & Convenience", VENDORS, ALIASES, page_text=PAGE)
+    assert (match.vendor_id, match.method, match.score) == (3, VendorMatchMethod.EXACT, 1.0)
+
+
+def test_a_shortened_name_is_matched_through_an_alias_printed_on_the_page() -> None:
+    page = "NF Pet Supply invoice 20417 to Kestrel Hollow Plumbing"
+    match = match_vendor("Pet Supply", VENDORS, ALIASES, page_text=page)
+    assert (match.vendor_id, match.method) == (1, VendorMatchMethod.ALIAS)
+
+
+def test_a_known_vendor_named_elsewhere_on_the_page_is_not_taken_for_the_issuer() -> None:
+    """The model's name must be part of the known name: a different vendor's name in the
+    remarks proves nothing about who issued this document."""
+    page = "Acme Plumbing Wholesale\nCredit for Northfield Pet Supply Co. return"
+    match = match_vendor("Acme Plumbing Wholesale", VENDORS, ALIASES, page_text=page)
+    assert match.vendor_id is None
+
+
+def test_two_known_vendors_that_fit_leave_the_choice_to_the_reviewer() -> None:
+    vendors = [*VENDORS, vendor(4, "Wren Common Directory")]
+    page = "Wren Common Local Directory and Wren Common Directory"
+    match = match_vendor("Wren Common", vendors, ALIASES, page_text=page)
+    assert match.vendor_id is None
+
+
+def test_the_page_is_not_searched_when_the_printed_name_already_matches_or_is_missing() -> None:
+    exact = match_vendor("Northfield Pet Supply Co.", VENDORS, ALIASES, page_text=PAGE)
+    assert exact.method is VendorMatchMethod.EXACT and exact.vendor_id == 1
+    assert match_vendor(None, VENDORS, ALIASES, page_text=PAGE).vendor_id is None
+
+
+def test_a_name_that_is_not_part_of_any_name_on_the_page_matches_nothing() -> None:
+    assert match_vendor("Brightside Janitorial", VENDORS, ALIASES, page_text=PAGE).vendor_id is None
+
+
+def test_an_inactive_vendor_is_not_found_on_the_page() -> None:
+    vendors = [vendor(3, "Tanager Fuel & Convenience", active=False)]
+    assert match_vendor("Fuel & Convenience", vendors, [], page_text=PAGE).vendor_id is None

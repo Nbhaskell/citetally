@@ -441,7 +441,10 @@ def match_stage(conn: sqlite3.Connection, document: Document, services: Services
     if entry is None or extraction is None:
         raise StageFailure(_MESSAGES["match"])
     fields = ExtractedFields.model_validate_json(extraction.fields)
-    matched = match_document(conn, entry.vendor_name_raw, fields.category_suggestion)
+    page_text = " ".join(page.text for page in repo.list_pages(conn, document.id) if page.text)
+    matched = match_document(
+        conn, entry.vendor_name_raw, fields.category_suggestion, page_text=page_text
+    )
     vendor = matched.vendor
     repo.update_entry(
         conn,
