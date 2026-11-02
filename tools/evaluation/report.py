@@ -19,7 +19,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-from tools.evaluation.run import HELDOUT_LOCK, ROOT, RUNS, read_records
+from tools.evaluation.run import HELDOUT_LOCK, ROOT, RUNS, SEALED_LOCK, read_records
 from tools.evaluation.score import (
     BLOCKING,
     CONDITIONS,
@@ -30,7 +30,8 @@ from tools.evaluation.score import (
     summarise,
 )
 from tools.evaluation.stats import compare, t_halfwidth
-from tools.synthetic.golden import Item, load_golden
+from tools.evaluation.suites import SPLITS, load_suite
+from tools.synthetic.golden import Item
 
 REPORTS = ROOT / "eval" / "reports"
 HEADLINE_TEXT = {
@@ -147,7 +148,7 @@ def compare_variants(
 
 
 def build(split: str) -> dict[str, Any]:
-    items_list = load_golden(split=split, unseal_heldout=split == "heldout")
+    items_list = load_suite(split, unseal=split in {"heldout", "sealed"}).items
     items = {i.id: i for i in items_list}
     runs = load_runs(split)
     if "baseline" not in runs:
@@ -165,6 +166,15 @@ def build(split: str) -> dict[str, Any]:
                 "all": summarise(scores),
                 "by_condition": {
                     c: summarise(s) for c, s in group(scores, lambda x: x["condition"]).items()
+                },
+                "by_level": {
+                    key: summarise(s)
+                    for key, s in sorted(
+                        group(
+                            [x for x in scores if x.get("level")],
+                            lambda x: f"{x['condition']}/{x['level']}",
+                        ).items()
+                    )
                 },
                 "by_family": {
                     f: summarise(s) for f, s in sorted(group(scores, lambda x: x["family"]).items())
@@ -285,6 +295,27 @@ def render(report: dict[str, Any]) -> str:
     out.append(
         "Percentages show the 95% Wilson interval in brackets. A document that failed counts every printed field as wrong."
     )
+
+    if first.get("by_level"):
+        out += ["", "## By level of damage, baseline (first pass)", ""]
+        rows = [
+            [
+                key.replace("_", " ").replace("/", ", "),
+                str(s["documents"]),
+                pct(s["header_field_exact"], interval=False),
+                "–" if s["line_f1"] is None else f"{s['line_f1'] * 100:.1f}%",
+                pct(s["planted_recall"], interval=False),
+                pct(s["clean_any_blocking_alarm"], interval=False),
+            ]
+            for key, s in first["by_level"].items()
+        ]
+        out.append(
+            table(
+                ["Condition, level", "Docs", "Header fields exact", "Line F1", "Planted caught",
+                 "Clean false alarm"],
+                rows,
+            )
+        )  # fmt: skip
 
     out += ["", "## Header fields, baseline (all conditions)", ""]
     rows = [
@@ -439,7 +470,7 @@ def render(report: dict[str, Any]) -> str:
         "- The model is run at temperature 0 with a fixed seed, so repeated passes are expected to be nearly identical. The spread between passes therefore says little about the spread between different documents, which is what the bootstrap measures.",
         "- A person who wrote the system also wrote the test documents, so they are unseen but not blind.",
     ]
-    if split == "heldout":
+    if split in {"heldout", "sealed"}:
         out.append(
             "- The held-out split was opened once, after the development numbers were frozen. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
         )
@@ -455,10 +486,11 @@ def render(report: dict[str, Any]) -> str:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("--name", default="dev", help="report name: eval_<name>.md and .json")
-    parser.add_argument("--split", choices=["tuned", "heldout"], default="tuned")
+    parser.add_argument("--split", choices=list(SPLITS), default="tuned")
     args = parser.parse_args(argv)
-    if args.split == "heldout" and not HELDOUT_LOCK.exists():
-        print("The held-out split has not been run, so there is nothing to score.")
+    lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK}.get(args.split)
+    if lock is not None and not lock.exists():
+        print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2
     report = build(args.split)
     REPORTS.mkdir(parents=True, exist_ok=True)

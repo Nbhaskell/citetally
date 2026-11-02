@@ -34,14 +34,16 @@ from citetally.config import Settings
 from citetally.extract import PROMPT_VERSION
 from citetally.matching import normalize_name
 from citetally.pipeline import Services
+from tools.evaluation.suites import SPLITS, load_suite
 from tools.evaluation.world import World, order, seed
-from tools.synthetic.facts import Facts, load_facts
-from tools.synthetic.golden import GOLDEN_FILE, Item, golden_hash, load_golden
+from tools.synthetic.facts import Facts
+from tools.synthetic.golden import GOLDEN_FILE, Item
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 RUNS = ROOT / "eval" / "runs"
 SCRATCH = ROOT / "data" / "eval"
 HELDOUT_LOCK = RUNS / "HELDOUT_RUN.lock"
+SEALED_LOCK = RUNS / "SEALED_RUN.lock"
 
 # What each variant changes, as environment names. Anything not listed is the default.
 VARIANTS: dict[str, dict[str, str]] = {
@@ -85,7 +87,9 @@ def _tesseract_version(path: str) -> str:
     return (done.stdout or done.stderr).splitlines()[0] if (done.stdout or done.stderr) else ""
 
 
-def provenance(settings: Settings, variant: str, run_id: str, split: str) -> dict[str, Any]:
+def provenance(
+    settings: Settings, variant: str, run_id: str, split: str, golden_file: Path = GOLDEN_FILE
+) -> dict[str, Any]:
     from citetally.reading.ocr import find_tesseract
 
     cmd = find_tesseract(settings.tesseract_cmd) or ""
@@ -97,8 +101,8 @@ def provenance(settings: Settings, variant: str, run_id: str, split: str) -> dic
         "started_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "commit": _git("rev-parse", "HEAD"),
         "tree_changed": bool(_git("status", "--porcelain")),
-        "golden_file": str(GOLDEN_FILE.relative_to(ROOT)),
-        "golden_sha256": golden_hash(),
+        "golden_file": str(golden_file.relative_to(ROOT)),
+        "golden_sha256": hashlib.sha256(golden_file.read_bytes()).hexdigest(),
         "provider": settings.model_provider,
         "text_model": settings.text_model,
         "vision_model": settings.vision_model,
@@ -326,7 +330,7 @@ def _known_world(conn: Any, facts: Facts) -> World:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
-    parser.add_argument("--split", choices=["tuned", "heldout"], default="tuned")
+    parser.add_argument("--split", choices=list(SPLITS), default="tuned")
     parser.add_argument("--variant", choices=sorted(VARIANTS), default="baseline")
     parser.add_argument("--pass", dest="pass_number", type=int, default=1)
     parser.add_argument("--conditions", default="", help="comma-separated; default all four")
@@ -337,9 +341,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="open the held-out split. Allowed once, after dev numbers are frozen.",
     )
+    parser.add_argument(
+        "--confirm-sealed-once",
+        action="store_true",
+        help="open the sealed split. Allowed once, after the fixes are made.",
+    )
     args = parser.parse_args(argv)
 
-    heldout = args.split == "heldout"
+    opens_once = args.split in {"heldout", "sealed"}
     suffix = ""
     conditions = [c for c in args.conditions.split(",") if c]
     if conditions:
@@ -348,34 +357,40 @@ def main(argv: Sequence[str] | None = None) -> int:
         suffix += f"-first{args.limit}"
     run_id = f"{args.split}-{args.variant}-p{args.pass_number}{suffix}"
 
-    if heldout:
-        if not args.confirm_heldout_once:
-            print("The held-out split is sealed. Add --confirm-heldout-once to open it, once.")
+    if opens_once:
+        flag = "--confirm-heldout-once" if args.split == "heldout" else "--confirm-sealed-once"
+        lock = HELDOUT_LOCK if args.split == "heldout" else SEALED_LOCK
+        confirmed = (
+            args.confirm_heldout_once if args.split == "heldout" else args.confirm_sealed_once
+        )
+        if not confirmed:
+            print(f"The {args.split} split is sealed. Add {flag} to open it, once.")
             return 2
-        if HELDOUT_LOCK.exists() and HELDOUT_LOCK.read_text(encoding="utf-8").strip() != run_id:
-            print(f"The held-out split has already been run ({HELDOUT_LOCK.read_text().strip()}).")
+        if lock.exists() and lock.read_text(encoding="utf-8").strip() != run_id:
+            print(f"The {args.split} split has already been run ({lock.read_text().strip()}).")
             return 2
         if args.limit or conditions or args.pass_number != 1:
-            print("The held-out run is one full pass: no --limit, --conditions or --pass.")
+            print(f"The {args.split} run is one full pass: no --limit, --conditions or --pass.")
             return 2
         RUNS.mkdir(parents=True, exist_ok=True)
-        HELDOUT_LOCK.write_text(run_id, encoding="utf-8")
+        lock.write_text(run_id, encoding="utf-8")
 
-    all_items = load_golden(split=args.split, unseal_heldout=heldout)
+    suite = load_suite(args.split, unseal=opens_once)
+    all_items = suite.items
     items = [i for i in all_items if not conditions or i.condition in conditions]
     if args.limit:
         items = items[: args.limit]
     out_dir = RUNS / run_id
-    if args.fresh and not heldout:
+    if args.fresh and not opens_once:
         shutil.rmtree(out_dir, ignore_errors=True)
 
     work_dir = SCRATCH / run_id
     env = VARIANTS[args.variant]
     settings = Settings(_env_file=None, CITETALLY_DATA_DIR=str(work_dir), **env)  # type: ignore[arg-type]
-    facts = load_facts()
+    facts = suite.facts
     services = real_services(settings)
     services.today = facts.as_of
-    meta = provenance(settings, args.variant, run_id, args.split)
+    meta = provenance(settings, args.variant, run_id, args.split, suite.golden_file)
     run(
         items=items, history_items=all_items, facts=facts, settings=settings, services=services,
         work_dir=work_dir, out_dir=out_dir, meta=meta,

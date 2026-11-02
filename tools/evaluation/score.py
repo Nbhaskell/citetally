@@ -101,6 +101,7 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
     return {
         "id": record["id"],
         "condition": item.condition,
+        "level": getattr(item, "level", None),
         "family": item.template_family,
         "status": record["status"],
         "header": header,
