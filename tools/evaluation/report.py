@@ -255,7 +255,7 @@ def render(report: dict[str, Any]) -> str:
         )
     )
 
-    out += ["", "## Headline numbers, baseline", ""]
+    out += ["", "## Headline numbers, baseline (first pass; shares pooled over all fields)", ""]
     rows = []
     for name in (*CONDITIONS, "all"):
         s = first["all"] if name == "all" else first["by_condition"].get(name)
@@ -389,6 +389,45 @@ def render(report: dict[str, Any]) -> str:
             out.append(
                 table(["Measure", "Difference", "Bootstrap 95%", "Pass spread", "Verdict"], rows)
             )
+
+    out += ["", "## Settings side by side, by condition (first pass)", ""]
+    out.append(
+        "Each row is one setting on the documents it ran, so rows of the same condition use the same "
+        "documents. The two columns marked with an asterisk were added after the first results were "
+        "read, to explain them; they are context and were not used to choose anything."
+    )
+    out.append("")
+    rows = []
+    for condition in CONDITIONS:
+        for variant, data in report["variants"].items():
+            s_ = data["passes"][min(data["passes"])]["by_condition"].get(condition)
+            if not s_:
+                continue
+            core = s_["line_core_f1"]
+            rows.append(
+                [
+                    condition.replace("_", " "),
+                    variant,
+                    str(s_["documents"]),
+                    pct(s_["header_field_exact"], interval=False),
+                    "–" if s_["line_f1"] is None else f"{s_['line_f1'] * 100:.1f}%",
+                    "–" if core is None else f"{core * 100:.1f}%",
+                    pct(s_["planted_recall"], interval=False),
+                    pct(s_["clean_any_blocking_alarm"], interval=False),
+                    pct(s_["clean_alarm_without_value_in_document"], interval=False),
+                    "–"
+                    if s_["seconds_per_page_median"] is None
+                    else f"{s_['seconds_per_page_median']} s",
+                ]
+            )
+    out.append(
+        table(
+            ["Condition", "Setting", "Docs", "Header fields exact", "Line F1",
+             "Line F1, quantity ignored*", "Planted caught", "Clean false alarm",
+             "Clean false alarm without VALUE_IN_DOCUMENT*", "Median s per page"],
+            rows,
+        )
+    )  # fmt: skip
 
     out += ["", "## What this cannot tell you", ""]
     out += [

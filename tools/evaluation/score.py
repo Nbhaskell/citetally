@@ -42,6 +42,30 @@ def _minor_verdict(said: int | None, truth: int | None) -> str | None:
     return "invented" if said is not None else None
 
 
+CORE_LINE = ("description", "amount")
+
+
+def _core_lines(lines: Sequence[dict[str, Any]] | None) -> list[dict[str, str | None]]:
+    return [{k: norm(line.get(k)) for k in CORE_LINE} for line in lines or []]
+
+
+def score_core_lines(
+    lines: Sequence[dict[str, Any]] | None, truth: Sequence[dict[str, Any]]
+) -> tuple[int, int]:
+    """Like `score_lines` but a line counts when its description and amount are right, whatever
+    the quantity and unit price say. A companion to the strict measure, added after the first
+    results were read (see the report); never a headline."""
+    predicted = _core_lines(lines)
+    unused = list(range(len(predicted)))
+    right = 0
+    for wanted in _core_lines(truth):
+        match = next((i for i in unused if predicted[i] == wanted), None)
+        if match is not None:
+            unused.remove(match)
+            right += 1
+    return right, len(predicted)
+
+
 def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
     """Everything the report needs from one document, as plain numbers and codes."""
     extraction = record.get("extraction") or {}
@@ -52,6 +76,9 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
         (fields or {}).get("lines"), [line.printed for line in item.truth.lines]
     )
     truth_lines = len(item.truth.lines)
+    core_right, core_predicted = score_core_lines(
+        (fields or {}).get("lines"), [line.printed for line in item.truth.lines]
+    )
 
     money: dict[str, str] = {}
     for name in MONEY:
@@ -84,6 +111,8 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
         "lines_right": right_lines,
         "lines_truth": truth_lines,
         "lines_predicted": predicted_lines,
+        "lines_core_right": core_right,
+        "lines_core_predicted": core_predicted,
         "line_f1": 1.0
         if truth_lines == predicted_lines == 0
         else 2 * right_lines / max(truth_lines + predicted_lines, 1),
@@ -101,6 +130,9 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
         "collateral": [code for code in failed if code not in expected] if planted else [],
         "excluded": excluded,
         "clean_alarm": (not planted) and not excluded and any(code in BLOCKING for code in failed),
+        "clean_alarm_ungrounded": (not planted)
+        and not excluded
+        and any(code in BLOCKING and code != "VALUE_IN_DOCUMENT" for code in failed),
         "pages": record.get("page_count") or 0,
         "seconds": record.get("seconds"),
         "input_tokens": extraction.get("input_tokens"),
@@ -137,7 +169,8 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         for name, verdict in s["money"].items():
             money[name][verdict] += 1
         for key in ("header_right", "header_printed", "header_invented", "lines_right",
-                    "lines_truth", "lines_predicted", "values", "values_found"):  # fmt: skip
+                    "lines_truth", "lines_predicted", "lines_core_right", "lines_core_predicted",
+                    "values", "values_found"):  # fmt: skip
             total[key] += s[key]
         for key in ("date_right", "currency_right", "type_right", "vendor_right"):
             total[key] += bool(s[key])
@@ -155,6 +188,7 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         elif not s["excluded"]:
             total["clean_docs"] += 1
             total["clean_alarm"] += s["clean_alarm"]
+            total["clean_alarm_ungrounded"] += s["clean_alarm_ungrounded"]
             for code in CHECKS:
                 alarms[code][1] += 1
                 alarms[code][0] += code in s["failed_checks"]
@@ -178,6 +212,20 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         f1 = None
     else:
         f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
+    core_precision = (
+        total["lines_core_right"] / total["lines_core_predicted"]
+        if total["lines_core_predicted"]
+        else None
+    )
+    core_recall = total["lines_core_right"] / total["lines_truth"] if total["lines_truth"] else None
+    if core_precision is None or core_recall is None:
+        core_f1 = None
+    else:
+        core_f1 = (
+            0.0
+            if core_precision + core_recall == 0
+            else 2 * core_precision * core_recall / (core_precision + core_recall)
+        )
     return {
         "documents": total["documents"],
         "failed": total["failed"],
@@ -200,6 +248,7 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "line_precision": None if precision is None else round(precision, 4),
         "line_recall": None if recall is None else round(recall, 4),
         "line_f1": None if f1 is None else round(f1, 4),
+        "line_core_f1": None if core_f1 is None else round(core_f1, 4),
         "normalised": {
             key: _rate(total[key], total["documents"])
             for key in ("date_right", "currency_right", "type_right", "vendor_right")
@@ -209,6 +258,9 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "planted_recall_by_kind": {k: _rate(*v) for k, v in sorted(caught_by_kind.items())},
         "clean_documents": total["clean_docs"],
         "clean_any_blocking_alarm": _rate(total["clean_alarm"], total["clean_docs"]),
+        "clean_alarm_without_value_in_document": _rate(
+            total["clean_alarm_ungrounded"], total["clean_docs"]
+        ),
         "false_alarm_by_check": {k: _rate(*v) for k, v in alarms.items()},
         "collateral_alarms_on_planted": dict(sorted(collateral.items())),
         "values_found": _rate(total["values_found"], total["values"]),

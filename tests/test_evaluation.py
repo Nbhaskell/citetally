@@ -161,6 +161,31 @@ def test_a_blocking_check_failing_on_a_clean_document_is_a_false_alarm_a_warning
     assert score_record(record, item)["clean_alarm"]
 
 
+def test_a_line_with_no_quantity_is_wrong_strictly_but_right_when_quantity_is_ignored() -> None:
+    item = next(i for i in TUNED if i.truth.lines and not i.planted)
+    record = perfect(item)
+    for line in record["extraction"]["fields"]["lines"]:
+        line["quantity"] = None
+    score = score_record(record, item)
+    assert score["lines_right"] == 0 and score["line_f1"] == 0.0
+    assert score["lines_core_right"] == len(item.truth.lines)
+    summary = summarise([score])
+    assert summary["line_f1"] == 0.0 and summary["line_core_f1"] == 1.0
+
+
+def test_a_clean_alarm_from_grounding_alone_is_counted_apart() -> None:
+    item = first(planted=False)
+    record = perfect(item)
+    for check in record["checks"]:
+        if check["code"] == "VALUE_IN_DOCUMENT":
+            check["passed"] = False
+    score = score_record(record, item)
+    assert score["clean_alarm"] and not score["clean_alarm_ungrounded"]
+    summary = summarise([score])
+    assert summary["clean_any_blocking_alarm"]["k"] == 1
+    assert summary["clean_alarm_without_value_in_document"]["k"] == 0
+
+
 def test_a_failed_document_counts_every_printed_field_as_wrong() -> None:
     item = first(planted=False)
     failed = perfect(item, status="failed", extraction=None, entry=None, checks=[])
