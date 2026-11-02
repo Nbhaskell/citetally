@@ -402,6 +402,8 @@ def ground_stage(
         )
 
     with transaction(conn):
+        if HeaderField.INVOICE_NUMBER in result.rejected:
+            repo.update_entry(conn, entry.id, invoice_number=None)
         repo.update_entry(
             conn,
             entry.id,

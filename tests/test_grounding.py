@@ -258,7 +258,9 @@ def test_a_document_with_no_words_finds_nothing_and_does_not_fail(pages: list[li
 # --- Stage 2: things printed with brackets, and values the page does not hold ---------------------
 
 
-def test_a_rate_printed_in_brackets_is_found_but_an_amount_in_brackets_is_not_a_positive_one() -> None:
+def test_a_rate_printed_in_brackets_is_found_but_an_amount_in_brackets_is_not_a_positive_one() -> (
+    None
+):
     words = page("Sales tax (6.5%) $4.55", "Total ($70.00)")
     result = ground(
         fields(tax_total="$4.55", total="$70.00", lines=[{"description": "x", "tax_rate": "6.5%"}]),
@@ -271,7 +273,9 @@ def test_a_rate_printed_in_brackets_is_found_but_an_amount_in_brackets_is_not_a_
 def test_punctuation_after_a_value_does_not_hide_it() -> None:
     words = page("Invoice INV-77: dated, March 3, 2026;", "PO PO-5.")
     result = ground(fields(invoice_number="INV-77", po_number="PO-5"), [words])
-    assert one(result, HeaderField.INVOICE_NUMBER).found and one(result, HeaderField.PO_NUMBER).found
+    assert (
+        one(result, HeaderField.INVOICE_NUMBER).found and one(result, HeaderField.PO_NUMBER).found
+    )
 
 
 def test_a_currency_symbol_that_is_not_printed_is_not_reported_as_a_missing_value() -> None:
@@ -304,7 +308,11 @@ def test_a_subtotal_equal_to_the_total_is_kept_when_the_page_prints_both() -> No
 def test_a_one_line_receipt_that_prints_the_amount_three_times_keeps_all_three_claims() -> None:
     words = page("Windshield fluid 54.57", "Subtotal $54.57", "Total $54.57")
     result = ground(
-        fields(subtotal="54.57", total="54.57", lines=[{"description": "Windshield fluid", "amount": "54.57"}]),
+        fields(
+            subtotal="54.57",
+            total="54.57",
+            lines=[{"description": "Windshield fluid", "amount": "54.57"}],
+        ),
         [words],
     )
     assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found
@@ -316,3 +324,51 @@ def test_when_the_one_printed_amount_is_labelled_subtotal_it_is_the_total_that_w
     result = ground(fields(subtotal="$175.96", total="$175.96"), [words])
     assert one(result, HeaderField.SUBTOTAL).found
     assert not [v for v in result.values if v.field == HeaderField.TOTAL]
+
+
+# --- Stage 2: a number the page labels as something other than the invoice number ---------------
+
+
+def test_a_customer_id_returned_as_the_invoice_number_is_rejected() -> None:
+    words = page("Customer ID: C-24495", "Date May 14, 2026")
+    result = ground(fields(invoice_number="C-24495"), [words])
+    assert HeaderField.INVOICE_NUMBER in result.rejected
+    assert not [v for v in result.values if v.field == HeaderField.INVOICE_NUMBER]
+
+
+def test_a_po_or_account_number_returned_as_the_invoice_number_is_rejected() -> None:
+    for label, number in (
+        ("PO number", "PO-8190"),
+        ("Acct no.", "4400-123"),
+        ("Policy no.", "P-77"),
+    ):
+        words = page(f"{label} {number}", "Date May 14, 2026")
+        result = ground(fields(invoice_number=number), [words])
+        assert HeaderField.INVOICE_NUMBER in result.rejected, label
+
+
+def test_an_invoice_number_with_an_ordinary_label_is_kept() -> None:
+    result = ground(
+        fields(invoice_number="HM-71222"), [page("Invoice #: HM-71222", "Customer ID C-1")]
+    )
+    assert HeaderField.INVOICE_NUMBER not in result.rejected
+    assert one(result, HeaderField.INVOICE_NUMBER).found
+
+
+def test_a_label_that_also_says_invoice_keeps_the_number() -> None:
+    result = ground(fields(invoice_number="4411"), [page("Customer invoice no. 4411")])
+    assert HeaderField.INVOICE_NUMBER not in result.rejected
+
+
+def test_the_same_number_given_as_invoice_number_and_po_number_is_not_an_invoice_number() -> None:
+    result = ground(fields(invoice_number="PO-8190", po_number="PO-8190"), [page("Ref PO-8190")])
+    assert HeaderField.INVOICE_NUMBER in result.rejected
+    assert one(result, HeaderField.PO_NUMBER).found
+
+
+def test_an_order_number_label_is_left_alone_because_some_layouts_use_it_for_the_invoice() -> None:
+    words = page("Order no.: RO-40126")
+    assert (
+        HeaderField.INVOICE_NUMBER
+        not in ground(fields(invoice_number="RO-40126"), [words]).rejected
+    )

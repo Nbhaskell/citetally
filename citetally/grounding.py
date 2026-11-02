@@ -11,6 +11,7 @@ reports with page text.
 
 from __future__ import annotations
 
+import re
 import unicodedata
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -82,6 +83,9 @@ class Grounding:
     values: list[GroundedValue]
     line_tax_rates: list[Decimal | None]  # per line, as a fraction ("7%" is 0.07)
     currency: str  # the ISO code the amounts were read in
+    rejected: tuple[
+        HeaderField, ...
+    ] = ()  # returned by the model, but the page labels it otherwise
 
     @property
     def found_count(self) -> int:
@@ -295,10 +299,13 @@ def ground(
         parse_rate(rate, locale) if (rate := _text(line.tax_rate)) is not None else None
         for line in fields.lines
     ]
+    settled = _settle(values, indexed, locale, currency)
+    rejected: tuple[HeaderField, ...] = ()
+    if _not_an_invoice_number(settled, indexed, fields):
+        rejected = (HeaderField.INVOICE_NUMBER,)
+        settled = [v for v in settled if v.field != HeaderField.INVOICE_NUMBER]
     return Grounding(
-        values=_settle(values, indexed, locale, currency),
-        line_tax_rates=rates,
-        currency=document_currency,
+        values=settled, line_tax_rates=rates, currency=document_currency, rejected=rejected
     )
 
 
@@ -327,6 +334,37 @@ def _label_left(page: _Page, value: GroundedValue) -> str:
     ]
     left.sort(key=lambda word: word.x0)
     return " ".join(clean_token(word.t) for word in left[-4:]).casefold()
+
+
+_OTHER_IDS = frozenset({"customer", "cust", "account", "acct", "po", "purchase", "policy"})
+_INVOICE_WORDS = frozenset(
+    {"invoice", "inv", "bill", "statement", "memo", "receipt", "ticket", "credit"}
+)
+
+
+def _not_an_invoice_number(
+    values: list[GroundedValue], pages: Sequence[_Page], fields: ExtractedFields
+) -> bool:
+    """True when the value returned as the invoice number is one the page labels as something else.
+
+    The model copied the right characters from the wrong line: a customer ID, an account or policy
+    number or a purchase order. The same string given as the PO number is the same case. The number
+    is not changed, only not accepted as this document's invoice number, so `REQUIRED_FIELDS` asks
+    a person for the real one. "Order no." is left alone: some layouts use it for the invoice.
+    """
+    number = next((v for v in values if v.field == HeaderField.INVOICE_NUMBER), None)
+    if number is None or not number.found:
+        return False
+    po = _text(fields.po_number)
+    if po is not None and _normalise(po) == _normalise(number.printed_text):
+        return True
+    page = next((p for p in pages if p.number == number.page_number), None)
+    if page is None:
+        return False
+    words = re.findall(r"[a-z]+", _label_left(page, number))[-3:]
+    if _INVOICE_WORDS & set(words):
+        return False
+    return bool(_OTHER_IDS & set(words))
 
 
 def _settle(
