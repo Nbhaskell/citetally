@@ -167,8 +167,21 @@ def compare(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("--base", required=True, help="the saved run to start from")
-    parser.add_argument("--label", required=True, help="a short name for this code state")
+    parser.add_argument("--label", help="a short name for this code state")
+    parser.add_argument(
+        "--against", help="compare with this saved run instead of replaying (same documents only)"
+    )
     args = parser.parse_args(argv)
+    if args.against:
+        old = read_records(RUNS / args.base / "records.jsonl")
+        new = read_records(RUNS / args.against / "records.jsonl")
+        shared = [k for k in new if k in old]
+        meta = json.loads((RUNS / args.against / "meta.json").read_text(encoding="utf-8"))
+        print(f"{len(shared)} documents in common.\n")
+        print(compare([old[k] for k in shared], [new[k] for k in shared], meta["split"]))
+        return 0
+    if not args.label:
+        parser.error("--label is needed to replay")
     started = time.monotonic()
     old = read_records(RUNS / args.base / "records.jsonl")
     new_id, records = replay(args.base, args.label)

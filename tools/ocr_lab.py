@@ -27,8 +27,9 @@ import pypdfium2 as pdfium
 from PIL import Image
 
 from citetally.grounding import ground
-from citetally.models import ExtractedFields, HeaderField
+from citetally.models import ExtractedFields, HeaderField, Word
 from citetally.reading import preprocess as pre
+from citetally.reading.merge import merge_readings
 from citetally.reading.ocr import TesseractOcr, find_tesseract
 from tools.evaluation.suites import load_suite
 from tools.synthetic.golden import Item
@@ -75,14 +76,27 @@ def truth_fields(item: Item) -> ExtractedFields:
     )
 
 
-def read(item: Item, settings: dict[str, Any], exe: str) -> dict[str, Any]:
+def _words(image: Image.Image, settings: dict[str, Any], exe: str) -> list[Word]:
+    prepared = pre.preprocess(
+        image,
+        min_long=settings.get("min_long", pre.WORKING_MIN_LONG_SIDE),
+        max_long=settings.get("max_long", pre.WORKING_MAX_LONG_SIDE),
+    )
+    engine = TesseractOcr(exe, psm=settings.get("psm", 11), fallback_psm=6)
+    return pre.preprocess_words(prepared, engine.read_page(prepared.image).words)
+
+
+def read(item: Item, name: str, exe: str) -> dict[str, Any]:
+    """`name` may join several settings with "+": each reads the page and a value counts as found
+    when any of the readings holds it. With a "merge:" prefix the readings are merged into one."""
     started = time.monotonic()
     image = page_image(item)
-    prepared = pre.preprocess(image)
-    engine = TesseractOcr(exe, psm=settings.get("psm", 11), fallback_psm=6)
-    page = engine.read_page(prepared.image)
-    words = pre.preprocess_words(prepared, page.words)
-    result = ground(truth_fields(item), [words])
+    merge = name.startswith("merge:")
+    parts = name.removeprefix("merge:").split("+")
+    readings = [_words(image, VARIANTS[part], exe) for part in parts]
+    if merge:  # one page made from all the readings, as the pipeline would hand it on
+        readings = [merge_readings(readings[0], readings[1:])]
+    result = ground(truth_fields(item), readings)
     wanted = [v for v in result.values if v.field != HeaderField.CURRENCY]
     by_kind: dict[str, list[bool]] = defaultdict(list)
     for value in wanted:
@@ -96,21 +110,14 @@ def read(item: Item, settings: dict[str, Any], exe: str) -> dict[str, Any]:
         "found": sum(v.found for v in wanted),
         "total": len(wanted),
         "by_kind": {k: [sum(v), len(v)] for k, v in by_kind.items()},
-        "words": len(words),
+        "words": sum(len(r) for r in readings),
         "seconds": round(time.monotonic() - started, 1),
     }
 
 
 def run_variant(name: str, items: list[Item], exe: str, workers: int) -> dict[str, Any]:
-    settings = VARIANTS[name]
-    saved = (pre.WORKING_MIN_LONG_SIDE, pre.WORKING_MAX_LONG_SIDE)
-    pre.WORKING_MIN_LONG_SIDE = settings.get("min_long", saved[0])
-    pre.WORKING_MAX_LONG_SIDE = settings.get("max_long", saved[1])
-    try:
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            rows = list(pool.map(lambda item: read(item, settings, exe), items))
-    finally:
-        pre.WORKING_MIN_LONG_SIDE, pre.WORKING_MAX_LONG_SIDE = saved
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        rows = list(pool.map(lambda item: read(item, name, exe), items))
     return summarise(name, rows)
 
 
@@ -150,7 +157,9 @@ def sample_items(count: int) -> list[Item]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
-    parser.add_argument("--variants", nargs="+", default=["current"], choices=sorted(VARIANTS))
+    parser.add_argument(
+        "--variants", nargs="+", default=["current"], help="names, or names joined with +"
+    )
     parser.add_argument("--sample", type=int, default=80)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--out", type=Path, default=ROOT / "data" / "ocr_lab.json")

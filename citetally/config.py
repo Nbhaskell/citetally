@@ -48,6 +48,9 @@ class Settings(BaseSettings):
         default="tesseract", validation_alias="CITETALLY_OCR_ENGINE"
     )
     tesseract_cmd: str = Field(default="", validation_alias="TESSERACT_CMD")
+    # How many ways each scanned page is read: 1 the usual way; 2 adds block mode; 3 also a larger
+    # copy. Each reading finds values the others lose; every value is still located in the words.
+    ocr_readings: int = Field(default=1, ge=1, le=3, validation_alias="CITETALLY_OCR_READINGS")
 
     max_file_mb: int = Field(default=20, ge=1, validation_alias="CITETALLY_MAX_FILE_MB")
     max_pages: int = Field(default=10, ge=1, validation_alias="CITETALLY_MAX_PAGES")

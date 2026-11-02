@@ -13,7 +13,8 @@ import json
 import sqlite3
 import time
 from collections.abc import Callable
-from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -46,13 +47,19 @@ from citetally.models import DocumentStatus as S
 from citetally.providers.base import ModelError, ModelProvider, ModelTimeout, ModelUnavailable
 from citetally.reading import layout, text_layer
 from citetally.reading.masking import mask_words
+from citetally.reading.merge import merge_readings
 from citetally.reading.ocr import (
     OcrEngine,
     OcrError,
     OcrTimeout,
     OcrUnavailable,
 )
-from citetally.reading.preprocess import preprocess, preprocess_words
+from citetally.reading.preprocess import (
+    WORKING_MAX_LONG_SIDE,
+    WORKING_MIN_LONG_SIDE,
+    preprocess,
+    preprocess_words,
+)
 
 IMAGE_MAX_SIDE_PX = 1568  # a larger picture only costs the model more tokens
 READ_BASE_TIMEOUT_S = 60.0
@@ -101,6 +108,24 @@ class Services:
 # ---- reading (the part that runs in a worker) --------------------------------------------------
 
 
+# What each extra reading of a scanned page changes: Tesseract's page mode (None is the engine's
+# own) and the size the page is enlarged to. The first reading of a plan is the usual one. In a
+# trial on development scans each added reading found more of the page's true values: one reading
+# 70%, two 80%, three 83% (`tools/ocr_lab.py`).
+_READING_PLANS: dict[int, tuple[tuple[int | None, int, int], ...]] = {
+    1: ((None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),),
+    2: (
+        (None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (6, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+    ),
+    3: (
+        (None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (6, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),
+        (None, 2600, 3400),
+    ),
+}
+
+
 @dataclass(frozen=True)
 class _ReadJob:
     original: Path
@@ -108,6 +133,7 @@ class _ReadJob:
     is_pdf: bool
     min_chars: int
     ocr: OcrEngine
+    readings: int = 1
 
 
 @dataclass(frozen=True)
@@ -120,12 +146,33 @@ class _PageRead:
     skew_degrees: float | None
     width: int
     height: int
+    alt_words: list[list[Word]] = field(default_factory=list)  # each separate reading
 
 
 @dataclass(frozen=True)
 class _ReadResult:
     pages: list[_PageRead]
     error: str | None = None
+
+
+def _extra_readings(
+    ocr: OcrEngine, image: Image.Image, plan: tuple[tuple[int | None, int, int], ...]
+) -> list[list[Word]]:
+    """The other readings of a scanned page, made at the same time. A reading that fails is left
+    out: the first reading decides whether the page could be read at all."""
+
+    def one(step: tuple[int | None, int, int]) -> list[Word] | None:
+        mode, low, high = step
+        try:
+            prepared = preprocess(image, min_long=low, max_long=high)
+            return preprocess_words(prepared, ocr.read_page(prepared.image, psm=mode).words)
+        except OcrError:
+            return None
+
+    if not plan:
+        return []
+    with ThreadPoolExecutor(max_workers=len(plan)) as pool:
+        return [words for words in pool.map(one, plan) if words is not None]
 
 
 def _read_job(job: _ReadJob) -> _ReadResult:
@@ -155,24 +202,29 @@ def _read_job(job: _ReadJob) -> _ReadResult:
             )
             continue
         try:
-            pre = preprocess(image)
-            page = job.ocr.read_page(pre.image)
+            plan = _READING_PLANS[job.readings]
+            first_pre = preprocess(image, min_long=plan[0][1], max_long=plan[0][2])
+            first = job.ocr.read_page(first_pre.image, psm=plan[0][0])
+            extras = _extra_readings(job.ocr, image, plan[1:])
         except OcrUnavailable:
             return _ReadResult([], "ocr_unavailable")
         except OcrTimeout:
             return _ReadResult([], "ocr_timeout")
         except OcrError:
             return _ReadResult([], "ocr_failed")
-        masked = mask_words(preprocess_words(pre, page.words))
+        readings = [mask_words(preprocess_words(first_pre, first.words))]
+        readings += [mask_words(words) for words in extras]
+        merged = merge_readings(readings[0], readings[1:]) if len(readings) > 1 else readings[0]
         pages.append(
             _PageRead(
-                masked,
-                layout.build_text(masked),
+                merged,
+                layout.build_text(merged),
                 ReadMethod.OCR,
                 job.ocr.name,
-                page.mean_confidence,
-                pre.skew_degrees,
+                first.mean_confidence,
+                first_pre.skew_degrees,
                 *image.size,
+                alt_words=readings if len(readings) > 1 else [],
             )
         )
     return _ReadResult(pages)
@@ -189,6 +241,7 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
         is_pdf=document.mime_type == "application/pdf",
         min_chars=services.settings.text_layer_min_chars,
         ocr=services.ocr,
+        readings=services.settings.ocr_readings,
     )
     try:
         if services.isolate:
@@ -221,6 +274,7 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
                 ocr_engine=page.engine,
                 mean_confidence=page.mean_confidence,
                 skew_degrees=page.skew_degrees,
+                alt_words=[[w.model_dump() for w in reading] for reading in page.alt_words],
             )
         repo.change_status(conn, document.id, S.READ)
 
@@ -356,10 +410,15 @@ def ground_stage(
         [Word.model_validate(w) for w in json.loads(page.words)]
         for page in repo.list_pages(conn, document.id)
     ]
+    alternatives = [
+        [[Word.model_validate(w) for w in reading] for reading in json.loads(page.alt_words)]
+        for page in repo.list_pages(conn, document.id)
+    ]
     settings = services.settings
     result = ground(
         fields,
         pages,
+        alternatives=alternatives,
         locale=settings.locale,
         currency=settings.default_currency,
         threshold=settings.grounding_match_threshold,

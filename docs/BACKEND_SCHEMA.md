@@ -138,6 +138,7 @@ CREATE TABLE pages (
   skew_degrees     REAL,
   word_count       INTEGER NOT NULL,
   words            TEXT NOT NULL,                  -- JSON array, see section 3
+  alt_words        TEXT NOT NULL DEFAULT '[]',     -- JSON array of word arrays: each separate reading (migration 0003)
   text             TEXT NOT NULL,                  -- layout-preserving reading-order text
   created_at       TEXT NOT NULL,
   UNIQUE (document_id, page_number)
@@ -301,6 +302,8 @@ CREATE TABLE settings (
 ```
 
 ## 3. JSON shapes
+
+**`pages.alt_words`** (array of arrays of the same word objects: each separate reading of an OCR page, so a value can be located in any of them while `words` holds the merged reading the model reads; empty for a PDF text layer)
 
 **`pages.words`** (array; `c` is null for a PDF text layer)
 ```json

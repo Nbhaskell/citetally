@@ -653,3 +653,87 @@ def test_check_events_hold_only_the_code_and_the_outcome(
         if e.event_type == EventType.CHECK_FAILED.value
     ]
     assert payloads and all(set(p) == {"check", "passed"} for p in payloads)
+
+
+# --- Stage 2: reading a scanned page more than once ----------------------------------------------
+
+
+def two_pages_of_words(drop_amount: bool) -> list[OcrPage]:
+    """The first reading loses a column the second keeps."""
+    first = ocr_words()
+    second = ocr_words()
+    if drop_amount:
+        first = [w for w in first if w.t != "4"]
+    return [OcrPage(words=first, mean_confidence=70.0), OcrPage(words=second, mean_confidence=90.0)]
+
+
+def test_with_several_readings_a_scanned_page_is_read_in_each_mode_and_each_is_kept(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    ocr = FakeOcr(two_pages_of_words(drop_amount=True))
+    reading = settings.model_copy(update={"ocr_readings": 3})
+    doc_id = new_document(conn, reading, png(), "photo.png")
+    done = process(conn, doc_id, services(reading, ocr=ocr))
+    assert done.status is S.NEEDS_REVIEW
+    assert sorted(m for m in ocr.modes if m is not None) == [6]  # block mode once, the rest usual
+    assert len(ocr.calls) == 3
+    (page,) = repo.list_pages(conn, doc_id)
+    alternatives = json.loads(page.alt_words)
+    assert len(alternatives) == 3 and all(alternatives)
+    assert page.mean_confidence == 70.0  # the first reading's, which also decides failure
+    merged = {w["t"] for w in json.loads(page.words)}
+    assert "4" in merged  # the word the first reading lost is in the merged page the model reads
+
+
+def test_one_reading_keeps_no_alternatives_and_reads_once(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    ocr = FakeOcr([OcrPage(words=ocr_words(), mean_confidence=81.5)])
+    doc_id = new_document(conn, settings, png(), "photo.png")
+    process(conn, doc_id, services(settings, ocr=ocr))
+    (page,) = repo.list_pages(conn, doc_id)
+    assert json.loads(page.alt_words) == [] and len(ocr.calls) == 1
+
+
+def test_a_value_only_a_later_reading_got_right_is_still_located_on_the_page(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    bad = [
+        Word(
+            t="INV-2O417" if w.t == "INV-20417" else w.t, x0=w.x0, y0=w.y0, x1=w.x1, y1=w.y1, c=w.c
+        )
+        for w in ocr_words()
+    ]
+    ocr = FakeOcr(
+        [OcrPage(words=bad, mean_confidence=60.0), OcrPage(words=ocr_words(), mean_confidence=90.0)]
+    )
+    reading = settings.model_copy(update={"ocr_readings": 2})
+    doc_id = new_document(conn, reading, png(), "photo.png")
+    process(conn, doc_id, services(reading, ocr=ocr))
+    entry = repo.get_entry_for_document(conn, doc_id)
+    assert entry is not None
+    found = {
+        e.field.value: e.found for e in repo.list_evidence(conn, entry.id) if e.line_id is None
+    }
+    assert found["invoice_number"] is True
+
+
+def test_a_failing_extra_reading_is_left_out_and_a_failing_first_reading_fails_the_page(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    class SecondFails(FakeOcr):
+        def read_page(self, image: Any, *, psm: int | None = None) -> OcrPage:
+            if psm == 6:
+                raise OcrTimeout("slow")
+            return super().read_page(image, psm=psm)
+
+    reading = settings.model_copy(update={"ocr_readings": 2})
+    ocr = SecondFails([OcrPage(words=ocr_words(), mean_confidence=81.5)])
+    doc_id = new_document(conn, reading, png(), "photo.png")
+    assert process(conn, doc_id, services(reading, ocr=ocr)).status is S.NEEDS_REVIEW
+    (page,) = repo.list_pages(conn, doc_id)
+    assert json.loads(page.alt_words) == [] or len(json.loads(page.alt_words)) == 1
+
+    doc2 = new_document(conn, reading, png() + b" ", "photo2.png")
+    broken = process(conn, doc2, services(reading, ocr=FakeOcr(error=OcrTimeout("slow"))))
+    assert broken.status is S.FAILED

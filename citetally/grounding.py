@@ -247,16 +247,25 @@ def ground(
     fields: ExtractedFields,
     pages: Sequence[Sequence[Word]],
     *,
+    alternatives: Sequence[Sequence[Sequence[Word]]] | None = None,
     locale: str = "en-US",
     currency: str = "USD",
     threshold: float = DEFAULT_THRESHOLD,
 ) -> Grounding:
     """Locate and parse every printed value in `fields`.
 
-    `pages` holds each page's words in page order. `currency` is the business's default and what a
-    bare "$" means. Nothing is raised for a value that cannot be found or read; it is reported.
+    `pages` holds each page's words in page order. `alternatives[i]` holds other, separate readings
+    of page `i + 1`: a value is looked for in all of them and located where it reads best, so one
+    reading's misread digit does not hide what another reading got right. `currency` is the
+    business's default and what a bare "$" means. Nothing is raised for a value that cannot be
+    found or read; it is reported.
     """
     indexed = [_make_page(number, words) for number, words in enumerate(pages, start=1)]
+    searched = indexed + [
+        _make_page(number, reading)
+        for number, readings in enumerate(alternatives or [], start=1)
+        for reading in readings
+    ]
     wanted: list[tuple[HeaderField | LineField, int | None, str]] = []
     for header in _HEADER_ORDER:
         text = _text(getattr(fields, header.value))
@@ -284,7 +293,7 @@ def ground(
         kind = _KINDS.get(field, "text")
         values.append(
             _ground_one(
-                indexed,
+                searched,
                 field,
                 line_index,
                 text,
