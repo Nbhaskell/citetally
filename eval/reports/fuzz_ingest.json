@@ -1,0 +1,39 @@
+{
+  "seed": 1,
+  "cases": 500,
+  "outcomes": {
+    "needs_review": 288,
+    "failed": 210,
+    "rejected": 2
+  },
+  "failure_reasons": {
+    "The file could not be read. It may be damaged or locked.": 201,
+    "No text could be read from this document, so there is nothing to pull out.": 8,
+    "This file is not a PDF, PNG or JPEG, so it cannot be read.": 2,
+    "This document has too much text to read in one go.": 1
+  },
+  "cases_by_mutation": {
+    "delete:.jpg": 10,
+    "delete:.pdf": 23,
+    "flip:.jpg": 18,
+    "flip:.pdf": 38,
+    "header:.jpg": 11,
+    "header:.pdf": 45,
+    "insert:.jpg": 19,
+    "insert:.pdf": 41,
+    "repeat:.jpg": 21,
+    "repeat:.pdf": 49,
+    "splice:.jpg": 11,
+    "splice:.pdf": 50,
+    "tail:.jpg": 15,
+    "tail:.pdf": 45,
+    "truncate:.jpg": 17,
+    "truncate:.pdf": 35,
+    "zero:.jpg": 14,
+    "zero:.pdf": 38
+  },
+  "slowest_seconds": 65.8,
+  "slowest_case": "repeat:.pdf",
+  "problems": [],
+  "files_outside_data_folder": []
+}
