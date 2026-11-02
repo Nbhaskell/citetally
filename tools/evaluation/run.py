@@ -48,6 +48,8 @@ SEALED_LOCK = RUNS / "SEALED_RUN.lock"
 # What each variant changes, as environment names. Anything not listed is the default.
 VARIANTS: dict[str, dict[str, str]] = {
     "baseline": {},
+    # The product as it is after Stage 2: its own defaults, nothing overridden.
+    "final": {},
     # Digital PDFs normally use their text layer. This ignores it, so the page is read by OCR.
     "forced_ocr": {"CITETALLY_TEXT_LAYER_MIN_CHARS": "1000000000"},
     # The model also sees the page picture.

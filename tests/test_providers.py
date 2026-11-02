@@ -266,8 +266,11 @@ def test_the_vision_provider_exists_only_in_auto_mode_with_a_vision_model() -> N
     def settings(**values: str) -> Settings:
         return Settings(_env_file=None, **values)  # type: ignore[arg-type]
 
-    assert build_vision_provider(settings()) is None
-    assert build_vision_provider(settings(CITETALLY_EXTRACT_MODE="auto")) is None
+    assert build_vision_provider(settings(CITETALLY_EXTRACT_MODE="text_only")) is None
+    assert (
+        build_vision_provider(settings(CITETALLY_EXTRACT_MODE="auto", CITETALLY_VISION_MODEL=""))
+        is None
+    )
     both = settings(CITETALLY_EXTRACT_MODE="auto", CITETALLY_VISION_MODEL="qwen3-vl:8b-instruct")
     vision = build_vision_provider(both)
     assert vision is not None and vision.supports_vision and vision.model == "qwen3-vl:8b-instruct"

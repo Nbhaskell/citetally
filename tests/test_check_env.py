@@ -15,7 +15,9 @@ from tools.check_env import (
 )
 
 TESSERACT_VERSION = "tesseract 5.5.0\n leptonica-1.85.0"
-GOOD_TAGS = {"models": [{"name": "qwen3:8b"}, {"name": "llava:7b"}]}
+GOOD_TAGS = {
+    "models": [{"name": "qwen3:8b"}, {"name": "qwen3-vl:8b-instruct"}, {"name": "llava:7b"}]
+}
 
 
 def make_probes(
@@ -205,3 +207,10 @@ def test_load_dotenv_reads_simple_lines(tmp_path: Path) -> None:
 
 def test_load_dotenv_missing_file_is_empty(tmp_path: Path) -> None:
     assert load_dotenv(tmp_path / "nope.env") == {}
+
+
+def test_a_missing_vision_model_is_reported_as_optional_with_how_to_get_it() -> None:
+    checks = by_name(run_checks({}, make_probes(tags={"models": [{"name": "qwen3:8b"}]})))
+    vision = checks["Ollama model qwen3-vl:8b-instruct"]
+    assert not vision.ok and "text only" in vision.detail
+    assert vision.hint == "ollama pull qwen3-vl:8b-instruct"

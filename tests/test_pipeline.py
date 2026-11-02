@@ -240,6 +240,7 @@ def test_a_credit_note_is_stored_positive_and_a_printed_negative_discount_too(
 def test_a_photo_is_read_with_ocr_and_keeps_its_confidence(
     conn: sqlite3.Connection, settings: Settings
 ) -> None:
+    settings = settings.model_copy(update={"ocr_readings": 1})
     ocr = FakeOcr([OcrPage(words=ocr_words(), mean_confidence=81.5)])
     doc_id = new_document(conn, settings, png(), "photo.png")
     done = process(conn, doc_id, services(settings, ocr=ocr))
@@ -688,6 +689,7 @@ def test_with_several_readings_a_scanned_page_is_read_in_each_mode_and_each_is_k
 def test_one_reading_keeps_no_alternatives_and_reads_once(
     conn: sqlite3.Connection, settings: Settings
 ) -> None:
+    settings = settings.model_copy(update={"ocr_readings": 1})
     ocr = FakeOcr([OcrPage(words=ocr_words(), mean_confidence=81.5)])
     doc_id = new_document(conn, settings, png(), "photo.png")
     process(conn, doc_id, services(settings, ocr=ocr))

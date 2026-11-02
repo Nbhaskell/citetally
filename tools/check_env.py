@@ -22,6 +22,7 @@ from pathlib import Path
 
 DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 DEFAULT_TEXT_MODEL = "qwen3:8b"
+DEFAULT_VISION_MODEL = "qwen3-vl:8b-instruct"
 REQUIRED_PYTHON = (3, 13)
 
 TESSERACT_HINT = (
@@ -173,16 +174,19 @@ def _check_ollama(env: Mapping[str, str], probes: Probes) -> list[Check]:
 
     pulled = ", ".join(names) if names else "none"
     checks = [Check("Ollama", True, f"reachable at {url}; models pulled: {pulled}")]
-    wanted = [env.get("CITETALLY_TEXT_MODEL", DEFAULT_TEXT_MODEL)]
-    if env.get("CITETALLY_VISION_MODEL"):
-        wanted.append(env["CITETALLY_VISION_MODEL"])
-    for model in wanted:
+    text = env.get("CITETALLY_TEXT_MODEL", DEFAULT_TEXT_MODEL)
+    vision = env.get("CITETALLY_VISION_MODEL", DEFAULT_VISION_MODEL)
+    for model in [text, *([vision] if vision else [])]:
         present = model in names or (":" not in model and f"{model}:latest" in names)
+        optional = model == vision and model != text
+        missing = "not pulled" + (
+            " (scans and photos are read as text only without it)" if optional else ""
+        )
         checks.append(
             Check(
                 f"Ollama model {model}",
                 present,
-                "pulled" if present else "not pulled",
+                "pulled" if present else missing,
                 "" if present else f"ollama pull {model}",
             )
         )

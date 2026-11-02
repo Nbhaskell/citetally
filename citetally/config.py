@@ -30,13 +30,15 @@ class Settings(BaseSettings):
     )
     ollama_url: str = Field(default="http://127.0.0.1:11434", validation_alias="OLLAMA_URL")
     text_model: str = Field(default="qwen3:8b", validation_alias="CITETALLY_TEXT_MODEL")
-    vision_model: str = Field(default="", validation_alias="CITETALLY_VISION_MODEL")
+    vision_model: str = Field(
+        default="qwen3-vl:8b-instruct", validation_alias="CITETALLY_VISION_MODEL"
+    )
 
     # text_only: the page's text. text_and_image: the text and the picture, always. auto: the text
     # for a PDF with a text layer, the text and the picture for a scan or photo (when a vision
     # model is set; without one, auto is text_only).
     extract_mode: Literal["text_only", "text_and_image", "auto"] = Field(
-        default="text_only", validation_alias="CITETALLY_EXTRACT_MODE"
+        default="auto", validation_alias="CITETALLY_EXTRACT_MODE"
     )
     enable_thinking: bool = Field(default=False, validation_alias="CITETALLY_ENABLE_THINKING")
     # A model that thinks first spends part of this budget (and time) before it answers.
@@ -53,7 +55,7 @@ class Settings(BaseSettings):
     tesseract_cmd: str = Field(default="", validation_alias="TESSERACT_CMD")
     # How many ways each scanned page is read: 1 the usual way; 2 adds block mode; 3 also a larger
     # copy. Each reading finds values the others lose; every value is still located in the words.
-    ocr_readings: int = Field(default=1, ge=1, le=3, validation_alias="CITETALLY_OCR_READINGS")
+    ocr_readings: int = Field(default=3, ge=1, le=3, validation_alias="CITETALLY_OCR_READINGS")
 
     max_file_mb: int = Field(default=20, ge=1, validation_alias="CITETALLY_MAX_FILE_MB")
     max_pages: int = Field(default=10, ge=1, validation_alias="CITETALLY_MAX_PAGES")
