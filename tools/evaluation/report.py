@@ -277,6 +277,7 @@ def render(report: dict[str, Any]) -> str:
                 str(s["documents"]),
                 str(s["failed"]),
                 pct(s["header_field_exact"]),
+                pct(s["header_value_exact"]),
                 pct(s["money_exact"]),
                 "–" if s["line_f1"] is None else f"{s['line_f1'] * 100:.1f}%",
                 pct(s["planted_recall"]),
@@ -286,14 +287,17 @@ def render(report: dict[str, Any]) -> str:
         )
     out.append(
         table(
-            ["Condition", "Docs", "Failed", "Header fields exact", "Money exact", "Line F1",
+            ["Condition", "Docs", "Failed", "Header fields exact", "Header value exact*", "Money exact", "Line F1",
              "Planted caught", "Clean docs with a blocking false alarm", "Values found on page"],
             rows,
         )
     )  # fmt: skip
     out.append("")
     out.append(
-        "Percentages show the 95% Wilson interval in brackets. A document that failed counts every printed field as wrong."
+        "Percentages show the 95% Wilson interval in brackets. A document that failed counts every printed field as wrong. "
+        "*Header value exact counts a field right when it means what the page says: the same amount (a missing "
+        '"$" is not a different amount), the same date, otherwise the same words. It was added after the first '
+        "results were read; the target is judged on the stricter exact-text column."
     )
 
     if first.get("by_level"):
@@ -303,6 +307,7 @@ def render(report: dict[str, Any]) -> str:
                 key.replace("_", " ").replace("/", ", "),
                 str(s["documents"]),
                 pct(s["header_field_exact"], interval=False),
+                pct(s["header_value_exact"], interval=False),
                 "–" if s["line_f1"] is None else f"{s['line_f1'] * 100:.1f}%",
                 pct(s["planted_recall"], interval=False),
                 pct(s["clean_any_blocking_alarm"], interval=False),
@@ -311,7 +316,7 @@ def render(report: dict[str, Any]) -> str:
         ]
         out.append(
             table(
-                ["Condition, level", "Docs", "Header fields exact", "Line F1", "Planted caught",
+                ["Condition, level", "Docs", "Header fields exact", "Header value exact*", "Line F1", "Planted caught",
                  "Clean false alarm"],
                 rows,
             )
@@ -441,6 +446,7 @@ def render(report: dict[str, Any]) -> str:
                     variant,
                     str(s_["documents"]),
                     pct(s_["header_field_exact"], interval=False),
+                    pct(s_["header_value_exact"], interval=False),
                     "–" if s_["line_f1"] is None else f"{s_['line_f1'] * 100:.1f}%",
                     "–" if core is None else f"{core * 100:.1f}%",
                     pct(s_["planted_recall"], interval=False),
@@ -453,7 +459,7 @@ def render(report: dict[str, Any]) -> str:
             )
     out.append(
         table(
-            ["Condition", "Setting", "Docs", "Header fields exact", "Line F1",
+            ["Condition", "Setting", "Docs", "Header fields exact", "Header value exact*", "Line F1",
              "Line F1, quantity ignored*", "Planted caught", "Clean false alarm",
              "Clean false alarm without VALUE_IN_DOCUMENT*", "Median s per page"],
             rows,

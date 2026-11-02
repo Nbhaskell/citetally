@@ -498,3 +498,24 @@ def test_a_report_needs_a_baseline_and_the_held_out_report_needs_the_one_run(
         reporting.build("tuned")
     monkeypatch.setattr(reporting, "HELDOUT_LOCK", tmp_path / "none.lock")
     assert reporting.main(["--name", "x", "--split", "heldout"]) == 2
+
+
+def test_a_missing_symbol_counts_in_the_value_measure_only() -> None:
+    item = first(planted=False)
+    record = perfect(item)
+    fields = record["extraction"]["fields"]
+    fields["total"] = fields["total"].replace("$", "").strip()
+    score = score_record(record, item)
+    if item.truth.printed["total"] != fields["total"]:
+        assert score["header"]["total"] == "wrong"
+        assert score["header_value_right"] == score["header_right"] + 1
+    summary = summarise([score])
+    assert summary["header_value_exact"]["rate"] >= summary["header_field_exact"]["rate"]
+
+
+def test_a_wrong_amount_is_wrong_by_value_too() -> None:
+    item = first(planted=False)
+    record = perfect(item)
+    record["extraction"]["fields"]["total"] = "$1.23"
+    score = score_record(record, item)
+    assert score["header_value_right"] == score["header_right"]

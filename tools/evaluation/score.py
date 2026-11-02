@@ -18,6 +18,8 @@ from collections import Counter, defaultdict
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
+from citetally.dates import parse_date
+from citetally.money import parse_money
 from tools.evaluation.stats import wilson
 from tools.extract_dev import HEADER, norm, score_header, score_lines
 from tools.synthetic.golden import Item
@@ -66,6 +68,23 @@ def score_core_lines(
     return right, len(predicted)
 
 
+_DATES = ("entry_date", "due_date")
+
+
+def same_value(field: str, truth: str | None, said: str | None) -> bool:
+    """Whether the model's text means what the page says: the same amount (a printed "$" more or
+    less is not a different amount), the same date, otherwise the same words ignoring case."""
+    if truth is None or said is None:
+        return False
+    if field in MONEY:
+        a, b = parse_money(truth, "en-US", "USD"), parse_money(said, "en-US", "USD")
+        return a is not None and b is not None and a.value == b.value
+    if field in _DATES:
+        d, e = parse_date(truth, "en-US"), parse_date(said, "en-US")
+        return d is not None and e is not None and getattr(d, "value", d) == getattr(e, "value", e)
+    return " ".join(truth.split()).casefold() == " ".join(said.split()).casefold()
+
+
 def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
     """Everything the report needs from one document, as plain numbers and codes."""
     extraction = record.get("extraction") or {}
@@ -87,6 +106,13 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
             money[name] = verdict
 
     printed_header = {k: v for k, v in header.items() if k != "currency"}
+    printed_fields = (fields or {}) if isinstance(fields, dict) else {}
+    value_right = sum(
+        1
+        for k, v in printed_header.items()
+        if v == "right"
+        or (v == "wrong" and same_value(k, item.truth.printed.get(k), printed_fields.get(k)))
+    )
     printed_count = sum(v in {"right", "wrong", "missing"} for v in printed_header.values())
     right_count = sum(v == "right" for v in printed_header.values())
 
@@ -106,6 +132,7 @@ def score_record(record: dict[str, Any], item: Item) -> dict[str, Any]:
         "status": record["status"],
         "header": header,
         "header_right": right_count,
+        "header_value_right": value_right,
         "header_printed": printed_count,
         "header_invented": sum(v == "invented" for v in printed_header.values()),
         "money": money,
@@ -169,9 +196,9 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
             header[name][verdict] += 1
         for name, verdict in s["money"].items():
             money[name][verdict] += 1
-        for key in ("header_right", "header_printed", "header_invented", "lines_right",
-                    "lines_truth", "lines_predicted", "lines_core_right", "lines_core_predicted",
-                    "values", "values_found"):  # fmt: skip
+        for key in ("header_right", "header_value_right", "header_printed", "header_invented",
+                    "lines_right", "lines_truth", "lines_predicted", "lines_core_right",
+                    "lines_core_predicted", "values", "values_found"):  # fmt: skip
             total[key] += s[key]
         for key in ("date_right", "currency_right", "type_right", "vendor_right"):
             total[key] += bool(s[key])
@@ -231,6 +258,7 @@ def summarise(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "documents": total["documents"],
         "failed": total["failed"],
         "header_field_exact": _rate(right, counted),
+        "header_value_exact": _rate(total["header_value_right"], counted),
         "header_invented": total["header_invented"],
         "header_by_field": {
             k: {

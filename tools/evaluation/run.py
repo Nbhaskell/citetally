@@ -58,6 +58,12 @@ VARIANTS: dict[str, dict[str, str]] = {
     # Each scanned page is read in two or three ways (Tesseract page modes and sizes).
     "ocr2": {"CITETALLY_OCR_READINGS": "2"},
     "ocr3": {"CITETALLY_OCR_READINGS": "3"},
+    # The model also sees the page picture, and each scanned page is read three ways.
+    "image_ocr3": {
+        "CITETALLY_EXTRACT_MODE": "text_and_image",
+        "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
+        "CITETALLY_OCR_READINGS": "3",
+    },
     # The model thinks before it answers; the token budget and timeout are raised with it.
     "thinking": {
         "CITETALLY_ENABLE_THINKING": "true",
