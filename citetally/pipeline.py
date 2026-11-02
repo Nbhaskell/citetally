@@ -155,6 +155,11 @@ class _ReadResult:
     error: str | None = None
 
 
+def _mean_confidence(words: list[Word]) -> float:
+    scores = [w.c for w in words if w.c is not None]
+    return sum(scores) / len(scores) if scores else 0.0
+
+
 def _extra_readings(
     ocr: OcrEngine, image: Image.Image, plan: tuple[tuple[int | None, int, int], ...]
 ) -> list[list[Word]]:
@@ -214,14 +219,17 @@ def _read_job(job: _ReadJob) -> _ReadResult:
             return _ReadResult([], "ocr_failed")
         readings = [mask_words(preprocess_words(first_pre, first.words))]
         readings += [mask_words(words) for words in extras]
+        # The reading the others are added to is the one Tesseract was most sure of.
+        readings.sort(key=_mean_confidence, reverse=True)
         merged = merge_readings(readings[0], readings[1:]) if len(readings) > 1 else readings[0]
+        best = _mean_confidence(readings[0])
         pages.append(
             _PageRead(
                 merged,
                 layout.build_text(merged),
                 ReadMethod.OCR,
                 job.ocr.name,
-                first.mean_confidence,
+                best if len(readings) > 1 and readings[0] else first.mean_confidence,
                 first_pre.skew_degrees,
                 *image.size,
                 alt_words=readings if len(readings) > 1 else [],

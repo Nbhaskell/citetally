@@ -91,9 +91,11 @@ def read(item: Item, name: str, exe: str) -> dict[str, Any]:
     when any of the readings holds it. With a "merge:" prefix the readings are merged into one."""
     started = time.monotonic()
     image = page_image(item)
-    merge = name.startswith("merge:")
-    parts = name.removeprefix("merge:").split("+")
+    merge = name.startswith(("merge:", "best:"))
+    parts = name.removeprefix("merge:").removeprefix("best:").split("+")
     readings = [_words(image, VARIANTS[part], exe) for part in parts]
+    if name.startswith("best:"):  # the most confident reading is the one the others add to
+        readings.sort(key=lambda words: -statistics.fmean([w.c for w in words if w.c] or [0.0]))
     if merge:  # one page made from all the readings, as the pipeline would hand it on
         readings = [merge_readings(readings[0], readings[1:])]
     result = ground(truth_fields(item), readings)

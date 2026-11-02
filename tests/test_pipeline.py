@@ -680,7 +680,7 @@ def test_with_several_readings_a_scanned_page_is_read_in_each_mode_and_each_is_k
     (page,) = repo.list_pages(conn, doc_id)
     alternatives = json.loads(page.alt_words)
     assert len(alternatives) == 3 and all(alternatives)
-    assert page.mean_confidence == 70.0  # the first reading's, which also decides failure
+    assert page.mean_confidence == 90.0  # the most confident reading is the base and sets it
     merged = {w["t"] for w in json.loads(page.words)}
     assert "4" in merged  # the word the first reading lost is in the merged page the model reads
 
