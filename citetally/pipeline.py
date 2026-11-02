@@ -57,8 +57,6 @@ from citetally.reading.preprocess import preprocess, preprocess_words
 IMAGE_MAX_SIDE_PX = 1568  # a larger picture only costs the model more tokens
 READ_BASE_TIMEOUT_S = 60.0
 READ_TIMEOUT_PER_PAGE_S = 150.0
-EXTRACT_MAX_TOKENS = 2000
-EXTRACT_TIMEOUT_S = 180
 _MESSAGES = {
     "ocr_unavailable": "Scanned pages need the Tesseract OCR program, and it is missing or "
     "will not start.",
@@ -274,8 +272,8 @@ def extract_stage(
             services.provider,
             texts,
             codes,
-            max_tokens=EXTRACT_MAX_TOKENS,
-            timeout_s=EXTRACT_TIMEOUT_S,
+            max_tokens=services.settings.extract_max_tokens,
+            timeout_s=services.settings.extract_timeout_s,
             images=images,
         )
     except ModelUnavailable:
