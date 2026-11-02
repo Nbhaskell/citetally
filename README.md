@@ -10,7 +10,7 @@ Citetally is an AI review desk for invoices and receipts at a small business. PD
 
 ## Status
 
-Phases 0 to 8 are built: repository and tooling, the invented business with 210 labelled documents in four conditions (the golden set), the data layer, document reading (text layer and OCR), model extraction with grounding, the checks, the review and approval screens, vendors, exports, insights and settings, and the evaluation. Phases 9 (hardening) and 10 (documentation) remain, so this is still a work in progress. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
+Phases 0 to 9 are built: repository and tooling, the invented business with 210 labelled documents in four conditions (the golden set), the data layer, document reading (text layer and OCR), model extraction with grounding, the checks, the review and approval screens, vendors, exports, insights and settings, the evaluation, and a hardening review (`docs/HARDENING.md`). Phase 10 (documentation and publishing) remains, so this is still a work in progress. See `docs/IMPLEMENTATION_PLAN.md` for the build order.
 
 ## How well it reads (measured on invented documents)
 
