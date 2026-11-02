@@ -27,7 +27,7 @@ from citetally import repository as repo
 from citetally.checks import run_checks
 from citetally.config import Settings
 from citetally.db import transaction
-from citetally.extract import ExtractionInvalid, ExtractionTooLong, extract
+from citetally.extract import Extracted, ExtractionInvalid, ExtractionTooLong, extract
 from citetally.grounding import GroundedValue, ground
 from citetally.matching import match_document
 from citetally.models import (
@@ -101,6 +101,10 @@ class Services:
     provider: ModelProvider
     run_checks: Callable[[sqlite3.Connection, int], None] | None = None  # tests inject one
     extract_mode: ExtractMode = ExtractMode.TEXT_ONLY
+    # With `automatic_pictures` a page read by OCR is sent with its picture to `vision_provider`,
+    # and anything else, or any failure of the vision model, goes to `provider` as text.
+    vision_provider: ModelProvider | None = None
+    automatic_pictures: bool = False
     isolate: bool = True  # read pages in a separate process; tests turn this off
     today: date | None = None  # the date the checks use; None means the real date
 
@@ -316,28 +320,47 @@ def _page_image(path: Path) -> bytes:
 def extract_stage(
     conn: sqlite3.Connection, document: Document, services: Services
 ) -> dict[str, Any]:
-    texts = [page.text for page in repo.list_pages(conn, document.id)]
+    pages = repo.list_pages(conn, document.id)
+    texts = [page.text for page in pages]
     if not any(text.strip() for text in texts):
         raise StageFailure(_MESSAGES["no_text"])
     codes = [c.code for c in repo.list_categories(conn) if c.is_active]
+    provider = services.provider
     mode = services.extract_mode
+    picture_first = (
+        services.automatic_pictures
+        and services.vision_provider is not None
+        and any(page.read_method is ReadMethod.OCR for page in pages)
+    )
+    if picture_first:
+        assert services.vision_provider is not None
+        provider, mode = services.vision_provider, ExtractMode.TEXT_AND_IMAGE
     images = None
     if mode is ExtractMode.TEXT_AND_IMAGE:
-        if not services.provider.supports_vision:
+        if not provider.supports_vision:
             raise StageFailure(_MESSAGES["no_images"])
-        images = [
-            _page_image(services.settings.data_dir / page.image_path)
-            for page in repo.list_pages(conn, document.id)
-        ]
-    try:
-        result = extract(
-            services.provider,
+        images = [_page_image(services.settings.data_dir / page.image_path) for page in pages]
+
+    def ask(chosen: ModelProvider, with_images: list[bytes] | None) -> Extracted:
+        return extract(
+            chosen,
             texts,
             codes,
             max_tokens=services.settings.extract_max_tokens,
             timeout_s=services.settings.extract_timeout_s,
-            images=images,
+            images=with_images,
         )
+
+    try:
+        try:
+            result = ask(provider, images)
+        except (ModelUnavailable, ModelTimeout, ModelError, ExtractionInvalid, ExtractionTooLong):
+            if not picture_first:
+                raise
+            # The picture could not be used (the vision model is missing, slow or confused): read
+            # the page's text instead, and record that this is what was done.
+            provider, mode = services.provider, ExtractMode.TEXT_ONLY
+            result = ask(provider, None)
     except ModelUnavailable:
         raise StageFailure(_MESSAGES["model_down"]) from None
     except ModelTimeout:
@@ -355,8 +378,8 @@ def extract_stage(
         extraction = repo.add_extraction(
             conn,
             document.id,
-            provider=Provider(services.provider.name),
-            model=services.provider.model,
+            provider=Provider(provider.name),
+            model=provider.model,
             extract_mode=mode,
             prompt_version=result.prompt_version,
             fields=fields.model_dump(mode="json"),
@@ -382,7 +405,7 @@ def extract_stage(
         repo.change_status(conn, document.id, S.EXTRACTED)
 
     payload: dict[str, Any] = {
-        "provider": services.provider.name,
+        "provider": provider.name,
         "extract_mode": mode.value,
         "attempt": result.attempts,
     }

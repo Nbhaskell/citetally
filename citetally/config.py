@@ -32,7 +32,10 @@ class Settings(BaseSettings):
     text_model: str = Field(default="qwen3:8b", validation_alias="CITETALLY_TEXT_MODEL")
     vision_model: str = Field(default="", validation_alias="CITETALLY_VISION_MODEL")
 
-    extract_mode: Literal["text_only", "text_and_image"] = Field(
+    # text_only: the page's text. text_and_image: the text and the picture, always. auto: the text
+    # for a PDF with a text layer, the text and the picture for a scan or photo (when a vision
+    # model is set; without one, auto is text_only).
+    extract_mode: Literal["text_only", "text_and_image", "auto"] = Field(
         default="text_only", validation_alias="CITETALLY_EXTRACT_MODE"
     )
     enable_thinking: bool = Field(default=False, validation_alias="CITETALLY_ENABLE_THINKING")

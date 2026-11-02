@@ -58,6 +58,13 @@ VARIANTS: dict[str, dict[str, str]] = {
     # Each scanned page is read in two or three ways (Tesseract page modes and sizes).
     "ocr2": {"CITETALLY_OCR_READINGS": "2"},
     "ocr3": {"CITETALLY_OCR_READINGS": "3"},
+    # Scanned pages are read three ways and sent with their picture to the vision model; a PDF
+    # with a text layer goes to the text model as text.
+    "auto3": {
+        "CITETALLY_EXTRACT_MODE": "auto",
+        "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
+        "CITETALLY_OCR_READINGS": "3",
+    },
     # The model also sees the page picture, and each scanned page is read three ways.
     "image_ocr3": {
         "CITETALLY_EXTRACT_MODE": "text_and_image",

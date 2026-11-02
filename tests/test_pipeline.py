@@ -737,3 +737,87 @@ def test_a_failing_extra_reading_is_left_out_and_a_failing_first_reading_fails_t
     doc2 = new_document(conn, reading, png() + b" ", "photo2.png")
     broken = process(conn, doc2, services(reading, ocr=FakeOcr(error=OcrTimeout("slow"))))
     assert broken.status is S.FAILED
+
+
+# --- Stage 2: the picture is shown to the model only for pages that were read by OCR -------------
+
+
+def auto_services(
+    settings: Settings,
+    picture_replies: list[Any],
+    text_replies: list[Any],
+    ocr: FakeOcr | None = None,
+) -> Services:
+    return Services(
+        settings=settings,
+        ocr=ocr or FakeOcr([OcrPage(words=ocr_words(), mean_confidence=81.5)]),
+        provider=FakeProvider(text_replies),
+        vision_provider=FakeProvider(picture_replies, vision=True),
+        automatic_pictures=True,
+        isolate=False,
+        today=date(2026, 6, 15),
+    )
+
+
+def used_mode(conn: sqlite3.Connection, doc_id: int) -> str:
+    extraction = repo.latest_extraction(conn, doc_id)
+    assert extraction is not None
+    return extraction.extract_mode.value
+
+
+def test_a_page_read_by_ocr_is_sent_with_its_picture_to_the_vision_model(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings, png(), "photo.png")
+    both = auto_services(settings, [GOOD], [])
+    assert process(conn, doc_id, both).status is S.NEEDS_REVIEW
+    assert used_mode(conn, doc_id) == "text_and_image"
+    assert isinstance(both.vision_provider, FakeProvider) and both.vision_provider.calls[0].images
+    assert isinstance(both.provider, FakeProvider) and not both.provider.calls
+
+
+def test_a_pdf_with_a_text_layer_goes_to_the_text_model_with_no_picture(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings)
+    both = auto_services(settings, [], [GOOD])
+    assert process(conn, doc_id, both).status is S.NEEDS_REVIEW
+    assert used_mode(conn, doc_id) == "text_only"
+    assert isinstance(both.vision_provider, FakeProvider) and not both.vision_provider.calls
+
+
+@pytest.mark.parametrize(
+    "failure", [ModelUnavailable("not pulled"), ModelTimeout("slow"), ModelError("odd")]
+)
+def test_if_the_vision_model_cannot_answer_the_text_model_reads_the_page_instead(
+    conn: sqlite3.Connection, settings: Settings, failure: Exception
+) -> None:
+    doc_id = new_document(conn, settings, png(), "photo.png")
+    both = auto_services(settings, [failure], [GOOD])
+    assert process(conn, doc_id, both).status is S.NEEDS_REVIEW
+    assert used_mode(conn, doc_id) == "text_only"  # what was actually used is what is recorded
+
+
+def test_with_no_vision_model_configured_every_page_goes_to_the_text_model(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings, png(), "photo.png")
+    text_only = Services(
+        settings=settings,
+        ocr=FakeOcr([OcrPage(words=ocr_words(), mean_confidence=81.5)]),
+        provider=FakeProvider([GOOD]),
+        automatic_pictures=True,
+        isolate=False,
+        today=date(2026, 6, 15),
+    )
+    assert process(conn, doc_id, text_only).status is S.NEEDS_REVIEW
+    assert used_mode(conn, doc_id) == "text_only"
+
+
+def test_if_both_models_fail_the_document_fails_with_the_text_models_reason(
+    conn: sqlite3.Connection, settings: Settings
+) -> None:
+    doc_id = new_document(conn, settings, png(), "photo.png")
+    both = auto_services(settings, [ModelUnavailable("x")], [ModelUnavailable("down")])
+    failed = process(conn, doc_id, both)
+    assert failed.status is S.FAILED and "not running" in str(failed.failure_message)

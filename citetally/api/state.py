@@ -10,7 +10,7 @@ from citetally import db
 from citetally.config import Settings
 from citetally.models import ExtractMode
 from citetally.pipeline import Services
-from citetally.providers import build_provider
+from citetally.providers import build_provider, build_vision_provider
 from citetally.reading.ocr import TesseractOcr, find_tesseract
 from citetally.worker import Worker
 
@@ -50,7 +50,13 @@ def real_services(settings: Settings) -> Services:
         settings=settings,
         ocr=ocr,
         provider=build_provider(settings),
-        extract_mode=ExtractMode(settings.extract_mode),
+        extract_mode=(
+            ExtractMode.TEXT_AND_IMAGE
+            if settings.extract_mode == "text_and_image"
+            else ExtractMode.TEXT_ONLY
+        ),
+        vision_provider=build_vision_provider(settings),
+        automatic_pictures=settings.extract_mode == "auto",
     )
 
 

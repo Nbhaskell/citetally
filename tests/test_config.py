@@ -124,3 +124,9 @@ def test_image_mode_is_off_by_default_and_needs_a_vision_model(
         make()
     monkeypatch.setenv("CITETALLY_VISION_MODEL", "qwen3-vl:8b")
     assert make().extract_mode == "text_and_image"
+
+
+def test_auto_mode_needs_no_vision_model_but_text_and_image_still_does() -> None:
+    assert Settings(_env_file=None, CITETALLY_EXTRACT_MODE="auto").extract_mode == "auto"
+    with pytest.raises(ValueError, match="VISION_MODEL"):
+        Settings(_env_file=None, CITETALLY_EXTRACT_MODE="text_and_image")

@@ -257,3 +257,18 @@ def test_image_mode_builds_the_vision_model_with_a_bigger_context_window() -> No
     provider = build_provider(Settings(_env_file=None, **values))  # type: ignore[arg-type]
     assert provider.model == "qwen3-vl:8b" and provider.supports_vision
     assert isinstance(provider, OllamaProvider) and provider.context_tokens > 8192
+
+
+def test_the_vision_provider_exists_only_in_auto_mode_with_a_vision_model() -> None:
+    from citetally.config import Settings
+    from citetally.providers import build_provider, build_vision_provider
+
+    def settings(**values: str) -> Settings:
+        return Settings(_env_file=None, **values)  # type: ignore[arg-type]
+
+    assert build_vision_provider(settings()) is None
+    assert build_vision_provider(settings(CITETALLY_EXTRACT_MODE="auto")) is None
+    both = settings(CITETALLY_EXTRACT_MODE="auto", CITETALLY_VISION_MODEL="qwen3-vl:8b-instruct")
+    vision = build_vision_provider(both)
+    assert vision is not None and vision.supports_vision and vision.model == "qwen3-vl:8b-instruct"
+    assert not build_provider(both).supports_vision  # the text model stays the text model
