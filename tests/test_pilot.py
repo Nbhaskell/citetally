@@ -3,6 +3,7 @@ summary. The interactive and database parts are used by hand and are not tested 
 
 from __future__ import annotations
 
+import sqlite3
 from types import SimpleNamespace
 from typing import Any
 
@@ -101,6 +102,15 @@ def test_each_wrong_value_is_named() -> None:
     assert set(wrong) & set(pilot.CORE) == {"total", "vendor", "lines"}
 
 
+def test_the_vendor_is_judged_by_the_list_vendor_not_the_printed_name() -> None:
+    entry = stored()
+    entry["vendor"] = "Ridge Mill & Sons"
+    entry["vendor_golden_id"] = "V01"
+    assert pilot.entry_differences(entry, truth(), "V01") == []
+    assert pilot.entry_differences(entry, truth(), "V02") == ["vendor"]
+    assert pilot.entry_differences(entry, truth()) == ["vendor"]
+
+
 def test_a_missing_line_is_wrong() -> None:
     entry = stored()
     entry["lines"] = []
@@ -130,6 +140,13 @@ def test_typed_values_are_compared_by_meaning() -> None:
     bad["total"] = "$41.00"
     bad["entry_date"] = "not a date"
     assert pilot.typed_differences(bad, truth()) == ["entry_date", "total"]
+
+
+def test_typed_credit_note_amounts_match_whether_or_not_they_are_in_brackets() -> None:
+    entry = typed()
+    entry["total"] = "($40.00)"
+    entry["lines"][0]["amount"] = "($40.00)"
+    assert pilot.typed_differences(entry, truth()) == []
 
 
 def row(pilot_id: str, condition: str, review: int, typed_s: float, **extra: Any) -> dict[str, Any]:
@@ -171,6 +188,25 @@ def test_summary_gives_the_ratio_and_separates_wrong_values_by_override() -> Non
     assert s["not_reviewed"] == ["p04"] and s["not_typed"] == ["p04"]
     text = pilot.render(s)
     assert "0.40" in text and "(met)" in text
+
+
+def test_only_approved_documents_are_typed() -> None:
+    assert pilot.needs_typing("approved")
+    assert not any(pilot.needs_typing(s) for s in ("rejected", "failed", "needs_review", None))
+
+
+def test_a_file_uploaded_again_replaces_the_earlier_row() -> None:
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.execute(
+        "CREATE TABLE documents (id INTEGER PRIMARY KEY, original_filename TEXT, status TEXT)"
+    )
+    conn.executemany(
+        "INSERT INTO documents (original_filename, status) VALUES (?, ?)",
+        [("p10.jpg", "failed"), ("p11.pdf", "approved"), ("p10.jpg", "approved")],
+    )
+    assert pilot._latest_document(conn, "p10")["status"] == "approved"
+    assert pilot._latest_document(conn, "p99") is None
 
 
 def test_summary_with_nothing_done_does_not_divide_by_zero() -> None:
