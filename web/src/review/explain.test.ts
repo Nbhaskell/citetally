@@ -117,6 +117,26 @@ describe("explain", () => {
     expect(said.text).toEqual(["The page includes text addressed to a reader or system. It was ignored. Review as usual."]);
   });
 
+  it("says which rate the page prints when no combination of the lines gives the tax", () => {
+    const said = explain(
+      check("TAX_MATCH", { rate_printed: false, stated: 500, printed_rate: "0.07", most: 1050, reachable: false }, false),
+      entryFixture({ lines: [] }),
+      none,
+    );
+    expect(said.text).toEqual([
+      "The page prints a 7% tax rate. $5.00 is not 7% of any of the lines, with or without shipping and discount.",
+    ]);
+  });
+
+  it("says what the printed rate allows at most when the tax is above it", () => {
+    const said = explain(
+      check("TAX_MATCH", { rate_printed: false, stated: 900, printed_rate: "0.07", most: 700 }, false),
+      entryFixture({ lines: [] }),
+      none,
+    );
+    expect(said.text).toEqual(["The page prints a 7% tax rate, which allows at most $7.00. The page says $9.00."]);
+  });
+
   it("shows a vendor-rate note when the tax rate is unusual", () => {
     const said = explain(
       check("TAX_MATCH", { rate_printed: false, stated: 1500, implied_rate: "0.1500", usual_rate: "0.0800", unusual: true }, false),
