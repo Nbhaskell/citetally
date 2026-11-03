@@ -85,7 +85,7 @@ Run all checks and store each result with its detail. The document then enters `
 3. The reviewer fixes any wrong values. Each change is saved as a field edit with the old and new value, and the checks re-run immediately.
 4. The reviewer picks or creates the vendor if needed, and confirms the category.
 5. Decisions:
-   - **Approve:** allowed when every blocking check has passed or has an override with a reason. The entry becomes `approved`.
+   - **Approve:** allowed when every blocking check has passed or has an override with a reason. The entry becomes `approved`. For `VALUE_IN_DOCUMENT` on a page read from its picture, the reason can be one "checked against the picture" confirmation for all the unlocated values (D-065).
    - **Reject:** reason required. Status `rejected`.
    - **Mark as duplicate:** choose the other document. Status `duplicate`.
    - **Reopen:** returns an approved or rejected entry to review. Not allowed after export.

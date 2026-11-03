@@ -17,6 +17,9 @@ interface Props {
   onShowOnPage: (key: FieldKey) => void;
   onPickVendor: () => void;
   onOverride: (check: CheckOut) => void;
+  /** Given when this check can be confirmed against the page picture. */
+  canPictureCheck: (check: CheckOut) => boolean;
+  onPictureCheck: (check: CheckOut) => void;
   onWithdraw: (code: CheckCode) => void;
 }
 
@@ -30,6 +33,8 @@ function CheckItem({
   onShowOnPage,
   onPickVendor,
   onOverride,
+  canPictureCheck,
+  onPictureCheck,
   onWithdraw,
 }: Props & { check: CheckOut }) {
   const said = explain(check, entry, evidence);
@@ -79,6 +84,11 @@ function CheckItem({
             {said.pickVendor && (
               <button type="button" className="button button-small" onClick={onPickVendor}>
                 Pick vendor
+              </button>
+            )}
+            {canPictureCheck(check) && (
+              <button type="button" className="button button-small" onClick={() => onPictureCheck(check)}>
+                Checked against the picture
               </button>
             )}
             {check.blocking && (

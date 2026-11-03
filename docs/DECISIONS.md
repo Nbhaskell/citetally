@@ -654,3 +654,16 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 - Target 2 (clean documents blocked at most 30%) is not reachable on the poorest scans and photos without either weakening the rule (rejected in D-063: wrong values slip through) or a person confirming. It should be read as "the pages where a person must look", and reported by level of damage, not hidden.
 - A person confirming is already the design. The review screen asks for an override with a written reason for each failed blocking check. For a page the picture read and OCR could not place, one deliberate "checked against the picture" confirmation for all its unlocated values, recorded as the reviewer's decision, would keep the rule (every value located, or a person says so) and cut the time per document. That is a review-screen change, and the pilot (target 3) is where it would be measured.
 - The sealed run is unaffected and still to come.
+
+
+### D-065. The review screen: one "checked against the picture" confirmation
+
+**What changed.** On "A value isn't on the page" (`VALUE_IN_DOCUMENT`) the review screen now offers a second action beside "Override with reason": **Checked against the picture**. It opens a dialog that lists every value the page words could not place, asks the reviewer to compare them with the picture and tick one box, and then records the check as accepted when the entry is approved. Web only: no API, schema or check change.
+
+**When it is offered.** All of: the check is the failed, blocking, not yet accepted `VALUE_IN_DOCUMENT`; the document's extraction used the picture (`extract_mode` is `text_and_image`); at least one page was read by OCR; and at least one value was not located. A text-layer PDF, a text-only extraction and every other check keep the written-reason override only.
+
+**How it is recorded.** As an ordinary override of that one check, with the fixed reason "Checked against the picture: N values the page words did not place." The reason holds a count and no document text (rule 6). The review's `overrides` count, the history and the checks panel show it as an accepted check, and a reader of the data can tell it from a written reason by that prefix. Nothing changes for rule 5: a value is still located on the page, or a person says it was checked, and it is recorded. The checks re-run after any edit, which clears the pending confirmation as before, so it always refers to the values on screen.
+
+**Why not a new column or API field.** The simplest option that keeps the record is the existing override. A separate field would need a migration and a schema change for a distinction the prefix already carries. If the pilot needs the two kinds counted apart, the prefix is enough to do it.
+
+**What it does not do.** It does not change the check, the blocked share or any reported number: documents are still counted as blocked when the check fails. Whether it cuts the time per document is measured in the pilot (target 3), and whether it lets a wrong value through is measured there too (target 4): each such document is counted as an approved entry that carried an override. Anyone can tick the box without looking; the screen asks for it and records it, and cannot make the comparison happen.
