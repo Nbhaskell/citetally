@@ -760,11 +760,15 @@ describe("rejecting, duplicates and reprocessing", () => {
 
 describe("keyboard", () => {
   const press = (key: string, target: Element = document.body) => fireEvent.keyDown(target, { key });
+  // The shortcut listener is attached in an effect after the screen first shows the document, so
+  // a key pressed the moment the screen appears can be lost. Let pending effects run first.
+  const settled = () => act(async () => undefined);
 
   it("j and k move through the documents waiting", async () => {
     install(detailFixture(), { queue: [4, 5, 6] });
     renderReview();
     await screen.findByText(/2 of 3 waiting/);
+    await settled();
     press("j");
     expect(window.location.hash).toBe("#/review/6");
     window.location.hash = "#/review/5";
@@ -776,6 +780,7 @@ describe("keyboard", () => {
     const fake = install(detailFixture({ checks: unknownVendor() }), { queue: [5] });
     renderReview();
     await screen.findByRole("button", { name: "Approve entry" });
+    await settled();
     press("a");
     expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(0);
     press("r");
@@ -784,6 +789,7 @@ describe("keyboard", () => {
     install(detailFixture(), { queue: [5] });
     renderReview();
     await screen.findByRole("button", { name: "Approve entry" });
+    await settled();
     press("?");
     expect(screen.getByRole("dialog", { name: "Keyboard shortcuts" })).toBeInTheDocument();
   });
@@ -792,6 +798,7 @@ describe("keyboard", () => {
     install(detailFixture());
     renderReview();
     await screen.findByRole("button", { name: "Approve entry" });
+    await settled();
     press("g");
     press("p");
     expect(screen.getByRole("region", { name: "Page picture, scrollable" })).toHaveFocus();
@@ -803,6 +810,7 @@ describe("keyboard", () => {
     install(detailFixture(), { queue: [4, 5, 6] });
     renderReview();
     const box = await screen.findByLabelText("Invoice number");
+    await settled();
     press("j", box);
     press("r", box);
     expect(window.location.hash).toBe("#/review/5");
@@ -816,6 +824,7 @@ describe("keyboard", () => {
     install(detailFixture(), { queue: [4, 5, 6] });
     renderReview();
     await screen.findByText(/2 of 3 waiting/);
+    await settled();
     fireEvent.keyDown(document.body, { key: "j", ctrlKey: true });
     expect(window.location.hash).toBe("#/review/5");
   });
