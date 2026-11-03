@@ -1,5 +1,7 @@
 # Citetally
 
+[![CI](https://github.com/Nbhaskell/citetally/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Nbhaskell/citetally/actions/workflows/ci.yml)
+
 > **Demo data. All vendors, invoices and amounts are invented.** Every name, email address, phone number, invoice and receipt in this repository is synthetic. There is no real business data here, and the software has not been tried on any.
 
 Citetally is a review desk for invoices and receipts at a small business. A local model reads each document and copies the printed values; plain code finds every value on the page, checks the arithmetic, duplicates and dates, and queues everything for a person to approve. **Nothing is ever paid, posted or sent automatically.** The only output is a CSV the person downloads and imports into their accounting software themselves.
@@ -19,8 +21,8 @@ Citetally is a review desk for invoices and receipts at a small business. A loca
 
 | | |
 |---|---|
-| ![Review screen with two failed checks](docs/images/review-blocked.png) | ![A badly misread phone photo, with six failed checks](docs/images/review-misread.png) |
-| The page on the left with each found value outlined; the checks on the right. Approval is blocked until both are resolved. | A phone photo the OCR read badly. The checks catch the wrong numbers; nothing can be approved until a person looks. |
+| ![Review screen with two failed checks](docs/images/review-blocked.png) | ![A phone photo with a value not found on the page and a Checked against the picture button](docs/images/review-picture-check.png) |
+| The page on the left with each found value outlined; the checks on the right. Approval is blocked until both are resolved. | A phone photo. One value could not be placed on the page, and the vendor is not on the list yet. Besides fixing a value or overriding with a reason, a person can confirm it against the picture; that is recorded with the approval. |
 
 More screens: [a clean document ready to approve](docs/images/review-ready.png), [a file that could not be read](docs/images/failed-upload.png), [the empty inbox](docs/images/inbox-empty.png), [exports](docs/images/exports.png) and [insights](docs/images/insights.png).
 

@@ -25,8 +25,8 @@ STEPS = [
         5000,
     ),
     (
-        "review-misread.png",
-        "3. A bad photo gets misread. The checks say so, and approval is blocked.",
+        "review-picture-check.png",
+        "3. A phone photo: a value the page can't place gets one check against the picture.",
         5000,
     ),
     ("review-ready.png", "4. A clean one: nothing needs attention. A person approves it.", 4000),
