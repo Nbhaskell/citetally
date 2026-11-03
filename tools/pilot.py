@@ -21,6 +21,7 @@ import os
 import random
 import shutil
 import statistics
+import sys
 import time
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
@@ -272,7 +273,10 @@ def type_by_hand() -> int:
             == "q"
         ):
             break
-        os.startfile(path)  # Windows only; the pilot is run there
+        if sys.platform == "win32":
+            os.startfile(path)
+        else:
+            print(f"Open {path} yourself.")
         start = time.monotonic()
         vendor = _ask("Vendor: ")
         invoice_number = _ask("Invoice or receipt number (blank if none): ")
