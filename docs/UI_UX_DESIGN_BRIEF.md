@@ -41,6 +41,7 @@ Two panes side by side on desktop, stacked tabs on a phone.
 
 Dialogs:
 - **Override:** names the check, shows its detail, requires a reason of at least a short sentence, and says "This will be recorded."
+- **Check against the picture:** offered only on "A value isn't on the page" when the values were read from the page picture of a scanned or photographed page. Lists every value the page words could not place, asks the reviewer to compare them with the picture and tick one box, and says "This will be recorded with your approval." It is an override of that one check with a fixed reason ("Checked against the picture: N values the page words did not place."), so approval, the history and the pilot count it as an accepted check.
 - **Reject:** required reason with quick choices (Not an invoice, Unreadable, Multiple invoices in one file, Other).
 - **Mark as duplicate:** search the other documents by vendor, number or total; shows both side by side before confirming.
 - **Vendor picker:** search existing vendors; "Create vendor" prefilled with the printed name; "Add the printed name as an alias of…" for fuzzy matches; shows the fuzzy score as a word ("Probably the same: Brightway Supply Co.").

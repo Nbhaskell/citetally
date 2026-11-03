@@ -389,6 +389,68 @@ describe("approving", () => {
     expect(screen.getByRole("button", { name: "Approve entry" })).toBeDisabled();
   });
 
+  describe("checked against the picture", () => {
+    const notFound = [
+      { field: "total", line: null, printed: "$236.50" },
+      { field: "amount", line: 1, printed: "$54.00" },
+    ];
+    const pictureRead = (mode = "text_and_image", method = "ocr"): DocumentDetail => {
+      const base = detailFixture({ checks: checksFixture({ VALUE_IN_DOCUMENT: failing("VALUE_IN_DOCUMENT", { checked: 4, not_found: notFound }) }) });
+      return {
+        ...base,
+        pages: base.pages.map((page) => ({ ...page, read_method: method })),
+        extraction: {
+          id: 1, attempt: 1, provider: "ollama", model: "qwen3-vl:8b-instruct", extract_mode: mode,
+          prompt_version: "v1", input_tokens: null, output_tokens: null, duration_ms: 1000, created_at: "x",
+        },
+      } as DocumentDetail;
+    };
+
+    it("records one confirmation for every unlocated value, and only after it is ticked", async () => {
+      const fake = install(pictureRead(), {
+        queue: [5],
+        responders: [(c) => (c.path === "/api/documents/5/approve" ? Response.json({ document: detailFixture().document, review: {} }) : undefined)],
+      });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Checked against the picture" }));
+      const dialog = screen.getByRole("dialog", { name: "Check against the picture" });
+      expect(within(dialog).getByText(/\$236\.50/)).toBeInTheDocument();
+      expect(within(dialog).getByText(/\$54\.00/)).toBeInTheDocument();
+      const confirm = within(dialog).getByRole("button", { name: "Confirm checked against the picture" });
+      expect(confirm).toBeDisabled();
+      fireEvent.click(within(dialog).getByRole("checkbox"));
+      fireEvent.click(confirm);
+      expect(await screen.findByText(/Will be accepted when you approve, because:/)).toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "Approve entry" }));
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+      const sent = (fake.sent("POST", "/api/documents/5/approve")[0].body as { overrides: { check_code: string; reason: string }[] }).overrides;
+      expect(sent).toEqual([{ check_code: "VALUE_IN_DOCUMENT", reason: "Checked against the picture: 2 values the page words did not place." }]);
+      expect(JSON.stringify(sent)).not.toContain("236");
+    });
+
+    it("is not offered when the text reading, not a picture, produced the values", async () => {
+      install(pictureRead("text_only"));
+      renderReview();
+      await screen.findByRole("button", { name: "Override with reason" });
+      expect(screen.queryByRole("button", { name: "Checked against the picture" })).toBeNull();
+    });
+
+    it("is not offered for a page that has a text layer", async () => {
+      install(pictureRead("text_and_image", "text_layer"));
+      renderReview();
+      await screen.findByRole("button", { name: "Override with reason" });
+      expect(screen.queryByRole("button", { name: "Checked against the picture" })).toBeNull();
+    });
+
+    it("is not offered for any other check", async () => {
+      const detail = pictureRead();
+      install({ ...detail, checks: unknownVendor() });
+      renderReview();
+      await screen.findByRole("button", { name: "Override with reason" });
+      expect(screen.queryByRole("button", { name: "Checked against the picture" })).toBeNull();
+    });
+  });
+
   it("shows the API's reason and refreshes when approval is refused", async () => {
     const fake = install(detailFixture(), {
       responders: [

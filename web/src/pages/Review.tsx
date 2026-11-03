@@ -19,6 +19,8 @@ import DuplicateDialog from "../review/DuplicateDialog";
 import EntryForm from "../review/EntryForm";
 import { evidenceKey, inputId, type FieldKey } from "../review/fields";
 import PagePane from "../review/PagePane";
+import PictureCheckDialog from "../review/PictureCheckDialog";
+import { canCheckAgainstPicture, pictureCheckReason, unlocatedValues } from "../review/pictureCheck";
 import { explain } from "../review/explain";
 import { HistoryDialog, ReprocessDialog, ShortcutHelp } from "../review/SmallDialogs";
 import VendorPicker from "../review/VendorPicker";
@@ -31,7 +33,7 @@ import { useToast } from "../ui/Toast";
 
 type Dialog =
   | { kind: "vendor" | "reject" | "duplicate" | "reprocess" | "history" | "help" }
-  | { kind: "override"; check: CheckOut }
+  | { kind: "override" | "picture"; check: CheckOut }
   | null;
 
 type Saved = { kind: "idle" } | { kind: "saving" } | { kind: "saved"; note: string } | { kind: "error"; message: string };
@@ -353,6 +355,8 @@ export default function Review({ id }: { id: number }) {
                 onShowOnPage={showKey}
                 onPickVendor={() => setDialog({ kind: "vendor" })}
                 onOverride={(check) => setDialog({ kind: "override", check })}
+                canPictureCheck={(check) => canCheckAgainstPicture(check, detail)}
+                onPictureCheck={(check) => setDialog({ kind: "picture", check })}
                 onWithdraw={(code: CheckCode) => setPending({ stamp: stampOf(detail), map: { ...pending, [code]: undefined } })}
               />
               <EntryForm lines={entry.lines} checks={detail.checks} />
@@ -396,6 +400,18 @@ export default function Review({ id }: { id: number }) {
           note="This will be recorded."
           onConfirm={(reason) => {
             const code = dialog.check.check_code;
+            setPending({ stamp: stampOf(detail), map: { ...pending, [code]: reason } });
+            setDialog(null);
+          }}
+          onCancel={() => setDialog(null)}
+        />
+      )}
+      {dialog?.kind === "picture" && (
+        <PictureCheckDialog
+          values={unlocatedValues(dialog.check)}
+          onConfirm={() => {
+            const code = dialog.check.check_code;
+            const reason = pictureCheckReason(unlocatedValues(dialog.check).length);
             setPending({ stamp: stampOf(detail), map: { ...pending, [code]: reason } });
             setDialog(null);
           }}

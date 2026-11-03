@@ -523,6 +523,24 @@
   margin: 0 0 0.4rem;
 }
 
+.unlocated {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.2rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.check-confirm {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin: 0.6rem 0;
+}
+
+.check-confirm input {
+  margin-top: 0.25rem;
+}
+
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
