@@ -45,11 +45,17 @@ _LOOKALIKES = str.maketrans(
 _INVISIBLE = {"Cf", "Cc", "Mn"}  # format controls, control characters, combining marks
 
 _GAP = r"[^.\n]{0,40}?"
+_FIGURES = r"(?:totals?|figures?|amounts?|balances?|line items?|numbers?)"
+_BEFORE = r"(?:above|before|earlier|previous|preceding|prior)"
 PATTERNS: dict[str, re.Pattern[str]] = {
     "ignore_instructions": re.compile(
         r"\b(?:ignore|disregard|forget|override|bypass)\b"
         + _GAP
         + r"\b(?:instructions?|rules?|prompts?|directions?|guidelines?|checks?)\b"
+        # telling the reader to set aside what is printed earlier on the page
+        + r"|\b(?:ignore|disregard|forget)\b"
+        + _GAP
+        + rf"\b(?:{_BEFORE}\s+{_FIGURES}|(?:{_FIGURES}|everything|anything)\b{_GAP}\b{_BEFORE})\b"
     ),
     "role_change": re.compile(
         r"\byou are (?:now |no longer )?(?:an? |the )?"
@@ -63,13 +69,20 @@ PATTERNS: dict[str, re.Pattern[str]] = {
     ),
     "approval_directive": re.compile(
         r"\bapprove (?:this|it|the) (?:invoice|payment|entry|document|expense|receipt)\b"
+        r"|\bapprove (?:it |them |these )?(?:automatically|immediately|at once|straight away"
+        r"|right away)\b"
+        r"|\bthis (?:vendor|supplier|invoice|payment|document|account|entry) "
+        r"(?:(?:is|was) (?:already |pre-?)|has already been (?:pre-?)?)"
+        r"(?:approved|authori[sz]ed|cleared|verified)\b"
         r"|\bmark (?:this|it|the \w+) as (?:approved|paid|reviewed|verified|valid|checked)\b"
         r"|\b(?:do not|don't|never) (?:flag|check|review|verify|question|dispute|audit)\b"
-        r"|\bskip (?:the )?(?:checks?|review|verification|validation)\b"
+        r"|\bskip (?:(?:the|all|any|every|further|these|this|those) )*"
+        r"(?:checks?|review|verification|validation)\b"
         r"|\bwithout (?:any )?(?:review|checking|verification)\b"
     ),
     "system_markers": re.compile(
         r"<\s*/?\s*(?:system|assistant|instructions?|prompt)\b|\[/?(?:inst|system)\]"
+        r"|\bsystem (?:message|notice|override|instruction)s?\s*:"
         r"|\bsystem prompt\b|\bbegin (?:system|instructions?)\b|#{2,}\s*(?:system|instructions?)\b"
     ),
     "asks_for_output": re.compile(

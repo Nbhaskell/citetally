@@ -111,11 +111,22 @@ export function explain(check: CheckOut, entry: EntryOut, evidence: readonly Evi
     }
     case "TAX_MATCH": {
       const rate = entry.lines.find((l) => l.tax_rate)?.tax_rate;
-      out.text.push(
-        rate
-          ? `${percentText(rate)} tax comes to ${money(num(d, "expected"))}. The page says ${money(num(d, "stated"))}.`
-          : `The page says ${money(num(d, "stated"))} tax.`,
-      );
+      const printed = str(d, "printed_rate");
+      if (rate) {
+        out.text.push(
+          `${percentText(rate)} tax comes to ${money(num(d, "expected"))}. The page says ${money(num(d, "stated"))}.`,
+        );
+      } else if (printed && d.reachable === false) {
+        out.text.push(
+          `The page prints a ${percentText(printed)} tax rate. ${money(num(d, "stated"))} is not ${percentText(printed)} of any of the lines, with or without shipping and discount.`,
+        );
+      } else if (printed && (num(d, "stated") ?? 0) > (num(d, "most") ?? Number.POSITIVE_INFINITY)) {
+        out.text.push(
+          `The page prints a ${percentText(printed)} tax rate, which allows at most ${money(num(d, "most"))}. The page says ${money(num(d, "stated"))}.`,
+        );
+      } else {
+        out.text.push(`The page says ${money(num(d, "stated"))} tax.`);
+      }
       if (d.unusual === true) {
         out.text.push(
           `That is ${str(d, "implied_rate")} of the subtotal; this vendor's usual rate is ${str(d, "usual_rate")}.`,

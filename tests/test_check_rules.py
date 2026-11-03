@@ -10,6 +10,7 @@ import pytest
 
 from citetally.checks import RULES, CheckInput, History, Other, Thresholds
 from citetally.checks import rules as r
+from citetally.checks.inputs import Outcome
 from citetally.models import (
     CheckCode,
     Entry,
@@ -679,3 +680,64 @@ def test_a_per_line_rate_still_decides_and_the_page_rate_is_not_used() -> None:
     entry = make_entry(subtotal_minor=10000, tax_total_minor=1000)
     outcome = run(CheckCode.TAX_MATCH, entry=entry, lines=[taxed(10000, "0.10")], pages=[page])
     assert outcome.passed and outcome.detail["rate_printed"] is True
+
+
+# --- Round 2: the printed rate must be able to produce the stated tax -------------------------
+#
+# With no per-line rate read, the tax must still equal the printed rate applied to some lines (the
+# taxable ones, which the page does not mark). A tax below the ceiling that no combination of the
+# lines reaches cannot be right: this is what the first sealed set's seven misses looked like.
+
+
+def tax_on(*cents: int, tax: int, text: str = "Sales tax (7%)", **entry_fields: int) -> Outcome:
+    entry = make_entry(subtotal_minor=sum(cents), tax_total_minor=tax, **entry_fields)
+    outcome: Outcome = run(
+        CheckCode.TAX_MATCH, entry=entry, lines=amounts(*cents), pages=[rate_page(text)]
+    )
+    return outcome
+
+
+def test_a_tax_below_the_ceiling_that_no_set_of_lines_reaches_fails() -> None:
+    outcome = tax_on(10000, 5000, tax=500)  # 7% of 100.00 is 700, of 50.00 is 350, of both 1050
+    assert not outcome.passed
+    assert outcome.detail["reachable"] is False and outcome.detail["printed_rate"] == "0.07"
+
+
+@pytest.mark.parametrize("tax", [350, 700, 1050])
+def test_a_tax_that_is_the_rate_on_any_set_of_the_lines_passes(tax: int) -> None:
+    outcome = tax_on(10000, 5000, tax=tax)
+    assert outcome.passed and outcome.detail["reachable"] is True
+
+
+def test_the_tax_may_be_charged_on_shipping_or_after_a_discount() -> None:
+    assert tax_on(10000, 5000, tax=420, shipping_minor=1000).passed  # 7% of 50.00 + 10.00
+    assert tax_on(10000, 5000, tax=665, discount_minor=500).passed  # 7% of 100.00 - 5.00
+    assert not tax_on(10000, 5000, tax=500, shipping_minor=1000).passed
+
+
+def test_a_cent_of_rounding_is_allowed_for_each_line_in_the_set() -> None:
+    lines = (1050, 1050, 1050)  # 73.5 cents each: 74 when rounded one by one, 220 on the sum
+    assert tax_on(*lines, tax=219).passed and tax_on(*lines, tax=221).passed
+    assert not tax_on(*lines, tax=224).passed
+
+
+def test_a_tax_of_zero_beside_a_printed_rate_fails_when_there_are_lines() -> None:
+    assert not tax_on(10000, 5000, tax=0).passed
+
+
+def test_with_no_lines_or_too_many_or_one_without_an_amount_only_the_ceiling_applies() -> None:
+    page = rate_page("Sales tax (7%)")
+    entry = make_entry(subtotal_minor=10000, tax_total_minor=500)
+    assert run(CheckCode.TAX_MATCH, entry=entry, pages=[page]).passed  # no lines read
+    many = amounts(*([100] * (r.MAX_TAX_SUBSET_LINES + 1)))
+    assert run(CheckCode.TAX_MATCH, entry=entry, lines=many, pages=[page]).passed
+    partial = [*amounts(10000), make_line(2)]  # the second line has no amount
+    assert run(CheckCode.TAX_MATCH, entry=entry, lines=partial, pages=[page]).passed
+
+
+def test_without_a_single_printed_rate_the_subset_test_is_not_applied() -> None:
+    entry = make_entry(subtotal_minor=15000, tax_total_minor=500)
+    lines = amounts(10000, 5000)
+    assert run(CheckCode.TAX_MATCH, entry=entry, lines=lines, pages=[rate_page("Tax $5.00")]).passed
+    two = rate_page("Tax (7%) and state tax 5%")
+    assert run(CheckCode.TAX_MATCH, entry=entry, lines=lines, pages=[two]).passed

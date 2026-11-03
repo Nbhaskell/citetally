@@ -24,6 +24,7 @@ MIN_WORDS = 15  # a document with fewer words than this was probably not read
 MAX_SKEW_DEGREES = 5.0  # a page straightened by more than this was badly photographed
 UNUSUAL_TAX_RATE_GAP = Decimal("0.01")  # one percentage point from the vendor's usual rate
 MIN_RATE_HISTORY = 3
+MAX_TAX_SUBSET_LINES = 14  # the lines are tried in every combination, so only up to this many
 _SHOWN = 80  # characters of a printed value kept in a detail
 
 
@@ -147,6 +148,24 @@ def printed_tax_rate(pages: Sequence[Page]) -> Decimal | None:
     return next(iter(rates)) if len(rates) == 1 else None
 
 
+def _tax_reachable(
+    amounts: Sequence[int], extras: Sequence[int], rate: Decimal, stated: int, tolerance: int
+) -> bool:
+    """Whether `stated` is `rate` applied to some non-empty set of the line amounts.
+
+    The page does not say which lines are taxed, so every combination is tried. `extras` are the
+    other amounts a tax base may include or leave out (shipping, minus a discount), in each
+    combination. A cent of rounding is allowed for each line in the set.
+    """
+    for mask in range(1, 1 << len(amounts)):
+        chosen = [a for index, a in enumerate(amounts) if mask >> index & 1]
+        allowed = max(tolerance, len(chosen))
+        base = sum(chosen)
+        if any(abs(tax_minor(base + extra, rate) - stated) <= allowed for extra in extras):
+            return True
+    return False
+
+
 def tax_match(i: CheckInput) -> Outcome:
     stated = i.entry.tax_total_minor
     if stated is None:
@@ -182,6 +201,26 @@ def tax_match(i: CheckInput) -> Outcome:
         most = tax_minor(base + (i.entry.shipping_minor or 0), page_rate)
         detail.update({"printed_rate": str(page_rate), "most": most})
         if stated > most + i.thresholds.tolerance_minor:
+            return Outcome(CheckCode.TAX_MATCH, False, detail)
+    # A tax under that ceiling can still be impossible: it has to be the rate on some of the lines.
+    line_amounts = [line.amount_minor for line in i.lines]
+    if (
+        page_rate is not None
+        and line_amounts
+        and None not in line_amounts
+        and len(line_amounts) <= MAX_TAX_SUBSET_LINES
+    ):
+        shipping, discount = i.entry.shipping_minor or 0, i.entry.discount_minor or 0
+        extras = sorted({0, shipping, -discount, shipping - discount})
+        reachable = _tax_reachable(
+            [a for a in line_amounts if a is not None],
+            extras,
+            page_rate,
+            stated,
+            i.thresholds.tolerance_minor,
+        )
+        detail.update({"printed_rate": str(page_rate), "reachable": reachable})
+        if not reachable:
             return Outcome(CheckCode.TAX_MATCH, False, detail)
     if base:
         implied = (Decimal(stated) / Decimal(base)).quantize(Decimal("0.0001"))
