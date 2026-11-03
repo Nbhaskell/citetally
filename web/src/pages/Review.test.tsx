@@ -288,7 +288,7 @@ describe("the checks", () => {
     expect(screen.getByText("14 checks passed")).toBeInTheDocument();
   });
 
-  it("'Fix value' goes to the field and 'Show on page' highlights its box", async () => {
+  it("'Go to the value' goes to the field and 'Show on page' highlights its box", async () => {
     install(
       detailFixture({ checks: checksFixture({ TOTAL_MATCH: failing("TOTAL_MATCH", { expected: 23550, stated: 23650 }) }) }),
     );
@@ -297,8 +297,26 @@ describe("the checks", () => {
     const checks = within(screen.getByRole("region", { name: "Checks" }));
     fireEvent.click(checks.getByRole("button", { name: "Show on page" }));
     expect(container.querySelector(".box-active")?.getAttribute("data-key")).toBe("total");
-    fireEvent.click(checks.getByRole("button", { name: "Fix value" }));
+    fireEvent.click(checks.getByRole("button", { name: "Go to the value" }));
     await waitFor(() => expect(screen.getByLabelText("Total")).toHaveFocus());
+  });
+
+  it("tells you to keep printed figures as printed when the page's own arithmetic is off", async () => {
+    install(detailFixture({ checks: checksFixture({ TOTAL_MATCH: failing("TOTAL_MATCH", { expected: 23550, stated: 23650 }) }) }));
+    renderReview();
+    await screen.findByText("Must be resolved before approving");
+    const checks = within(screen.getByRole("region", { name: "Checks" }));
+    expect(checks.getByText(/Keep the figures as the page prints them/)).toBeInTheDocument();
+    expect(checks.queryByRole("button", { name: "Fix value" })).toBeNull();
+  });
+
+  it("keeps 'Fix value' for a check that is about a missing or misread value", async () => {
+    install(detailFixture({ checks: checksFixture({ REQUIRED_FIELDS: failing("REQUIRED_FIELDS", { missing: ["invoice_number"] }) }) }));
+    renderReview();
+    await screen.findByText("Must be resolved before approving");
+    const checks = within(screen.getByRole("region", { name: "Checks" }));
+    expect(checks.getByRole("button", { name: "Fix value" })).toBeInTheDocument();
+    expect(checks.queryByText(/Keep the figures as the page prints them/)).toBeNull();
   });
 });
 
@@ -406,7 +424,7 @@ describe("approving", () => {
       } as DocumentDetail;
     };
 
-    it("records one confirmation for every unlocated value, and only after it is ticked", async () => {
+    it("records one confirmation for every unlocated value, and only after each one is marked as matching", async () => {
       const fake = install(pictureRead(), {
         queue: [5],
         responders: [(c) => (c.path === "/api/documents/5/approve" ? Response.json({ document: detailFixture().document, review: {} }) : undefined)],
@@ -418,7 +436,12 @@ describe("approving", () => {
       expect(within(dialog).getByText(/\$54\.00/)).toBeInTheDocument();
       const confirm = within(dialog).getByRole("button", { name: "Confirm checked against the picture" });
       expect(confirm).toBeDisabled();
-      fireEvent.click(within(dialog).getByRole("checkbox"));
+      const matches = within(dialog).getAllByRole("radio", { name: "Matches the picture" });
+      expect(matches).toHaveLength(2);
+      fireEvent.click(matches[0]);
+      expect(confirm).toBeDisabled(); // one value is still undecided
+      fireEvent.click(matches[1]);
+      expect(confirm).toBeEnabled();
       fireEvent.click(confirm);
       expect(await screen.findByText(/Will be accepted when you approve, because:/)).toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: "Approve entry" }));
@@ -426,6 +449,17 @@ describe("approving", () => {
       const sent = (fake.sent("POST", "/api/documents/5/approve")[0].body as { overrides: { check_code: string; reason: string }[] }).overrides;
       expect(sent).toEqual([{ check_code: "VALUE_IN_DOCUMENT", reason: "Checked against the picture: 2 values the page words did not place." }]);
       expect(JSON.stringify(sent)).not.toContain("236");
+    });
+
+    it("cannot be confirmed while any value is marked as not what the picture shows", async () => {
+      install(pictureRead());
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Checked against the picture" }));
+      const dialog = screen.getByRole("dialog", { name: "Check against the picture" });
+      for (const radio of within(dialog).getAllByRole("radio", { name: "Matches the picture" })) fireEvent.click(radio);
+      fireEvent.click(within(dialog).getAllByRole("radio", { name: "Not what the picture shows" })[1]);
+      expect(within(dialog).getByRole("button", { name: "Confirm checked against the picture" })).toBeDisabled();
+      expect(within(dialog).getByText(/Close this and correct or clear it in the form/)).toBeInTheDocument();
     });
 
     it("is not offered when the text reading, not a picture, produced the values", async () => {
@@ -448,6 +482,67 @@ describe("approving", () => {
       renderReview();
       await screen.findByRole("button", { name: "Override with reason" });
       expect(screen.queryByRole("button", { name: "Checked against the picture" })).toBeNull();
+    });
+  });
+
+  describe("lines with no quantity", () => {
+    const noQuantity = () =>
+      detailFixture({
+        entry: entryFixture({
+          lines: [
+            { ...entryFixture().lines[0], quantity: null },
+            { ...entryFixture().lines[0], id: 12, line_number: 4, description: "Elbow", quantity: "2" },
+          ],
+        }),
+      });
+    const approveResponder: Responder = (c) =>
+      c.path === "/api/documents/5/approve" ? Response.json({ document: detailFixture().document, review: {} }) : undefined;
+
+    it("asks about them before approving, naming the lines, and sends nothing until confirmed", async () => {
+      const fake = install(noQuantity(), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      const dialog = screen.getByRole("dialog", { name: "Lines with no quantity" });
+      expect(within(dialog).getByText(/Line 3/)).toBeInTheDocument();
+      expect(within(dialog).queryByText(/Line 4/)).toBeNull();
+      expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(0);
+      const go = within(dialog).getByRole("button", { name: "Approve anyway" });
+      expect(go).toBeDisabled();
+      fireEvent.click(within(dialog).getByRole("checkbox"));
+      fireEvent.click(go);
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+    });
+
+    it("lets you go back to fill them in without approving", async () => {
+      const fake = install(noQuantity(), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      fireEvent.click(within(screen.getByRole("dialog", { name: "Lines with no quantity" })).getByRole("button", { name: "Go back" }));
+      expect(screen.queryByRole("dialog", { name: "Lines with no quantity" })).toBeNull();
+      expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(0);
+    });
+
+    it("does not ask when every line has a quantity", async () => {
+      const fake = install(detailFixture(), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+      expect(screen.queryByRole("dialog", { name: "Lines with no quantity" })).toBeNull();
+    });
+
+    it("leaves a flat fee, with no quantity and no price, alone", async () => {
+      const fee = { ...entryFixture().lines[0], quantity: null, unit_price: null, description: "Fee" };
+      const fake = install(detailFixture({ entry: entryFixture({ lines: [fee] }) }), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+      expect(screen.queryByText(/No quantity read/)).toBeNull();
+    });
+
+    it("marks the line in the form as having no quantity read", async () => {
+      install(noQuantity());
+      renderReview();
+      expect(await screen.findByText(/No quantity read/)).toBeInTheDocument();
     });
   });
 
@@ -850,7 +945,7 @@ describe("a phone", () => {
     const checks = within(screen.getByRole("region", { name: "Checks" }));
     fireEvent.click(checks.getByRole("button", { name: "Show on page" }));
     expect(container.querySelector(".review")?.getAttribute("data-tab")).toBe("page");
-    fireEvent.click(checks.getByRole("button", { name: "Fix value" }));
+    fireEvent.click(checks.getByRole("button", { name: "Go to the value" }));
     expect(container.querySelector(".review")?.getAttribute("data-tab")).toBe("details");
   });
 });

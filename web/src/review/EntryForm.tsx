@@ -68,6 +68,13 @@ function ArithmeticNote({ line, mismatch, cur }: { line: EntryLine; mismatch: Re
       </span>
     );
   }
+  if ((!line.quantity || !line.quantity.trim()) && line.unit_price) {
+    return (
+      <span className="arith arith-warn">
+        <Icon name="alert" size={13} /> No quantity read. Check the page; enter it if the page prints one.
+      </span>
+    );
+  }
   return <span className="arith quiet">Not checked: needs a quantity, a price and an amount.</span>;
 }
 

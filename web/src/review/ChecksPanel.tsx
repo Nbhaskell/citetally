@@ -7,6 +7,9 @@ import type { FieldKey } from "./fields";
 
 export type Pending = Partial<Record<CheckCode, string>>;
 
+/** Checks that compare the figures the page prints with each other. */
+const ARITHMETIC: readonly CheckCode[] = ["LINE_MATH", "SUBTOTAL_MATCH", "TAX_MATCH", "TOTAL_MATCH"];
+
 interface Props {
   checks: readonly CheckOut[];
   entry: EntryOut;
@@ -39,6 +42,7 @@ function CheckItem({
 }: Props & { check: CheckOut }) {
   const said = explain(check, entry, evidence);
   const reason = pending[check.check_code];
+  const arithmetic = ARITHMETIC.includes(check.check_code);
   const onPage = said.target ? evidence.some((e) => e.found && e.x0 !== null && matches(e, said.target!)) : false;
   return (
     <li className={`check check-${check.blocking ? "block" : "warn"}`} id={`check-${check.check_code}`}>
@@ -71,6 +75,12 @@ function CheckItem({
       ) : (
         editable && (
           <div className="check-actions">
+            {arithmetic && (
+              <p className="check-hint">
+                Keep the figures as the page prints them. Change one only if it was misread; if the page itself is
+                wrong, accept the check with a reason.
+              </p>
+            )}
             {said.target && onPage && (
               <button type="button" className="button button-small" onClick={() => onShowOnPage(said.target!)}>
                 Show on page
@@ -78,7 +88,7 @@ function CheckItem({
             )}
             {said.target && (
               <button type="button" className="button button-small" onClick={() => onShow(said.target!)}>
-                Fix value
+                {arithmetic ? "Go to the value" : "Fix value"}
               </button>
             )}
             {said.pickVendor && (

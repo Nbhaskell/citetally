@@ -6,6 +6,7 @@ import {
   type CheckCode,
   type CheckOut,
   type DocumentDetail,
+  type EntryLine,
   type EntryPatch,
 } from "../api/client";
 import { PROCESSING, PROCESSING_STEP, retryStage } from "../lib/copy";
@@ -17,9 +18,11 @@ import ChecksPanel, { type Pending } from "../review/ChecksPanel";
 import { ReviewContext, type ReviewApi } from "../review/context";
 import DuplicateDialog from "../review/DuplicateDialog";
 import EntryForm from "../review/EntryForm";
+import { linesWithoutQuantity } from "../review/emptyQuantity";
 import { evidenceKey, inputId, type FieldKey } from "../review/fields";
 import PagePane from "../review/PagePane";
 import PictureCheckDialog from "../review/PictureCheckDialog";
+import QuantityGateDialog from "../review/QuantityGateDialog";
 import { canCheckAgainstPicture, pictureCheckReason, unlocatedValues } from "../review/pictureCheck";
 import { explain } from "../review/explain";
 import { HistoryDialog, ReprocessDialog, ShortcutHelp } from "../review/SmallDialogs";
@@ -34,6 +37,7 @@ import { useToast } from "../ui/Toast";
 type Dialog =
   | { kind: "vendor" | "reject" | "duplicate" | "reprocess" | "history" | "help" }
   | { kind: "override" | "picture"; check: CheckOut }
+  | { kind: "quantity"; lines: EntryLine[] }
   | null;
 
 type Saved = { kind: "idle" } | { kind: "saving" } | { kind: "saved"; note: string } | { kind: "error"; message: string };
@@ -172,6 +176,13 @@ export default function Review({ id }: { id: number }) {
       leave(id, `Approved ${entry.invoice_number ?? "the entry"}.`, undoTo(id));
     });
 
+  /** Approve, but first ask about lines with no quantity: nothing else flags them. */
+  const requestApprove = () => {
+    const empty = entry ? linesWithoutQuantity(entry.lines) : [];
+    if (empty.length > 0) setDialog({ kind: "quantity", lines: empty });
+    else void approve();
+  };
+
   const reject = (reason: string) =>
     run(async () => {
       setDialog(null);
@@ -209,7 +220,7 @@ export default function Review({ id }: { id: number }) {
     {
       j: () => ids[at + 1] !== undefined && navigate({ name: "review", id: ids[at + 1] }),
       k: () => at > 0 && navigate({ name: "review", id: ids[at - 1] }),
-      a: () => canApprove && !busy && void approve(),
+      a: () => canApprove && !busy && requestApprove(),
       r: () => editable && setDialog({ kind: "reject" }),
       e: () => editable && document.getElementById(inputId("invoice_number"))?.focus(),
       "g p": () => document.querySelector<HTMLElement>(".page-scroll")?.focus(),
@@ -369,7 +380,7 @@ export default function Review({ id }: { id: number }) {
         status={status}
         unresolved={unresolved.length}
         busy={busy || processing}
-        onApprove={() => void approve()}
+        onApprove={requestApprove}
         onReject={() => setDialog({ kind: "reject" })}
         onDuplicate={() => setDialog({ kind: "duplicate" })}
         onReprocess={() => setDialog({ kind: "reprocess" })}
@@ -416,6 +427,16 @@ export default function Review({ id }: { id: number }) {
             setDialog(null);
           }}
           onCancel={() => setDialog(null)}
+        />
+      )}
+      {dialog?.kind === "quantity" && (
+        <QuantityGateDialog
+          lines={dialog.lines}
+          onBack={() => setDialog(null)}
+          onApprove={() => {
+            setDialog(null);
+            void approve();
+          }}
         />
       )}
       {dialog?.kind === "vendor" && entry && (
