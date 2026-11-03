@@ -6,7 +6,8 @@ Run after the sealed run, on documents from the sealed set, in this order:
               separate database seeded the way the sealed run was (vendor list, earlier entries)
     (you)     start the API and web on that database, upload `data/pilot/files/`, review each
               document in the app and approve, reject or set it aside. The app records the seconds.
-    type      type the same 40 by hand, one at a time, with the clock running; writes `typed.jsonl`
+    type      type the approved documents by hand, one at a time, with the clock running (not the
+              rejected or unread ones, unless `--all`); writes `typed.jsonl`
     report    medians of both, the ratio, and every approved entry whose values differ from the
               answer key, with whether it carried an override
 
@@ -117,23 +118,37 @@ def _minor_of(text: str | None) -> int | None:
     return None if parsed is None else int((parsed.value * 100).to_integral_value())
 
 
+def _typed_minor(text: str | None) -> int | None:
+    """Typed amounts, sign ignored: credit notes are stored positive, and print as ($12.00)."""
+    minor = _minor_of(text)
+    return None if minor is None else abs(minor)
+
+
 def _date_of(text: str | None) -> str | None:
     parsed = parse_date(text or "", "en-US")
     value = getattr(parsed, "value", parsed)
     return None if value is None else str(value)
 
 
-def entry_differences(entry: Mapping[str, Any], truth: Any) -> list[str]:
+def entry_differences(
+    entry: Mapping[str, Any], truth: Any, vendor_id: str | None = None
+) -> list[str]:
     """Which values on an entry differ from the answer key (names from `CORE` and `OTHER`).
 
     `entry` holds the entry as stored: `vendor` (the chosen vendor's name), `invoice_number`,
     `entry_date`, `due_date`, `po_number`, `currency`, `entry_type`, the `*_minor` amounts, and
-    `lines` with `description`, `quantity`, `unit_price`, `amount_minor`.
+    `lines` with `description`, `quantity`, `unit_price`, `amount_minor`. When `vendor_id` (the
+    document's vendor in the fact sheet) and the entry's `vendor_golden_id` are both known, the
+    vendor is right when the list vendor is the same one, as the evaluation scores it: the page may
+    print a variant of the name ("Corner Fuel") and the desk correctly picks "Corner Fuel & Mart".
     """
     wrong: list[str] = []
     printed_vendor = truth.printed.get("vendor_name")
     vendor = normalize_name(entry.get("vendor") or "")
-    if vendor not in {normalize_name(truth.vendor_name), normalize_name(printed_vendor or "")}:
+    if vendor_id is not None and not vendor_id.startswith("X") and "vendor_golden_id" in entry:
+        if entry["vendor_golden_id"] != vendor_id:
+            wrong.append("vendor")
+    elif vendor not in {normalize_name(truth.vendor_name), normalize_name(printed_vendor or "")}:
         wrong.append("vendor")
     if not _same_text(entry.get("invoice_number"), truth.invoice_number):
         wrong.append("invoice_number")
@@ -172,14 +187,14 @@ def typed_differences(typed: Mapping[str, Any], truth: Any) -> list[str]:
         wrong.append("invoice_number")
     if _date_of(typed.get("entry_date")) != truth.entry_date:
         wrong.append("entry_date")
-    if _minor_of(typed.get("total")) != truth.total_minor:
+    if _typed_minor(typed.get("total")) != truth.total_minor:
         wrong.append("total")
     lines = typed.get("lines") or []
     if len(lines) != len(truth.lines) or any(
         not _same_text(got.get("description"), want.description)
         or not _same_number(got.get("quantity"), want.quantity)
         or not _same_number(got.get("unit_price"), want.unit_price)
-        or _minor_of(got.get("amount")) != want.amount_minor
+        or _typed_minor(got.get("amount")) != want.amount_minor
         for got, want in zip(lines, truth.lines, strict=False)
     ):
         wrong.append("lines")
@@ -254,9 +269,36 @@ def _read_typed() -> dict[str, dict[str, Any]]:
     return {row["pilot"]: row for row in rows}
 
 
-def type_by_hand() -> int:
+def needs_typing(status: str | None) -> bool:
+    """Only an approved document is typed: a rejected or unread one has no review to compare with."""
+    return status == "approved"
+
+
+def _latest_document(conn: Any, pilot_id: str) -> Any:
+    """The newest upload of a pilot file, so a file uploaded again after a failed read replaces it."""
+    return conn.execute(
+        "SELECT id, status FROM documents WHERE original_filename LIKE ? ORDER BY id DESC LIMIT 1",
+        (f"{pilot_id}.%",),
+    ).fetchone()
+
+
+def _statuses(selection: Sequence[Mapping[str, Any]]) -> dict[str, str | None]:
+    conn = db.connect(str(PILOT / "pilot.db"))
+    try:
+        found = {row["pilot"]: _latest_document(conn, row["pilot"]) for row in selection}
+    finally:
+        conn.close()
+    return {pilot: None if doc is None else doc["status"] for pilot, doc in found.items()}
+
+
+def type_by_hand(every_document: bool = False) -> int:
     selection = json.loads((PILOT / "selection.json").read_text(encoding="utf-8"))
     done = _read_typed()
+    if not every_document:
+        statuses = _statuses(selection)
+        skipped = [r["pilot"] for r in selection if not needs_typing(statuses[r["pilot"]])]
+        selection = [r for r in selection if needs_typing(statuses[r["pilot"]])]
+        print(f"Skipping {len(skipped)} not approved in the app: {', '.join(skipped) or 'none'}.")
     print("Type each document by hand. The clock runs from the moment you press Enter at the first")
     print(
         "prompt until you finish the last line. Lines are: description | quantity | unit price | amount."
@@ -310,7 +352,9 @@ def type_by_hand() -> int:
 # ---- report ------------------------------------------------------------------------------------
 
 
-def _stored_entry(conn: Any, document_id: int) -> dict[str, Any] | None:
+def _stored_entry(
+    conn: Any, document_id: int, golden_ids: Mapping[str, str] | None = None
+) -> dict[str, Any] | None:
     entry = repo.get_entry_for_document(conn, document_id)
     if entry is None:
         return None
@@ -323,6 +367,10 @@ def _stored_entry(conn: Any, document_id: int) -> dict[str, Any] | None:
     )}  # fmt: skip
     data["entry_type"] = getattr(entry.entry_type, "value", entry.entry_type)
     data["vendor"] = vendor
+    if golden_ids is not None:
+        data["vendor_golden_id"] = (
+            golden_ids.get(normalize_name(vendor or "")) if entry.vendor_id else None
+        )
     data["lines"] = [
         {
             "description": line.description,
@@ -337,15 +385,15 @@ def _stored_entry(conn: Any, document_id: int) -> dict[str, Any] | None:
 
 def collect() -> dict[str, Any]:
     selection = json.loads((PILOT / "selection.json").read_text(encoding="utf-8"))
-    by_id = {i.id: i for i in load_suite("sealed", unseal=True).items}
+    suite = load_suite("sealed", unseal=True)
+    by_id = {i.id: i for i in suite.items}
+    golden_ids = {normalize_name(v.name): v.id for v in suite.facts.vendors}
     typed = _read_typed()
     conn = db.connect(str(PILOT / "pilot.db"))
     rows: list[dict[str, Any]] = []
     for row in selection:
         item: Item = by_id[row["id"]]
-        found = conn.execute(
-            "SELECT id FROM documents WHERE original_filename LIKE ?", (f"{row['pilot']}.%",)
-        ).fetchone()
+        found = _latest_document(conn, row["pilot"])
         record: dict[str, Any] = {
             "pilot": row["pilot"],
             "id": row["id"],
@@ -362,8 +410,10 @@ def collect() -> dict[str, Any]:
             record["overrides"] = 0 if last is None else last.overrides
             record["edited"] = False if last is None else bool(last.edited)
             if document.status.value == "approved":
-                stored = _stored_entry(conn, document.id)
-                wrong = [] if stored is None else entry_differences(stored, item.truth)
+                stored = _stored_entry(conn, document.id, golden_ids)
+                wrong = (
+                    [] if stored is None else entry_differences(stored, item.truth, item.vendor_id)
+                )
                 record["wrong_core"] = [w for w in wrong if w in CORE]
                 record["wrong_other"] = [w for w in wrong if w in OTHER]
         if row["pilot"] in typed:
@@ -523,14 +573,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("prepare", help="choose the documents and make the pilot database")
     p.add_argument("--force", action="store_true", help="throw the pilot away and start again")
-    sub.add_parser("type", help="type the documents by hand, timed")
+    t = sub.add_parser("type", help="type the approved documents by hand, timed")
+    t.add_argument("--all", action="store_true", help="type every document, approved or not")
     r = sub.add_parser("report", help="medians, ratio and wrong values approved")
     r.add_argument("--name", default="pilot")
     args = parser.parse_args(argv)
     if args.command == "prepare":
         return prepare(args.force)
     if args.command == "type":
-        return type_by_hand()
+        return type_by_hand(args.all)
     return report(args.name)
 
 

@@ -1,0 +1,643 @@
+{
+ "documents": 40,
+ "reviewed_and_typed": 34,
+ "decisions": {
+  "approve": 34,
+  "reject": 6,
+  "mark_duplicate": 0
+ },
+ "not_reviewed": [],
+ "not_typed": [
+  "p01",
+  "p03",
+  "p04",
+  "p11",
+  "p12",
+  "p15"
+ ],
+ "review_median": 27.5,
+ "typed_median": 107.80000000000001,
+ "ratio": 0.2551020408163265,
+ "paired_ratio_median": 0.3103155474090859,
+ "by_condition": {
+  "clean_pdf": {
+   "documents": 10,
+   "review_median": 22.0,
+   "typed_median": 108.55000000000001,
+   "ratio": 0.20267157991708887
+  },
+  "scan_light": {
+   "documents": 10,
+   "review_median": 16.0,
+   "typed_median": 85.44999999999999,
+   "ratio": 0.18724400234055005
+  },
+  "scan_heavy": {
+   "documents": 4,
+   "review_median": 28.0,
+   "typed_median": 130.75,
+   "ratio": 0.21414913957934992
+  },
+  "phone_photo": {
+   "documents": 10,
+   "review_median": 51.0,
+   "typed_median": 127.4,
+   "ratio": 0.40031397174254313
+  }
+ },
+ "approved": 34,
+ "approved_with_override": 16,
+ "wrong_core_approved": 5,
+ "wrong_core_approved_without_override": [
+  "p23",
+  "p24"
+ ],
+ "wrong_core_approved_with_override": [
+  "p10",
+  "p20",
+  "p28"
+ ],
+ "wrong_other_approved": 2,
+ "typed_with_errors": 12,
+ "typed_total": 34,
+ "rows": [
+  {
+   "pilot": "p01",
+   "id": "s2-inv-0145",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 148,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p02",
+   "id": "s2-inv-0061",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 200,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 112.7,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p03",
+   "id": "s2-crn-0013",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 67,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p04",
+   "id": "s2-rcp-0014",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 41,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p05",
+   "id": "s2-crn-0016",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 334,
+   "overrides": 2,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 279.6,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p06",
+   "id": "s2-rcp-0013",
+   "condition": "scan_heavy",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 18,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 145.7,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p07",
+   "id": "s2-inv-0090",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 99,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 136.6,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p08",
+   "id": "s2-inv-0133",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 61,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 166.3,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p09",
+   "id": "s2-inv-0080",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 81,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 159.1,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p10",
+   "id": "s2-crn-0024",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 13,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [
+    "lines"
+   ],
+   "wrong_other": [],
+   "typed_seconds": 140.6,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p11",
+   "id": "s2-crn-0043",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 24,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p12",
+   "id": "s2-rcp-0034",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 7,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p13",
+   "id": "s2-rcp-0028",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 25,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 62.0,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p14",
+   "id": "s2-inv-0018",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 51,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 133.8,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p15",
+   "id": "s2-inv-0135",
+   "condition": "scan_heavy",
+   "status": "rejected",
+   "decision": "reject",
+   "review_seconds": 18,
+   "overrides": 0,
+   "edited": false
+  },
+  {
+   "pilot": "p16",
+   "id": "s2-crn-0028",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 17,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 109.7,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p17",
+   "id": "s2-crn-0038",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 19,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 107.4,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p18",
+   "id": "s2-rcp-0008",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 9,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 85.4,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p19",
+   "id": "s2-crn-0025",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 20,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 95.2,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p20",
+   "id": "s2-inv-0036",
+   "condition": "scan_heavy",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 38,
+   "overrides": 2,
+   "edited": false,
+   "wrong_core": [
+    "lines"
+   ],
+   "wrong_other": [],
+   "typed_seconds": 115.8,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p21",
+   "id": "s2-inv-0128",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 51,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 88.5,
+   "typed_wrong": [
+    "invoice_number"
+   ]
+  },
+  {
+   "pilot": "p22",
+   "id": "s2-crn-0049",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 10,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 45.6,
+   "typed_wrong": [
+    "total",
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p23",
+   "id": "s2-crn-0031",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 11,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [
+    "lines"
+   ],
+   "wrong_other": [],
+   "typed_seconds": 95.6,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p24",
+   "id": "s2-crn-0019",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 7,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [
+    "lines"
+   ],
+   "wrong_other": [],
+   "typed_seconds": 113.7,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p25",
+   "id": "s2-crn-0039",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 207,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 102.1,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p26",
+   "id": "s2-inv-0096",
+   "condition": "scan_heavy",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 125,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 159.1,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p27",
+   "id": "s2-inv-0142",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 21,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 71.8,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p28",
+   "id": "s2-inv-0050",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 133,
+   "overrides": 1,
+   "edited": true,
+   "wrong_core": [
+    "total",
+    "lines"
+   ],
+   "wrong_other": [
+    "tax_total"
+   ],
+   "typed_seconds": 171.2,
+   "typed_wrong": [
+    "entry_date",
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p29",
+   "id": "s2-inv-0069",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 30,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 72.2,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p30",
+   "id": "s2-inv-0001",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 5,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 55.1,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p31",
+   "id": "s2-inv-0062",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 4,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 91.8,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p32",
+   "id": "s2-crn-0018",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 55,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 190.2,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p33",
+   "id": "s2-inv-0019",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 53,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 121.0,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p34",
+   "id": "s2-inv-0144",
+   "condition": "scan_heavy",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 18,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 103.0,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p35",
+   "id": "s2-inv-0052",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 3,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 79.1,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p36",
+   "id": "s2-inv-0140",
+   "condition": "clean_pdf",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 2,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [
+    "due_date"
+   ],
+   "typed_seconds": 98.4,
+   "typed_wrong": [
+    "entry_date",
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p37",
+   "id": "s2-rcp-0022",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 327,
+   "overrides": 2,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 62.8,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p38",
+   "id": "s2-inv-0087",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 9,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 108.2,
+   "typed_wrong": []
+  },
+  {
+   "pilot": "p39",
+   "id": "s2-crn-0021",
+   "condition": "scan_light",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 60,
+   "overrides": 0,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 71.0,
+   "typed_wrong": [
+    "lines"
+   ]
+  },
+  {
+   "pilot": "p40",
+   "id": "s2-inv-0138",
+   "condition": "phone_photo",
+   "status": "approved",
+   "decision": "approve",
+   "review_seconds": 160,
+   "overrides": 1,
+   "edited": false,
+   "wrong_core": [],
+   "wrong_other": [],
+   "typed_seconds": 139.3,
+   "typed_wrong": []
+  }
+ ]
+}

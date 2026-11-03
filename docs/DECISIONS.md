@@ -707,3 +707,34 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 **Scoring** (`python -m tools.pilot report`, writing `eval/reports/pilot.md` and `.json`). Target 3 is the median review time over the median typing time on documents approved and typed, under 0.5; the median of per-document ratios and a row per condition are shown beside it. Target 4 counts approved entries whose vendor, number, date, total or lines differ from the answer key, split by whether the approval carried an override (including a "checked against the picture" confirmation, D-065). Other header values that differ (due date, PO number, currency, subtotal, tax, shipping, discount, type) are counted apart. Typing errors against the key are reported too, so a faster method is not read as a better one if it is also less accurate.
 
 **Limits stated before the result.** One reviewer who knows how the system fails; invented documents; 40 documents, so per-condition rows are indications; review seconds include any pause with the screen open; no duplicate documents.
+
+
+### D-068. The pilot: result against targets 3 and 4
+
+**What was run.** The 40 documents of D-067, reviewed in the app and then typed by hand. 34 were approved, 6 were rejected as unreadable (all heavy scans: p01, p03, p04, p11, p12, p15). One approved document, p10, failed its first read (the API was stopped during the upload, probably the cause) and was uploaded again; the second upload was reviewed, and the report uses the newest upload of each file. Typing covered the 34 approved documents only, not all 40 as D-067 said: a rejected document has no review to compare with, and typing pages already judged unreadable would only add errors. Report: `eval/reports/pilot.md` and `.json`. D-066's rows for targets 3 and 4 are answered here.
+
+| Target | Result |
+|---|---|
+| 3. Reviewer under half the time of typing | **Met**: median review 28 s, median typing 108 s, ratio **0.26** on 34 documents. Median of the per-document ratios 0.31. By condition: clean PDF 0.20, light scan 0.19, heavy scan 0.21 (4 documents), phone photo 0.40. |
+| 4. No wrong value approved without a recorded override | **Not met**: 2 of 34 approved entries held a wrong value with no override; 3 more held one with an override. |
+
+**How firm target 3 is.** It rests on the median. The ratio of total review time to total typing time is 0.59, because a few reviews were long (p05 334 s, p37 327 s). Three typed records were incomplete (p02, p22, p36: mistakes at the prompts); leaving them out gives 0.28, and leaving out p10 as well gives 0.32. The 13 approvals that used a "checked against the picture" confirmation (D-065) took a median of 53 s against 18 s for the other 21, so the confirmation costs time on the pages that need it and still leaves the median well under half. 18 of the 34 approvals needed no override at all.
+
+**What went wrong on target 4.**
+- p23 and p24 (no override), and p10 (with one): the entry's quantities were empty, though the page prints them. No check fires: line arithmetic skips a line with no quantity, and the page words did not contradict anything. The reviewer approved without seeing the gap.
+- p28 (with an override): the reviewer changed the total and the tax to what the lines add up to. The page prints different figures, so the entry no longer matches the page. This is the case where the page is wrong and the printed values should stay.
+- p20 (with an override): a description was misread (a full stop for a comma).
+- Other header values that differ: p28's tax total and p36's due date.
+
+**A scoring correction made after the first look.** The first report counted 5 wrong values without an override, because the pilot tool judged the vendor by printed name. p18, p31 and p39 had the right vendor chosen from the list while the page printed a variant ("Corner Fuel" for "Corner Fuel & Mart"). The sealed run's scorer already judges the vendor by the list vendor; the pilot tool now does the same. The correction was made after seeing the first result and does not change target 4's verdict. Two other changes came from the typing itself: typed amounts ignore the sign, because credit notes print in brackets but are stored positive, and the helper asks only for approved documents.
+
+**Typing accuracy.** 12 of 34 typed records differed from the key: typos in descriptions and one invoice number, three records that entered the tax column as the line amount (p14, p20, p28), and three incomplete records from mistakes at the prompts (p02, p22, p36). They are kept as typed: they are shorter than a clean record would be, which works against the claim in target 3, not for it.
+
+**Findings, not fixed here.**
+1. An entry with an empty quantity passes every check. Whether an empty quantity should block approval or show a warning is a decision that needs a new test set to measure; the sealed set is spent.
+2. The line-arithmetic error offers "Fix value" next to "Override with reason", and one reviewer fixed the arithmetic instead of keeping the printed values. The wording should say that a printed mismatch is kept as printed and overridden.
+3. The picture confirmation says "it matches" for every value. On p25 the model had read a stamp ("PAID" with a date) as a due date; the entry's due date was correctly empty, so there was nothing to match. The dialog does not fit a value that should be empty.
+
+**Limits.** One reviewer who built the system and knows how it fails; a new user would likely be slower. 34 approved documents, 40 chosen; the heavy-scan row has 4 documents because the other 6 were rejected as unreadable. Review seconds include any pause with the screen open. Typing was done in a console helper that asked for vendor, number, date, lines and total, not subtotal or tax, which makes typing look slightly faster than a full entry. The documents are invented. p10's review time is for its second upload.
+
+**Next.** The README numbers, each matching a saved report; then the owner's decisions on publishing.
