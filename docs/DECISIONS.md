@@ -667,3 +667,30 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 **Why not a new column or API field.** The simplest option that keeps the record is the existing override. A separate field would need a migration and a schema change for a distinction the prefix already carries. If the pilot needs the two kinds counted apart, the prefix is enough to do it.
 
 **What it does not do.** It does not change the check, the blocked share or any reported number: documents are still counted as blocked when the check fails. Whether it cuts the time per document is measured in the pilot (target 3), and whether it lets a wrong value through is measured there too (target 4): each such document is counted as an approved entry that carried an override. Anyone can tick the box without looking; the screen asks for it and records it, and cannot make the comparison happen.
+
+
+### D-066. The sealed run: result against the targets
+
+**What was run.** The sealed set (250 documents: 50 clean PDFs, 75 light scans, 50 heavy scans, 75 phone photos) was run once, with the product's own defaults (`--variant final`, one pass), on `main` at `6f9285f`, after D-063 to D-065 were merged and before anything from the run was read. The lock is now spent. No document failed to process. Report: `eval/reports/eval_sealed.md` and `.json`. The report tool gained `--primary` because the sealed split has no baseline run and the one-time lock allows no second look; the option only changes which setting the tables describe, and nothing was scored differently.
+
+**Against the targets (D-062).**
+
+| Target | Result |
+|---|---|
+| 1. Header fields exact, at least 90% in each condition | **Met in all four**: clean PDF 97.4% (95 to 99), light scan 99.4% (98 to 100), heavy scan 93.2% (90 to 95), phone photo 96.0% (94 to 97). All 250 documents: 96.7% (96 to 97). Inside heavy scans, the harsh level is 86.1% and the typical level 100.0% (25 documents each), reported apart and not moving the target. |
+| 2. Clean documents wrongly blocked, at most 30% | **Not met**: 46.9% (40 to 54) of 175 clean documents. By condition: clean PDF 6.9%, light scan 20.0%, heavy scan 88.9%, phone photo 67.3%. 44.6% of all clean documents fail `VALUE_IN_DOCUMENT`; with that check set aside the shares are 0.0%, 7.3%, 25.0% and 14.5%. |
+| 3. Reviewer under half the time of typing | Not measured; needs the pilot. |
+| 4. No wrong value approved without a recorded override | Not measured; needs the pilot. |
+
+**Other numbers.** Line items F1 91.8% (77.4% on heavy scans). Money fields exact 95.9%. Values found on the page 85.7% (61.4% on heavy scans, 79.5% on phone photos). Planted problems caught 84.0% (74 to 91), 12 missed. Median 15.1 s per page (9.0 s clean PDF). Header values invented on 11 documents.
+
+**Against the development sets.** Header fields exact 96.7% against 96.8% and 95.9%; clean documents blocked 46.9% against 49.0% and 42.9%; planted caught 84.0% against 87.2% and 83.3%. The development results held up on layouts they never saw, within the intervals, with the same weak spot.
+
+**Weak points, as they came out.**
+- Tax mismatch: 0 of 7 planted tax problems were caught (interval 0 to 35%), including two on clean PDFs. On the development sets the tax check caught planted problems after the fix in D-063. Why it missed these has not been looked into; the sealed layouts may print tax in a way the rule does not read. Any change to it needs a new test set, because this one is spent.
+- Instruction-like text (`injection_text`): 3 of 6 caught.
+- Heavy scans at the harsh level and phone photos at the harsh level are where header fields fall below 90% (86.1% and 90.5%) and where every clean document is blocked (100% on both).
+
+**What this does and does not show.** The point of target 2 was never reachable by reading alone on the poorest pages (D-064). The blocked share on heavy scans and phone photos is a count of pages where a person must look; the "checked against the picture" confirmation (D-065) lets them clear those with one deliberate step, and the pilot measures how long that takes. The documents are invented by the person who built the system, so this is evidence the fixes work on harder invented documents, not on real ones.
+
+**Next.** The pilot (40 sealed documents timed in the app, then typed by hand) for targets 3 and 4; then the README numbers, each matching a saved report.

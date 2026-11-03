@@ -160,17 +160,19 @@ def compare_variants(
 # ---- the report --------------------------------------------------------------------------------
 
 
-def build(split: str, only: Sequence[str] | None = None) -> dict[str, Any]:
+def build(
+    split: str, only: Sequence[str] | None = None, primary: str = "baseline"
+) -> dict[str, Any]:
     items_list = load_suite(split, unseal=split in {"heldout", "sealed"}).items
     items = {i.id: i for i in items_list}
     runs = {v: r for v, r in load_runs(split).items() if only is None or v in only}
-    if "baseline" not in runs:
-        raise SystemExit(f"There is no baseline run of the {split} split under eval/runs/.")
+    if primary not in runs:
+        raise SystemExit(f"There is no {primary} run of the {split} split under eval/runs/.")
     scored: dict[str, dict[int, list[dict[str, Any]]]] = {
         variant: {p: score_run(r["records"], items) for p, r in passes.items()}
         for variant, passes in runs.items()
     }
-    report: dict[str, Any] = {"split": split, "variants": {}, "comparisons": {}}
+    report: dict[str, Any] = {"split": split, "primary": primary, "variants": {}, "comparisons": {}}
     for variant, passes in scored.items():
         by_pass = {}
         for number, scores in sorted(passes.items()):
@@ -202,11 +204,9 @@ def build(split: str, only: Sequence[str] | None = None) -> dict[str, Any]:
         }
     if len(scored) > 1:
         for variant in scored:
-            if variant != "baseline":
-                report["comparisons"][variant] = compare_variants(
-                    scored["baseline"], scored[variant]
-                )
-    report["reading_list"] = reading_list(scored["baseline"][min(scored["baseline"])], items)
+            if variant != primary:
+                report["comparisons"][variant] = compare_variants(scored[primary], scored[variant])
+    report["reading_list"] = reading_list(scored[primary][min(scored[primary])], items)
     return report
 
 
@@ -238,7 +238,8 @@ def reading_list(scores: list[dict[str, Any]], items: dict[str, Item]) -> dict[s
 
 def render(report: dict[str, Any]) -> str:
     split = report["split"]
-    baseline = report["variants"]["baseline"]
+    primary = report.get("primary", "baseline")
+    baseline = report["variants"][primary]
     first = baseline["passes"][min(baseline["passes"])]
     meta = baseline["meta"]
     out: list[str] = [f"# Evaluation: {split} split", ""]
@@ -278,7 +279,7 @@ def render(report: dict[str, Any]) -> str:
         )
     )
 
-    out += ["", "## Headline numbers, baseline (first pass; shares pooled over all fields)", ""]
+    out += ["", f"## Headline numbers, {primary} (first pass; shares pooled over all fields)", ""]
     rows = []
     for name in (*CONDITIONS, "all"):
         s = first["all"] if name == "all" else first["by_condition"].get(name)
@@ -314,7 +315,7 @@ def render(report: dict[str, Any]) -> str:
     )
 
     if first.get("by_level"):
-        out += ["", "## By level of damage, baseline (first pass)", ""]
+        out += ["", f"## By level of damage, {primary} (first pass)", ""]
         rows = [
             [
                 key.replace("_", " ").replace("/", ", "),
@@ -335,7 +336,7 @@ def render(report: dict[str, Any]) -> str:
             )
         )  # fmt: skip
 
-    out += ["", "## Header fields, baseline (all conditions)", ""]
+    out += ["", f"## Header fields, {primary} (all conditions)", ""]
     rows = [
         [name, pct(v), str(v["wrong"]), str(v["missing"]), str(v["invented"])]
         for name, v in first["all"]["header_by_field"].items()
@@ -362,7 +363,7 @@ def render(report: dict[str, Any]) -> str:
     rows = [[code, pct(first["all"]["false_alarm_by_check"][code])] for code in BLOCKING]
     out.append(table([f"Check (of {clean} clean documents)", "Failing"], rows))
 
-    out += ["", "## Speed and size, baseline", ""]
+    out += ["", f"## Speed and size, {primary}", ""]
     rows = [
         [
             name.replace("_", " "),
@@ -402,7 +403,7 @@ def render(report: dict[str, Any]) -> str:
     )
 
     if report["comparisons"]:
-        out += ["", "## Comparing settings with the baseline", ""]
+        out += ["", f"## Comparing settings with the {primary}", ""]
         out.append(
             "A difference is called **real** only when it is larger than the spread between passes "
             "and a paired bootstrap over documents excludes zero. One of the two is **unclear**. "
@@ -412,7 +413,7 @@ def render(report: dict[str, Any]) -> str:
         for variant, comp in report["comparisons"].items():
             out += [
                 "",
-                f"### {variant} against baseline ({comp['documents']} documents, {len(comp['passes'])} pass(es))",
+                f"### {variant} against {primary} ({comp['documents']} documents, {len(comp['passes'])} pass(es))",
                 "",
             ]
             rows = []
@@ -489,9 +490,13 @@ def render(report: dict[str, Any]) -> str:
         "- The model is run at temperature 0 with a fixed seed, so repeated passes are expected to be nearly identical. The spread between passes therefore says little about the spread between different documents, which is what the bootstrap measures.",
         "- A person who wrote the system also wrote the test documents, so they are unseen but not blind.",
     ]
-    if split in {"heldout", "sealed"}:
+    if split == "heldout":
         out.append(
             "- The held-out split was opened once, after the development numbers were frozen. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
+        )
+    if split == "sealed":
+        out.append(
+            "- The sealed set was run once, with the product's own settings and one pass, after the fixes and the review-screen change were merged. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
         )
 
     out += ["", "## Reading list", "", "Documents worth opening by hand (not a failure count):", ""]
@@ -507,12 +512,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--name", default="dev", help="report name: eval_<name>.md and .json")
     parser.add_argument("--split", choices=list(SPLITS), default="tuned")
     parser.add_argument("--variants", nargs="+", help="report only these settings (and baseline)")
+    parser.add_argument(
+        "--primary",
+        default="baseline",
+        help="the setting the tables describe and the others are compared with (the sealed split has only `final`)",
+    )
     args = parser.parse_args(argv)
     lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK}.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2
-    report = build(args.split, None if not args.variants else ["baseline", *args.variants])
+    wanted = None if not args.variants else [args.primary, *args.variants]
+    report = build(args.split, wanted, args.primary)
     REPORTS.mkdir(parents=True, exist_ok=True)
     (REPORTS / f"eval_{args.name}.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     text = render(report)
