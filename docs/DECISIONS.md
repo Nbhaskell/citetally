@@ -694,3 +694,16 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 **What this does and does not show.** The point of target 2 was never reachable by reading alone on the poorest pages (D-064). The blocked share on heavy scans and phone photos is a count of pages where a person must look; the "checked against the picture" confirmation (D-065) lets them clear those with one deliberate step, and the pilot measures how long that takes. The documents are invented by the person who built the system, so this is evidence the fixes work on harder invented documents, not on real ones.
 
 **Next.** The pilot (40 sealed documents timed in the app, then typed by hand) for targets 3 and 4; then the README numbers, each matching a saved report.
+
+
+### D-067. The pilot: how it is run
+
+**What it measures (D-062 targets 3 and 4).** Whether finishing a document in the app takes under half the time of typing it by hand, and whether any approved entry holds a wrong value without a recorded override. One reviewer, the person who built the system; stated as a limit in the report.
+
+**Documents.** 40 from the sealed set, 10 per condition, chosen with a fixed seed and shuffled (`python -m tools.pilot prepare`). Documents that copy another are left out, because the pilot database holds only these 40 and a duplicate needs its original there; duplicate handling is measured by the sealed run. The pilot database is separate from the working one (`data/pilot/pilot.db`) and is seeded exactly as the sealed run was (16 vendors, 177 earlier entries), so the checks mean the same.
+
+**Order.** All 40 are reviewed in the app first, then typed by hand, so that typing does not teach the reviewer the answers. The app records `review_seconds`, the time the review screen was open. Typing is timed by a console helper (`python -m tools.pilot type`) from the first prompt to the last line, for vendor, number, date, lines and total, where D-062 said a spreadsheet; the helper makes the timing automatic and the same for every document.
+
+**Scoring** (`python -m tools.pilot report`, writing `eval/reports/pilot.md` and `.json`). Target 3 is the median review time over the median typing time on documents approved and typed, under 0.5; the median of per-document ratios and a row per condition are shown beside it. Target 4 counts approved entries whose vendor, number, date, total or lines differ from the answer key, split by whether the approval carried an override (including a "checked against the picture" confirmation, D-065). Other header values that differ (due date, PO number, currency, subtotal, tax, shipping, discount, type) are counted apart. Typing errors against the key are reported too, so a faster method is not read as a better one if it is also less accurate.
+
+**Limits stated before the result.** One reviewer who knows how the system fails; invented documents; 40 documents, so per-condition rows are indications; review seconds include any pause with the screen open; no duplicate documents.
