@@ -627,3 +627,30 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 - The remaining gap is locating image-read values. A way that keeps rule 5: have the vision model say where a value is, read that crop again at high resolution with OCR, and count the value as located only if the crop reads as the same text. It is a new feature with its own measurement; whether to build it is the decision.
 - Speed and hardware. The picture path costs a median of about 17 seconds per page on this machine against about 7.5. The 8 GB vision model shares a 10 GB graphics card with other programs, and runs were several times slower when the card was full; the README says so.
 - The held-out split and the sealed set are untouched by any of this. The sealed run is still to come.
+
+
+### D-064. Locating picture-read values by crop: tried, and not adopted
+
+**The idea (offered at the end of D-063).** The values that keep clean scans and photos blocked are ones the vision model read correctly but OCR could not place on the page. The vision model could say where each one is; code would crop that spot, enlarge it, read it with OCR, and count the value as located only if the crop reads as the same text under the same strict comparison (digits identical). That keeps rule 5: the model's text would never count, only an OCR reading at a real place on the page.
+
+**The spike** (`tools/crop_spike.py`; development sets only, the sealed set not opened). It took 20 heavy scans and phone photos with values OCR could not locate (74 values; documents with a planted problem left out), asked the vision model for a box around each, and tried to locate each value from the crop. The stop rule fixed beforehand was: stop if fewer than about half the boxes land on the right text or the crops cannot be read.
+
+| What was measured | Result |
+|---|---|
+| Values the model gave a box for | 74 of 74, valid boxes, on a 0 to 1000 scale (the pixel reading gave 0 of 74) |
+| Boxes that visibly hold the value (13 unlocated crops looked at) | about 9 of 13; the rest were loose or cut the value off |
+| Values located by reading the crop with Tesseract | 22 of 74 (30%); more generous crops, three enhancements and three page modes reached 24 of 74 (32%) at best |
+| Located but not what the page prints | 0 |
+| Values that really match the answer key | 70 of 74 |
+| Documents whose every unfound value was located | 3 of 20 (15%); 9 of 20 had at least half |
+| Median seconds for the box request | 14.2 on this machine |
+| Located by field | quantities 8 of 13 and descriptions 4 of 12 were the best; amounts 1 of 4, dates 0 of 7, totals 0 of 5 |
+
+**Why it stalls.** Pointing is not the problem. On the harshest pages Tesseract is off by a digit on the numbers it reads from a crop ("$742.74" for "$742.75", "123.78" for "123.75"), so strict matching refuses them. That refusal is right: the vision model is itself wrong in 4 of the 74 values (a "362.82" where the page prints 352.82), and the check held on those. The limit is the OCR's reading of the pixels, which a better crop does not change. Windows' built-in OCR as an additional full-page reading (`tools/ocr_lab.py`, 90 development scans and photos) raised the share of true values found from 83.3% (three Tesseract readings) to 84.9%, for a reading that exists only on Windows.
+
+**Decision.** Not built. At about 30% of unfound values located, the design would unblock roughly one in seven of the documents it is meant for, for an extra model call (a median of 14 s) on every such document. It could not bring clean documents blocked from about 45% to the 30% aimed for, and the rule that a value must be located is unchanged. The spike code and the Windows OCR variants stay as tools; nothing in the product changed.
+
+**What this leaves.**
+- Target 2 (clean documents blocked at most 30%) is not reachable on the poorest scans and photos without either weakening the rule (rejected in D-063: wrong values slip through) or a person confirming. It should be read as "the pages where a person must look", and reported by level of damage, not hidden.
+- A person confirming is already the design. The review screen asks for an override with a written reason for each failed blocking check. For a page the picture read and OCR could not place, one deliberate "checked against the picture" confirmation for all its unlocated values, recorded as the reviewer's decision, would keep the rule (every value located, or a person says so) and cut the time per document. That is a review-screen change, and the pilot (target 3) is where it would be measured.
+- The sealed run is unaffected and still to come.

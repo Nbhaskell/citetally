@@ -1,0 +1,1926 @@
+[
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "vendor_name",
+  "value": "Larkspur Pkg. Supply",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   203,
+   57,
+   420,
+   95
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "invoice_number",
+  "value": "LP-33110",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   333,
+   125,
+   400,
+   137
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "entry_date",
+  "value": "Jun 14, 2026",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   333,
+   137,
+   400,
+   149
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "due_date",
+  "value": "Jul 14, 2026",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   333,
+   149,
+   400,
+   161
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "po_number",
+  "value": "PO-8697",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   333,
+   161,
+   400,
+   173
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "subtotal",
+  "value": "$194.80",
+  "true": true,
+  "asked_s": 175.8,
+  "box": [
+   600,
+   367,
+   660,
+   379
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "tax_total",
+  "value": "$32.62",
+  "true": false,
+  "asked_s": 175.8,
+  "box": [
+   600,
+   407,
+   660,
+   419
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0010",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "shipping",
+  "value": "$9.74",
+  "true": false,
+  "asked_s": 175.8,
+  "box": [
+   600,
+   387,
+   660,
+   399
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0019",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "typical",
+  "field": "quantity",
+  "value": "22",
+  "true": true,
+  "asked_s": 32.4,
+  "box": [
+   537,
+   347,
+   563,
+   357
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0019",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "typical",
+  "field": "quantity",
+  "value": "1",
+  "true": true,
+  "asked_s": 32.4,
+  "box": [
+   537,
+   373,
+   547,
+   383
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0025",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "typical",
+  "field": "description",
+  "value": "Heavy cream, 1 gal",
+  "true": true,
+  "asked_s": 35.4,
+  "box": [
+   103,
+   407,
+   234,
+   421
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0025",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "typical",
+  "field": "quantity",
+  "value": "5",
+  "true": true,
+  "asked_s": 35.4,
+  "box": [
+   547,
+   397,
+   566,
+   407
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0025",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "typical",
+  "field": "description",
+  "value": "Buttermilk, 1 gal",
+  "true": true,
+  "asked_s": 35.4,
+  "box": [
+   103,
+   429,
+   234,
+   443
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0025",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "typical",
+  "field": "quantity",
+  "value": "8",
+  "true": true,
+  "asked_s": 35.4,
+  "box": [
+   547,
+   417,
+   566,
+   427
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0027",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "mild",
+  "field": "vendor_name",
+  "value": "SAFFRON ROW SPICE TRADERS INC",
+  "true": true,
+  "asked_s": 7.5,
+  "box": [
+   112,
+   103,
+   523,
+   137
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "vendor_name",
+  "value": "Fernhill Mutual Insurance Co.",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   76,
+   85,
+   447,
+   122
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "invoice_number",
+  "value": "FM-705012",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   100,
+   197,
+   340,
+   212
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "entry_date",
+  "value": "March 5, 2026",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   276,
+   212,
+   360,
+   225
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "due_date",
+  "value": "March 20, 2026",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   276,
+   225,
+   360,
+   238
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "subtotal",
+  "value": "809.25",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   573,
+   432,
+   617,
+   444
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "total",
+  "value": "809.25",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   573,
+   444,
+   620,
+   456
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "description",
+  "value": "General liability premium, monthly",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   108,
+   397,
+   376,
+   412
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0036",
+  "split": "dev2",
+  "condition": "scan_heavy",
+  "level": "harsh",
+  "field": "quantity",
+  "value": "1",
+  "true": true,
+  "asked_s": 31.1,
+  "box": [
+   537,
+   397,
+   550,
+   408
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "vendor_name",
+  "value": "Saffron Row Spice Traders, Inc.",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   141,
+   207,
+   467,
+   227
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "invoice_number",
+  "value": "SR7806",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   310,
+   287,
+   363,
+   298
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "description",
+  "value": "Cardamom, whole, 1 lb",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   177,
+   432,
+   307,
+   443
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "quantity",
+  "value": "3",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   540,
+   423,
+   556,
+   433
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "unit_price",
+  "value": "41.25",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   623,
+   415,
+   663,
+   425
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "amount",
+  "value": "123.75",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   766,
+   415,
+   803,
+   425
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0039",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "unit_price",
+  "value": "31.10",
+  "true": true,
+  "asked_s": 9.2,
+  "box": [
+   623,
+   439,
+   663,
+   449
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "subtotal",
+  "value": "$400.50",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   593,
+   377,
+   852,
+   393
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "total",
+  "value": "$426.53",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   593,
+   407,
+   852,
+   423
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "description",
+  "value": "Menu cards, 8.5 x 11 in., 100 count",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   133,
+   358,
+   350,
+   373
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "description",
+  "value": "Window decal, custom, sq ft",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   133,
+   383,
+   333,
+   398
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "unit_price",
+  "value": "$9.75",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   653,
+   358,
+   713,
+   373
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0058",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "amount",
+  "value": "$214.50",
+  "true": true,
+  "asked_s": 66.7,
+  "box": [
+   800,
+   358,
+   852,
+   373
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "vendor_name",
+  "value": "Fernhill Mutual Insurance Co.",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   213,
+   97,
+   557,
+   133
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "invoice_number",
+  "value": "FM-705022",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   337,
+   167,
+   427,
+   182
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "po_number",
+  "value": "PO-1562",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   337,
+   207,
+   402,
+   220
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "total",
+  "value": "$742.75",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   747,
+   663,
+   800,
+   676
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "unit_price",
+  "value": "$214.50",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   623,
+   613,
+   673,
+   625
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0067",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "amount",
+  "value": "$214.50",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   747,
+   613,
+   800,
+   625
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0075",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "mild",
+  "field": "vendor_name",
+  "value": "Fernhill Mutual Insurance Co.",
+  "true": true,
+  "asked_s": 3.4,
+  "box": [
+   107,
+   124,
+   467,
+   147
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "vendor_name",
+  "value": "Pinecrest Muni. Util.",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   66,
+   213,
+   296,
+   245
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "due_date",
+  "value": "2026-05-05",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   100,
+   287,
+   276,
+   300
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "total",
+  "value": "$472.60",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   666,
+   562,
+   756,
+   573
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "quantity",
+  "value": "18",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   496,
+   523,
+   516,
+   533
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "description",
+  "value": "Electric service, kWh",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   100,
+   592,
+   276,
+   604
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "quantity",
+  "value": "1850",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   496,
+   545,
+   516,
+   555
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "description",
+  "value": "Sewer service, CCF",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   100,
+   612,
+   276,
+   624
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "d2-inv-0077",
+  "split": "dev2",
+  "condition": "phone_photo",
+  "level": "harsh",
+  "field": "unit_price",
+  "value": "$7.1000",
+  "true": true,
+  "asked_s": 10.2,
+  "box": [
+   596,
+   562,
+   656,
+   573
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "crn-0001",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "quantity",
+  "value": "17",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   567,
+   283,
+   600,
+   295
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "crn-0001",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "quantity",
+  "value": "13",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   567,
+   313,
+   600,
+   325
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "crn-0001",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "quantity",
+  "value": "20",
+  "true": true,
+  "asked_s": 18.2,
+  "box": [
+   567,
+   343,
+   600,
+   355
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "crn-0009",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Saltmarsh Water Heater Whsle",
+  "true": true,
+  "asked_s": 5.3,
+  "box": [
+   185,
+   123,
+   433,
+   147
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "crn-0009",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "description",
+  "value": "Expansion tank, 2 gal",
+  "true": true,
+  "asked_s": 5.3,
+  "box": [
+   173,
+   307,
+   300,
+   320
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0004",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "description",
+  "value": "Wax ring with bolts",
+  "true": true,
+  "asked_s": 3.6,
+  "box": [
+   150,
+   327,
+   375,
+   343
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0020",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "description",
+  "value": "SMS arrival reminders, per 100",
+  "true": true,
+  "asked_s": 4.6,
+  "box": [
+   85,
+   256,
+   283,
+   268
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0020",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "amount",
+  "value": "18.00",
+  "true": true,
+  "asked_s": 4.6,
+  "box": [
+   827,
+   253,
+   877,
+   264
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0039",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "discount",
+  "value": "USD 36.10",
+  "true": false,
+  "asked_s": 7.5,
+  "box": [
+   613,
+   389,
+   913,
+   403
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0039",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "total",
+  "value": "USD 362.82",
+  "true": false,
+  "asked_s": 7.5,
+  "box": [
+   613,
+   440,
+   913,
+   454
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0039",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "description",
+  "value": "Van lettering, per side",
+  "true": true,
+  "asked_s": 7.5,
+  "box": [
+   104,
+   285,
+   247,
+   299
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0039",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "quantity",
+  "value": "1",
+  "true": true,
+  "asked_s": 7.5,
+  "box": [
+   583,
+   299,
+   603,
+   313
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0039",
+  "split": "tuned",
+  "condition": "scan_heavy",
+  "level": null,
+  "field": "quantity",
+  "value": "4",
+  "true": true,
+  "asked_s": 7.5,
+  "box": [
+   583,
+   313,
+   603,
+   327
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0049",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Old Quarry Tool & Equipment Repair",
+  "true": true,
+  "asked_s": 4.5,
+  "box": [
+   227,
+   134,
+   593,
+   166
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0049",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "invoice_number",
+  "value": "OQ-3065",
+  "true": true,
+  "asked_s": 4.5,
+  "box": [
+   807,
+   187,
+   870,
+   200
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0062",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Wren Common Directory",
+  "true": true,
+  "asked_s": 3.8,
+  "box": [
+   283,
+   119,
+   512,
+   163
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0075",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Alderbrook Electric Cooperative",
+  "true": true,
+  "asked_s": 5.4,
+  "box": [
+   153,
+   98,
+   423,
+   133
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0075",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "invoice_number",
+  "value": "5510033",
+  "true": true,
+  "asked_s": 5.4,
+  "box": [
+   777,
+   177,
+   823,
+   192
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0075",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "entry_date",
+  "value": "Feb 25, 2026",
+  "true": true,
+  "asked_s": 5.4,
+  "box": [
+   777,
+   192,
+   823,
+   207
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0083",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Alderbrook Electric Cooperative",
+  "true": true,
+  "asked_s": 4.8,
+  "box": [
+   237,
+   112,
+   492,
+   153
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0083",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "entry_date",
+  "value": "Sep 27, 2026",
+  "true": true,
+  "asked_s": 4.8,
+  "box": [
+   797,
+   217,
+   857,
+   232
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0096",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "vendor_name",
+  "value": "Alderbrook County Building Department",
+  "true": true,
+  "asked_s": 4.9,
+  "box": [
+   256,
+   144,
+   632,
+   186
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": false
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ },
+ {
+  "doc": "inv-0096",
+  "split": "tuned",
+  "condition": "phone_photo",
+  "level": null,
+  "field": "po_number",
+  "value": "PO-5683",
+  "true": true,
+  "asked_s": 4.9,
+  "box": [
+   823,
+   250,
+   866,
+   262
+  ],
+  "norm1000": {
+   "valid": true,
+   "small": true,
+   "located": true
+  },
+  "pixels": {
+   "valid": true,
+   "small": true,
+   "located": false
+  }
+ }
+]

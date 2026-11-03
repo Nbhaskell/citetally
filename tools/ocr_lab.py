@@ -47,6 +47,8 @@ VARIANTS: dict[str, dict[str, Any]] = {
     "psm4": {"psm": 4},
     "bigger_psm6": {"min_long": 2600, "max_long": 3400, "psm": 6},
     "psm12": {"psm": 12},
+    "windows": {"engine": "windows"},
+    "windows_big": {"engine": "windows", "min_long": 2600, "max_long": 3400},
 }
 
 
@@ -82,6 +84,10 @@ def _words(image: Image.Image, settings: dict[str, Any], exe: str) -> list[Word]
         min_long=settings.get("min_long", pre.WORKING_MIN_LONG_SIDE),
         max_long=settings.get("max_long", pre.WORKING_MAX_LONG_SIDE),
     )
+    if settings.get("engine") == "windows":
+        from tools.windows_ocr import WindowsOcrEngine
+
+        return pre.preprocess_words(prepared, WindowsOcrEngine().read_page(prepared.image).words)
     engine = TesseractOcr(exe, psm=settings.get("psm", 11), fallback_psm=6)
     return pre.preprocess_words(prepared, engine.read_page(prepared.image).words)
 
