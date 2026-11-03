@@ -1,51 +1,53 @@
 # Pre-publish report
 
-Run before this repository is made public or linked anywhere (Phase 10, 2 November 2026). Nothing in this phase changed the repository's visibility. PASS means the check was run and met; NOT CHECKED means it was not run or could not be.
+Run before this repository is made public or linked anywhere: first in Phase 10 (2 November 2026), then again on 3 November 2026 after the sealed run, the pilot and the README update. Nothing in either pass changed the repository's visibility. PASS means the check was run and met; NOT CHECKED means it was not run or could not be.
 
-## What needs a decision first
+## What needs a decision
 
 | Item | Status | Evidence and fix |
 |---|---|---|
-| Real name in `LICENSE` | **Owner to confirm** | `LICENSE` line 3 reads "Copyright (c) 2026" followed by the owner's full name. It is the only real name in the working tree, and the same name is the commit author (with the GitHub no-reply address, not a personal one). A public MIT license normally carries a name, so this is likely intended; if a different name or an organization should appear, change that one line. |
-| GitHub repository description and topics | NOT CHECKED | These are repository settings, set on github.com, not files. Suggested description: "A review desk for invoices and receipts: a local model reads, code checks, a person approves. Invented demo data." |
-| CI badge | NOT CHECKED | None is in the README. The last three runs of `ci.yml` on `main` passed (2 November 2026). A badge on a private repository does not render for visitors, so add one when the repository is public. |
+| Real name in `LICENSE` | **Confirmed by the owner** (3 Nov) | `LICENSE` line 3 reads "Copyright (c) 2026" followed by the owner's full name. It is the only real name in the working tree, and the same name is the commit author (with the GitHub no-reply address, not a personal one). Kept as is; a different name or an organization is a one-line change. |
+| GitHub repository description and topics | Done (3 Nov) | Description is set. Topics: `invoices`, `receipts`, `document-ai`, `human-in-the-loop`, `fastapi`, `react`, `ocr`, `synthetic-data`. |
+| CI badge | Done (3 Nov) | Added under the README title. It does not render for visitors while the repository is private. |
+| Private vulnerability reporting | **Owner to switch on** | `SECURITY.md` sends reporters to GitHub's "Report a vulnerability" button. That button exists only after the owner turns on private vulnerability reporting (Settings, Code security) on the public repository. |
 | Repository visibility | Unchanged (private) | The owner's decision. |
 
 ## All checks
 
 | Check | Status | Evidence |
 |---|---|---|
-| **1. Secrets**: working tree and full history | PASS | `tools/secret_scan.py --history` (gitleaks, pinned): 74 commits scanned, no leaks. The commit hook runs the same scan on staged files. |
-| `.env` ignored, `.env.example` placeholders only | PASS | `.gitignore` excludes `.env` and `.env.*` except `.env.example`; the example holds local addresses and model names only. |
-| Screenshots and GIF checked for keys, emails, paths | PASS | All eight images and the six GIF frames were looked at: invented vendors and `example.com` addresses only; no file paths, no account names. |
-| **2. Personal data and local traces** | PASS | `tools/check_personal_info.py --all`: no personal information in 237 files. A search of tracked files for the owner's account name, local user-folder paths and personal email found only the `LICENSE` name above and the guard's own test fixtures. No wording about the owner's experience, budget or accounts in any tracked file. |
-| Private and local files ignored | PASS | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/`, `data/` (except the 13-file demo set), databases, `eval/runs/`, `.venv`, `node_modules` and build output are in `.gitignore`. |
-| Commit author address | PASS | All 88 commits use the GitHub no-reply address. |
+| **1. Secrets**: working tree and full history | PASS | `tools/secret_scan.py --history` (gitleaks, pinned), 3 Nov: 98 commits scanned, no leaks. The commit hook runs the same scan on staged files. |
+| `.env` ignored, `.env.example` placeholders only | PASS | `.gitignore` excludes `.env`; `.env.example` is the only env file tracked and holds local addresses and model names only. |
+| Screenshots and GIF checked for keys, emails, paths | PASS | On 2 Nov all eight images and the six GIF frames were looked at. On 3 Nov one screenshot was replaced and the GIF rebuilt; the new screenshot and GIF frames 1, 3 and 6 were looked at: invented vendors and `example.com` addresses only; no file paths, no account names. The other images are unchanged. |
+| **2. Personal data and local traces** | PASS | `tools/check_personal_info.py --all`: no personal information in 270 files. A search of tracked files for the owner's account name, local user-folder paths, machine names and personal email found only the `LICENSE` name and the guard's own test fixtures. No wording about the owner's experience, budget or accounts in tracked files, commit messages, or the 23 pull-request descriptions. |
+| Private and local files ignored | PASS | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/`, `data/` (except the 13-file demo set), databases, `eval/runs/`, `.venv`, `node_modules` and build output are in `.gitignore`. The pilot files under `data/pilot/` are ignored. |
+| Commit author address | PASS | Every commit's author and committer is the GitHub no-reply address; merges are made by GitHub. |
 | **3. License matches README** | PASS | `LICENSE` is MIT; the README says MIT. |
 | Third-party data | PASS | None. All documents are generated by `tools/synthetic/`. The web app loads no fonts, scripts or images from outside the machine. |
-| Dependencies: lock files and audit | PASS, with a note | Python pinned to exact versions; `package-lock.json` present. `pip-audit`: no known vulnerabilities. `npm audit`: none in what ships; 13 moderate advisories (one `minimatch` issue) in developer tools only. No AGPL or GPL; weak-copyleft development tools are accepted in D-005 and D-008. Details in `docs/HARDENING.md`. |
-| **4. Synthetic data labelled** | PASS | README opens with the banner; the app footer says "Demo data. All vendors, invoices and amounts are invented."; generated documents carry a "SYNTHETIC TEST DATA" mark; phones are 555-01xx and emails end in `example.com` (enforced by the personal-information guard). |
+| Dependencies: lock files and audit | PASS, with a note | Python pinned to exact versions; `package-lock.json` present. `pip-audit` on both requirement files: no known vulnerabilities. `npm audit --omit=dev`: none. `npm audit` including developer tools: 13 moderate advisories (one `minimatch` issue), none in what ships. Runtime Python licenses are MIT, BSD, Apache, PSF and MIT-CMU. No AGPL or GPL; the only copyleft is MPL-2.0 on `lightningcss`, a development build tool that is not shipped (weak-copyleft development tools are accepted in D-005 and D-008). |
+| **4. Synthetic data labelled** | PASS | README opens with the banner; the app footer says "Demo data. All vendors, invoices and amounts are invented."; generated documents carry a "SYNTHETIC TEST DATA" mark; phones are 555-01xx and emails end in `example.com` (enforced by the personal-information guard; a repeat search of tracked files found no other emails or phone numbers). |
 | Nothing mistakable for a real record or testimonial | PASS | No reviews, customer names or quotes anywhere. |
-| **5. Claims match evidence** | PASS | `tests/test_readme_numbers.py` checks that every figure in the README's results is the one in `eval/reports/eval_dev.json` or `eval_heldout.json` (7 checks). Sample sizes, the one-run held-out rule, intervals and limits are stated in the README and in each report. No claim of production use, customers or savings. |
-| Weak results stated | PASS | The README states that scans and photos are read poorly by the default path, that 67.3% and 80.7% of clean documents are blocked, and that the image path was not run on the held-out split. |
-| **6. A stranger can run it** | PASS on the machine used; other platforms untested | Fresh clone of `main` into an empty folder, following the README in order: venv and install, `npm ci`, `.env` copy, `check_env`, **1,412 Python tests pass**, **211 web tests pass**, ruff, mypy, ESLint and `tsc` clean, migrations apply, the demo set is present, `tools.synthetic.build` regenerates 210 documents and the **golden file is byte-identical** to the committed one, the demo set regenerates identically, the API starts and answers `/api/status`, and the evaluation runner processes documents from the regenerated set. The demo load and review screens were run in the working copy with the real Tesseract and `qwen3:8b`. The Windows setup was tested on one Windows 11 machine that already had Tesseract and Ollama; installing those two was not repeated. |
+| **5. Claims match evidence** | PASS | `tests/test_readme_numbers.py` (11 checks) ties every figure in the README's results to a saved report: development, held-out, the stage 2 development runs, the sealed run (`eval_sealed.json`) and the pilot (`pilot.json`). Sample sizes, the one-run rules, intervals and limits are stated in the README and in each report. No claim of production use, customers or savings. |
+| Weak results stated | PASS | The README states that scans and photos were read poorly by the default path, that clean documents are still wrongly blocked (46.9% on the sealed run against an aim of 30% or less), that 0 of 7 planted tax mismatches were caught, and that the pilot's aim of no wrong value approved without an override was not met. |
+| **6. A stranger can run it** | PASS on the machine used; other platforms untested | 3 Nov: fresh clone of `main` from GitHub into an empty folder, following the README in order: venv and install, `npm ci`, `.env` copy, `check_env`, **1,505 Python tests pass**, **215 web tests pass**, ruff, mypy, ESLint and `tsc` clean. On 2 Nov the same fresh-clone pass also covered migrations, regenerating the 210 documents (the golden file was byte-identical), starting the API and running the evaluation on the regenerated set; those were not repeated on 3 Nov. The demo load and review screens were run with the real Tesseract and the models on a scratch database. The Windows setup was tested on one Windows 11 machine that already had Tesseract and Ollama; installing those two was not repeated. |
 | Tests need no model or network | PASS | Stated in the README; the suite uses fakes (`FakeOcr`, `FakeProvider`). It was run on a machine that had both installed, so "passes with neither installed" was not separately shown. |
-| CI | PASS | `ci.yml` passed on `main` after each of the last three merges. |
-| Links resolve | PASS | Every relative link in `README.md` and `docs/HARDENING.md` points to a file that exists (checked by script). External links (the four sibling projects, Tesseract and Ollama) were not fetched. |
-| Repo hygiene | PASS | Largest tracked file 740 KB (`eval/reports/ocr_bakeoff.json`); the images and the GIF total about 1.8 MB; no virtual environments or build output tracked. |
-| **7. Hardening for a shared deployment** | Not applicable | Nothing is hosted. The app binds to `127.0.0.1`, has no login and says so in the README. Local hardening is in `docs/HARDENING.md`. |
-| **8. First impression** | PASS | The README's first two sentences say what it does and the principle; screenshots include the blocked, misread, failed and empty states; claims stop at the evidence. |
+| CI | PASS | `ci.yml` passed on `main` after each of the last merges, including the latest. |
+| Links resolve | PASS | Every relative link in `README.md` points to a file that exists (checked by script on 3 Nov; `docs/HARDENING.md` was checked on 2 Nov). External links (the four sibling projects, Tesseract and Ollama) were not fetched. |
+| Repo hygiene | PASS | Largest tracked file 754 KB (`eval/reports/ocr_bakeoff.json`); the images and the GIF total about 1.8 MB; no virtual environments or build output tracked. |
+| `SECURITY.md` | PASS | Added 3 Nov: says the tool is local-only with no login, what the safety rules are, and how to report a problem privately. |
+| **7. Hardening for a shared deployment** | Not applicable | Nothing is hosted. The app binds to `127.0.0.1`, has no login and says so in the README and `SECURITY.md`. Local hardening is in `docs/HARDENING.md`. |
+| **8. First impression** | PASS | The README's first two sentences say what it does and the principle; screenshots include the blocked, picture-check, failed and empty states; claims stop at the evidence, including the results that missed their aims. |
 
 ## What was not checked
 
-- GitHub repository settings (description, topics, branch protection) and anything that appears only on github.com once the repository is public.
+- Branch protection and anything that appears only on github.com once the repository is public (including the CI badge and private vulnerability reporting).
 - Rendering of the README on GitHub (the Mermaid diagram and the GIF). Both are standard; open the page once after making the repository public.
 - External links.
 - Installing Tesseract and Ollama from scratch, macOS and Linux, and any machine other than the one used.
 - Reading real documents. Nothing here was tried on one.
 
-## The three most important fixes, if any are wanted
+## The three most important steps, if any are wanted
 
-1. Confirm the name on the `LICENSE` line.
-2. Look at the README on github.com once, to see the diagram and the GIF render.
-3. Set the repository description and topics when making it public.
+1. Make the repository public, then switch on private vulnerability reporting so `SECURITY.md` works.
+2. Look at the README on github.com once, to see the diagram, the GIF and the CI badge render.
+3. Check that the CI badge shows "passing" after the first run on the public repository.
