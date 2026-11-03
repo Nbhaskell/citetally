@@ -91,6 +91,69 @@ def test_the_sizes_quoted_match_the_reports() -> None:
     assert f"{first_pass(HELD)['all']['planted_recall']['n']} planted problems" in README
 
 
+def sealed_final() -> dict[str, Any]:
+    passes = load("sealed")["variants"]["final"]["passes"]
+    out: dict[str, Any] = passes[min(passes, key=int)]
+    return out
+
+
+def test_the_sealed_table_matches_the_sealed_report() -> None:
+    sealed = sealed_final()
+    rows = (
+        ("Clean PDFs", "clean_pdf"),
+        ("Light scans", "scan_light"),
+        ("Heavy scans", "scan_heavy"),
+        ("Phone photos", "phone_photo"),
+    )
+    for label, condition in rows:
+        block = sealed["by_condition"][condition]
+        row = (
+            f"| {label} ({block['documents']}) "
+            f"| {pct(block['header_field_exact']['rate'])} "
+            f"| {pct(block['clean_any_blocking_alarm']['rate'])} |"
+        )
+        assert row in README, row
+    block = sealed["all"]
+    row = (
+        f"| All ({sealed['documents']}) | {pct(block['header_field_exact']['rate'])} "
+        f"| {pct(block['clean_any_blocking_alarm']['rate'])} |"
+    )
+    assert row in README, row
+
+
+def test_the_other_sealed_figures_match() -> None:
+    block = sealed_final()["all"]
+    planted = block["planted_recall"]
+    for text in (
+        f"money exact {pct(block['money_exact']['rate'])}",
+        f"line-item F1 {pct(block['line_f1'])}",
+        f"planted problems caught {pct(planted['rate'])}",
+        f"({planted['low'] * 100:.0f} to {planted['high'] * 100:.0f}%)",
+        f"median {block['seconds_per_page_median']:.1f} seconds per page",
+    ):
+        assert text in README, text
+    tax = block["planted_recall_by_kind"]["tax_mismatch"]
+    assert f"{tax['k']} of {tax['n']} planted tax mismatches" in README
+    injection = block["planted_recall_by_kind"]["injection_text"]
+    assert f"{injection['k']} of {injection['n']} planted pieces of instruction-like text" in README
+    value_in_document = block["false_alarm_by_check"]["VALUE_IN_DOCUMENT"]["rate"]
+    assert f"({pct(value_in_document)} of clean documents)" in README
+
+
+def test_the_pilot_figures_match_the_pilot_report() -> None:
+    pilot = json.loads((ROOT / "eval" / "reports" / "pilot.json").read_text(encoding="utf-8"))
+    for text in (
+        f"{pilot['approved']} were approved",
+        f"median review took {round(pilot['review_median'])} seconds",
+        f"median typing took {round(pilot['typed_median'])} seconds",
+        f"a ratio of {pilot['ratio']:.2f}",
+        f"{len(pilot['wrong_core_approved_without_override'])} of the {pilot['approved']} approved",
+        f"{len(pilot['wrong_core_approved_with_override'])} more held one with an override",
+        f"{pilot['typed_with_errors']} of the {pilot['typed_total']} typed records",
+    ):
+        assert text in README, text
+
+
 def stage2(name: str) -> dict[str, Any]:
     report = load(f"stage2_{name}")
     passes = report["variants"]["final"]["passes"]

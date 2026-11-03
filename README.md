@@ -69,13 +69,40 @@ Other numbers, all documents (development, then held-out): money exact 70.3% and
 - **Most documents still go to a person.** Blocking checks fire on 67.3% (development) and 80.7% (held-out) of clean documents, for reasons the analysis lists: a currency symbol the model adds that is not printed, shortened vendor names, a tax rate returned in a form not found on the page, and OCR misreads.
 - **Speed:** median 5.3 to 8.6 seconds per page by condition on one Windows machine ([`performance.md`](eval/reports/performance.md)).
 
-### After these runs: what changed, and what the development sets show now
+### After these runs: what changed, the sealed run, and the pilot
 
-The held-out table above describes the system as it was when that split was run. Afterwards the system was changed (decision D-063): scanned pages are read three ways and sent to a vision model with their picture, a text-layer PDF still goes to the text model, and grounding, vendor matching and the checks were corrected where the errors above came from. These changes were made and measured on the two development sets only, with a second invented business and new layouts (`dev2`), and a 250-document set was written down and sealed first, to be run once. **That run has not been made, so there is no held-out or sealed number for the changed system yet.**
+The held-out table above describes the system as it was when that split was run. Afterwards the system was changed (decision D-063): scanned pages are read three ways and sent to a vision model with their picture, a text-layer PDF still goes to the text model, and grounding, vendor matching and the checks were corrected where the errors above came from. These changes were made and measured on the two development sets only, with a second invented business and new layouts (`dev2`). A 250-document set was written down and sealed first, and it was then run **once**, with the product's own settings, after the review-screen change described below was merged. It is now spent.
 
-On the development sets, one pass each, header fields read exactly by condition (clean PDFs, light scans, heavy scans, phone photos): first set 96.9%, 99.6%, 93.6% and 96.9%; `dev2` 96.9%, 99.5%, 89.9% and 96.0%. Clean documents wrongly blocked are still 49.0% and 42.9%, above the 30% aimed for, almost entirely because values the picture supplies cannot yet be located on the poorest scans, and the rule that a value must be located has not been loosened. It costs a median of about 17 seconds per page on the test machine against about 7.5. These runs developed the fixes, so they flatter the system; the sealed run is the test. See [`docs/DECISIONS.md`](docs/DECISIONS.md) (D-062, D-063) and [`eval/reports/eval_stage2_dev2.md`](eval/reports/eval_stage2_dev2.md).
+On the development sets, one pass each, header fields read exactly by condition (clean PDFs, light scans, heavy scans, phone photos): first set 96.9%, 99.6%, 93.6% and 96.9%; `dev2` 96.9%, 99.5%, 89.9% and 96.0%. Clean documents wrongly blocked are still 49.0% and 42.9%, above the 30% aimed for, almost entirely because values the picture supplies cannot yet be located on the poorest scans, and the rule that a value must be located has not been loosened. It costs a median of about 17 seconds per page on the test machine against about 7.5. These runs developed the fixes, so they flatter the system; the sealed run below is the test. See [`docs/DECISIONS.md`](docs/DECISIONS.md) (D-062, D-063) and [`eval/reports/eval_stage2_dev2.md`](eval/reports/eval_stage2_dev2.md).
 
-**What this cannot tell you.** The documents are invented, with layouts and noise made by one generator; real invoices are messier and handwriting is absent. Truth is known by construction. There are 17 or 18 held-out documents per condition and 13 planted problems, so read the intervals, not the second decimal. One machine, one model, one OCR engine. The held-out split is now spent: it was opened once, and any change made after reading it needs a new sealed set. The person who built the system also wrote the test documents, so they are unseen but not blind. The full list is in each report.
+#### The sealed run (the changed system, one run, 250 documents)
+
+Share of printed header fields read exactly, and share of clean documents that the checks wrongly blocked (the person has to look at them although nothing is wrong):
+
+| Documents | Header fields exact | Clean documents wrongly blocked |
+|---|---|---|
+| Clean PDFs (50) | 97.4% | 6.9% |
+| Light scans (75) | 99.4% | 20.0% |
+| Heavy scans (50) | 93.2% | 88.9% |
+| Phone photos (75) | 96.0% | 67.3% |
+| All (250) | 96.7% | 46.9% |
+
+Other numbers, all documents: money exact 95.9%; line-item F1 91.8%; planted problems caught 84.0% (74 to 91%); median 15.1 seconds per page. Intervals, counts and every limit are in [`eval/reports/eval_sealed.md`](eval/reports/eval_sealed.md), read in D-066 of [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+- **Reading held up.** The aim was at least 90% of header fields exact in each of the four conditions, and it was met in all four. The development results held on layouts the system had never seen.
+- **Blocking is still too common.** The aim was at most 30% of clean documents wrongly blocked, and it was **not met** (46.9%). Almost all of it is one check, a value the model returned that cannot be located in the page words (44.6% of clean documents), worst on heavy scans and phone photos, where the page words are poor. The rule that a value must be located has not been loosened. Instead, the review screen offers one deliberate "checked against the picture" confirmation for those values, recorded with the approval as the reviewer's decision.
+- **Weak spots, as they came out.** 0 of 7 planted tax mismatches were caught; why has not been looked into. 3 of 6 planted pieces of instruction-like text were caught.
+
+#### The pilot (one reviewer, 34 documents)
+
+40 documents from the sealed set were reviewed in the app by the person who built the system, then typed by hand. 34 were approved and 6, all heavy scans, were rejected as unreadable. The 34 approved were typed by hand and timed with a console helper.
+
+- **Time: the aim was met.** The median review took 28 seconds and the median typing took 108 seconds, a ratio of 0.26 against the aim of under 0.5. This rests on the median: a few long reviews pull the average up (see D-068).
+- **Wrong values approved: the aim was not met.** The aim was that no wrong value is approved without a recorded override. 2 of the 34 approved entries held a wrong value with no override, and 3 more held one with an override. The cases were empty quantities that no check flags, a total changed to what the lines add up to instead of what the page prints, and a misread description. Typing was less accurate as well as slower: 12 of the 34 typed records had at least one difference from the truth.
+
+Details, with the scoring correction made after the first look, are in D-067 and D-068 and in [`eval/reports/pilot.md`](eval/reports/pilot.md). One reviewer who knows how the system fails, invented documents, and 34 documents: read the figures as an indication.
+
+**What this cannot tell you.** The documents are invented, with layouts and noise made by one generator; real invoices are messier and handwriting is absent. Truth is known by construction. There are 17 or 18 held-out documents per condition and 13 planted problems, so read the intervals, not the second decimal. One machine, one model, one OCR engine. The held-out and sealed splits are both spent: each was opened once, and any change made after reading them needs a new sealed set. The person who built the system also wrote the test documents, so they are unseen but not blind. The full list is in each report.
 
 ## Safety and privacy rules
 
@@ -123,7 +150,7 @@ The 210 invented documents are regenerated from a fixed seed (the golden file ho
 .\.venv\Scripts\python.exe -m tools.evaluation.report --name dev                             # writes eval/reports/eval_dev.md and .json
 ```
 
-Other settings (`forced_ocr`, `text_and_image`, `thinking`) and every development run are in `tools/evaluation/dev_runs.ps1` (several hours). Runs resume if interrupted. At temperature 0 with a fixed seed, repeated passes on the machine used here were identical; another machine may differ slightly. The held-out split is deliberately not reproducible from these commands: the runner refuses it without a flag and a one-time lock (see D-058 and D-059 in `docs/DECISIONS.md`).
+Other settings (`forced_ocr`, `text_and_image`, `thinking`) and every development run are in `tools/evaluation/dev_runs.ps1` (several hours). Runs resume if interrupted. At temperature 0 with a fixed seed, repeated passes on the machine used here were identical; another machine may differ slightly. The held-out and sealed splits are deliberately not reproducible from these commands: the runner refuses them without a flag and a one-time lock (see D-058, D-059 and D-066 in `docs/DECISIONS.md`).
 
 ## Documents
 
