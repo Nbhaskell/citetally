@@ -8,6 +8,8 @@ watermarks, barcodes.
 
     dev2    T16 to T20  used to develop and measure fixes
     sealed  T21 to T25  written down and hashed before any fix, run once at the end
+    sealed2 T26 to T30  a third business, written down and hashed before the second round of
+                        fixes, run once at the end
 
 Nothing printed beside the document's own values is in the answer key, and every distractor carries
 a label that names what it is (customer ID, account, order ref), so a careful reader can tell it
@@ -31,7 +33,7 @@ class FreshFamily(Family):
     features: tuple[str, ...] = ()
 
 
-FRESH_SPLITS = ("dev2", "sealed")
+FRESH_SPLITS = ("dev2", "sealed", "sealed2")
 
 FRESH_FAMILIES: tuple[FreshFamily, ...] = (
     # ---- dev2 -------------------------------------------------------------------------------
@@ -221,6 +223,95 @@ FRESH_FAMILIES: tuple[FreshFamily, ...] = (
         engine="dense",
         size=9.0,
         features=("terms", "ship_to", "stamp"),
+    ),
+    # ---- sealed2 (third business, universe/facts_marigold.json) -----------------------------
+    FreshFamily(
+        "T26",
+        "invoice with a tax amount on every line",
+        "sealed2",
+        "dense",
+        ("V01", "V04", "V08", "V14"),
+        ("invoice",),
+        Style(money="us_symbol", date="iso", tax_mode="per_line", has_shipping=True),
+        font="Helvetica",
+        header="banner",
+        table="zebra",
+        columns=("description", "qty", "unit_price", "line_tax", "amount"),
+        accent=(0.55, 0.35, 0.05),
+        labels=_labels(number="Inv #", total="Amount payable", line_tax="Tax amt"),
+        engine="dense",
+        size=8.5,
+        features=("remit", "terms", "stamp"),
+    ),
+    FreshFamily(
+        "T27",
+        "credit note on letterhead, tax rate not printed",
+        "sealed2",
+        "airy",
+        ("V01", "V02", "V04", "V07", "V08", "V12", "V14"),
+        ("credit_note",),
+        Style(money="us_plain", date="mdy_mon", prints_tax_rate=False, credit_style="plain"),
+        font="Times-Roman",
+        header="centered",
+        table="ruled",
+        accent=(0.1, 0.4, 0.35),
+        labels=_labels(number="Credit ref", total="Credit due to you", date="Issued"),
+        engine="airy",
+        size=10.0,
+        features=("order_dates", "scrawl", "watermark"),
+    ),
+    FreshFamily(
+        "T28",
+        "service ticket in labour and parts, tax rate printed",
+        "sealed2",
+        "sections",
+        ("V14", "V03", "V11", "V12"),
+        ("invoice",),
+        Style(money="us_nocomma", date="long", prints_tax_rate=True, has_discount=True),
+        font="Helvetica",
+        page="a4",
+        header="two_col",
+        table="grid",
+        accent=(0.3, 0.3, 0.5),
+        labels=_labels(number="Job no.", total="Balance", date="Completed", tax="Tax"),
+        engine="sections",
+        size=9.0,
+        features=("order_dates", "ship_to", "terms"),
+    ),
+    FreshFamily(
+        "T29",
+        "account statement with ageing and a usage chart",
+        "sealed2",
+        "bill",
+        ("V05", "V06", "V09", "V15"),
+        ("invoice",),
+        Style(money="us_code", date="dmy_mon", prints_subtotal=False),
+        font="Helvetica",
+        page="a4",
+        header="left",
+        table="ruled",
+        accent=(0.15, 0.45, 0.2),
+        labels=_labels(number="Account inv.", total="Pay this amount", date="Issued", tax="Levy"),
+        engine="bill",
+        size=9.0,
+        features=("account_box", "ageing", "usage_bars", "period"),
+    ),
+    FreshFamily(
+        "T30",
+        "till slip with a card panel, tax rate printed",
+        "sealed2",
+        "till",
+        ("V10", "V13", "V16"),
+        ("receipt",),
+        Style(money="us_symbol", date="iso", prints_tax_rate=True),
+        font="Courier",
+        page="roll",
+        header="centered",
+        accent=(0.15, 0.15, 0.15),
+        labels=_labels(number="Slip", total="AMOUNT", tax="TAX", subtotal="SUB"),
+        engine="till",
+        size=7.5,
+        features=("card", "barcode", "scrawl"),
     ),
 )
 

@@ -1,0 +1,1325 @@
+{
+ "schema": 1,
+ "note": "SYNTHETIC TEST DATA. A third invented business for the evaluation, with vendors, items, prices and names that appear nowhere in universe/facts.json or universe/facts_ridge.json. Every name, address, phone number and email is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range.",
+ "as_of": "2026-10-31",
+ "date_range": [
+  "2026-01-05",
+  "2026-10-28"
+ ],
+ "business": {
+  "name": "Marigold Lane Veterinary Clinic",
+  "kind": "small animal veterinary clinic",
+  "address": {
+   "street": "24 Marigold Lane",
+   "city": "Aldermoor",
+   "state": "OR",
+   "zip": "00514"
+  },
+  "phone": "555-0112",
+  "email": "frontdesk@example.com",
+  "default_currency": "USD",
+  "locale": "en-US",
+  "sales_tax_rate": "0.0825"
+ },
+ "categories": [
+  "SUPPLIES",
+  "FOOD",
+  "CLEANING",
+  "UTILITIES",
+  "REPAIRS",
+  "INSURANCE",
+  "SOFTWARE",
+  "PROFESSIONAL",
+  "VEHICLE",
+  "MARKETING",
+  "OTHER"
+ ],
+ "vendors": [
+  {
+   "id": "V01",
+   "name": "Corvid Veterinary Wholesale",
+   "aliases": [
+    "Corvid Vet Wholesale",
+    "CORVID VETERINARY WHOLESALE",
+    "Corvid Veterinary"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "CV-",
+   "invoice_start": 61800,
+   "address": {
+    "street": "14 Tannery Lane",
+    "city": "Aldermoor",
+    "state": "OR",
+    "zip": "00514"
+   },
+   "phone": "555-0132",
+   "email": "accounts@corvidvet.example.com",
+   "items": [
+    {
+     "description": "Exam gloves, nitrile, box of 100",
+     "unit_price": "11.90",
+     "qty": [
+      4,
+      30
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Syringe 3 mL, box of 100",
+     "unit_price": "9.45",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Surgical drape, sterile, pack of 10",
+     "unit_price": "18.60",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Suture 3-0, box of 12",
+     "unit_price": "46.20",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Gauze sponge 4x4, case",
+     "unit_price": "27.80",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Isopropyl alcohol, 1 gal",
+     "unit_price": "15.35",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "IV catheter 22G, box of 50",
+     "unit_price": "58.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "name": "Hollis Animal Pharma Distribution",
+   "aliases": [
+    "Hollis Animal Pharma",
+    "HOLLIS ANIMAL PHARMA DISTRIBUTION",
+    "Hollis Pharma"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 45,
+   "credit_notes": true,
+   "invoice_prefix": "HP-",
+   "invoice_start": 20400,
+   "address": {
+    "street": "88 Quarry Court",
+    "city": "Stillwater Cross",
+    "state": "OR",
+    "zip": "00227"
+   },
+   "phone": "555-0141",
+   "email": "accounts@hollispharma.example.com",
+   "items": [
+    {
+     "description": "Flea and tick chew, 12-pack, medium dog",
+     "unit_price": "74.00",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Heartworm preventive, 6-pack, small",
+     "unit_price": "52.50",
+     "qty": [
+      2,
+      18
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Canine dewormer suspension, 120 mL",
+     "unit_price": "21.30",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Feline dewormer paste, 3 tube",
+     "unit_price": "17.95",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Ear cleaner, 16 oz",
+     "unit_price": "9.80",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Antibiotic ointment, 1 oz",
+     "unit_price": "7.40",
+     "qty": [
+      3,
+      24
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "name": "Pinnacle Diagnostic Laboratory",
+   "aliases": [
+    "Pinnacle Diagnostics",
+    "PINNACLE DIAGNOSTIC LABORATORY",
+    "Pinnacle Lab"
+   ],
+   "category": "PROFESSIONAL",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": false,
+   "invoice_prefix": "PD-",
+   "invoice_start": 90150,
+   "address": {
+    "street": "3 Instrument Way",
+    "city": "Harrow Falls",
+    "state": "OR",
+    "zip": "00678"
+   },
+   "phone": "555-0153",
+   "email": "accounts@pinnaclelab.example.com",
+   "items": [
+    {
+     "description": "Complete blood count, panel",
+     "unit_price": "38.00",
+     "qty": [
+      3,
+      30
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Chemistry panel, 15 analytes",
+     "unit_price": "62.50",
+     "qty": [
+      2,
+      24
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Urinalysis with sediment",
+     "unit_price": "29.00",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Fecal flotation",
+     "unit_price": "16.50",
+     "qty": [
+      4,
+      36
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Thyroid T4 test",
+     "unit_price": "44.00",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Courier pickup, per visit",
+     "unit_price": "12.00",
+     "qty": [
+      4,
+      12
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "name": "Brindle Pet Nutrition Co.",
+   "aliases": [
+    "Brindle Pet Nutrition",
+    "BRINDLE PET NUTRITION CO",
+    "Brindle Nutrition"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "BN-",
+   "invoice_start": 33000,
+   "address": {
+    "street": "210 Feedmill Road",
+    "city": "Oatley",
+    "state": "OR",
+    "zip": "00391"
+   },
+   "phone": "555-0164",
+   "email": "accounts@brindlepet.example.com",
+   "items": [
+    {
+     "description": "Renal support diet, canine, 25 lb",
+     "unit_price": "68.40",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Weight management diet, feline, 8 lb",
+     "unit_price": "34.90",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Sensitive stomach diet, canine, 30 lb",
+     "unit_price": "71.25",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Recovery formula, canned, case of 24",
+     "unit_price": "52.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Dental treats, 20 oz tub",
+     "unit_price": "13.75",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "name": "Meadowlark Power & Light",
+   "aliases": [
+    "Meadowlark Power",
+    "MEADOWLARK POWER & LIGHT",
+    "Meadowlark P&L"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 20,
+   "credit_notes": false,
+   "invoice_prefix": "ML-",
+   "invoice_start": 570100,
+   "address": {
+    "street": "1 Substation Drive",
+    "city": "Aldermoor",
+    "state": "OR",
+    "zip": "00514"
+   },
+   "phone": "555-0175",
+   "email": "accounts@meadowlarkpower.example.com",
+   "items": [
+    {
+     "description": "Electric service, kWh",
+     "unit_price": "0.1320",
+     "qty": [
+      1800,
+      5200
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Demand charge, kW",
+     "unit_price": "9.2500",
+     "qty": [
+      8,
+      30
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Customer charge, month",
+     "unit_price": "18.0000",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ],
+   "tax_rate": "0.03"
+  },
+  {
+   "id": "V06",
+   "name": "Tern Waste & Recycling",
+   "aliases": [
+    "Tern Waste",
+    "TERN WASTE & RECYCLING",
+    "Tern Recycling"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 15,
+   "credit_notes": false,
+   "invoice_prefix": "TW-",
+   "invoice_start": 8800,
+   "address": {
+    "street": "6 Transfer Station Road",
+    "city": "Ketchum Bend",
+    "state": "OR",
+    "zip": "00455"
+   },
+   "phone": "555-0186",
+   "email": "accounts@ternwaste.example.com",
+   "items": [
+    {
+     "description": "Dumpster service, 4 yard, weekly",
+     "unit_price": "96.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Medical waste pickup, per container",
+     "unit_price": "34.50",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Cardboard recycling, monthly",
+     "unit_price": "28.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Extra pickup",
+     "unit_price": "45.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "name": "Cedar Row Linen & Scrubs",
+   "aliases": [
+    "Cedar Row Linen",
+    "CEDAR ROW LINEN & SCRUBS",
+    "Cedar Row"
+   ],
+   "category": "CLEANING",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 15,
+   "credit_notes": true,
+   "invoice_prefix": "CR-",
+   "invoice_start": 15500,
+   "address": {
+    "street": "52 Cedar Row",
+    "city": "Pelham Green",
+    "state": "OR",
+    "zip": "00302"
+   },
+   "phone": "555-0197",
+   "email": "accounts@cedarrowlinen.example.com",
+   "items": [
+    {
+     "description": "Scrub top rental, weekly",
+     "unit_price": "1.85",
+     "qty": [
+      20,
+      60
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Scrub pant rental, weekly",
+     "unit_price": "1.85",
+     "qty": [
+      20,
+      60
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Towel service, per dozen",
+     "unit_price": "9.60",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Surgical gown laundering, each",
+     "unit_price": "2.40",
+     "qty": [
+      10,
+      50
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Replacement tag",
+     "unit_price": "0.75",
+     "qty": [
+      5,
+      25
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "name": "Kittiwake Janitorial Supply",
+   "aliases": [
+    "Kittiwake Supply",
+    "KITTIWAKE JANITORIAL SUPPLY",
+    "Kittiwake Janitorial"
+   ],
+   "category": "CLEANING",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "KJ-",
+   "invoice_start": 47200,
+   "address": {
+    "street": "9 Harbour Street",
+    "city": "Stillwater Cross",
+    "state": "OR",
+    "zip": "00227"
+   },
+   "phone": "555-0108",
+   "email": "accounts@kittiwakesupply.example.com",
+   "items": [
+    {
+     "description": "Disinfectant concentrate, 1 gal",
+     "unit_price": "24.60",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Kennel cleaner, 5 gal pail",
+     "unit_price": "58.90",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Paper towels, case of 12",
+     "unit_price": "36.40",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Trash liners, case of 100",
+     "unit_price": "22.15",
+     "qty": [
+      2,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Mop heads, pack of 6",
+     "unit_price": "17.80",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V09",
+   "name": "Ashgrove Professional Insurance",
+   "aliases": [
+    "Ashgrove Insurance",
+    "ASHGROVE PROFESSIONAL INSURANCE",
+    "Ashgrove Prof Insurance"
+   ],
+   "category": "INSURANCE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": false,
+   "invoice_prefix": "AI-",
+   "invoice_start": 780300,
+   "address": {
+    "street": "400 Provident Plaza",
+    "city": "Harrow Falls",
+    "state": "OR",
+    "zip": "00678"
+   },
+   "phone": "555-0119",
+   "email": "accounts@ashgroveins.example.com",
+   "items": [
+    {
+     "description": "Professional liability premium, month",
+     "unit_price": "412.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Premises liability premium, month",
+     "unit_price": "168.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Workers compensation premium, month",
+     "unit_price": "355.50",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Policy fee",
+     "unit_price": "25.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V10",
+   "name": "Fox Hollow Fuel Stop",
+   "aliases": [
+    "Fox Hollow Fuel",
+    "FOX HOLLOW FUEL STOP",
+    "Fox Hollow"
+   ],
+   "category": "VEHICLE",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "FH-",
+   "invoice_start": 1000,
+   "address": {
+    "street": "Route 9 and Mill Road",
+    "city": "Oatley",
+    "state": "OR",
+    "zip": "00391"
+   },
+   "phone": "555-0120",
+   "email": "accounts@foxhollowfuel.example.com",
+   "items": [
+    {
+     "description": "Regular unleaded, gallons",
+     "unit_price": "3.4990",
+     "qty": [
+      8,
+      22
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Diesel, gallons",
+     "unit_price": "3.9490",
+     "qty": [
+      10,
+      28
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Windshield washer fluid, 1 gal",
+     "unit_price": "3.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Car wash, premium",
+     "unit_price": "9.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bottled water",
+     "unit_price": "1.79",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V11",
+   "name": "Linnet & Marsh Accounting",
+   "aliases": [
+    "Linnet and Marsh",
+    "LINNET & MARSH ACCOUNTING",
+    "Linnet Marsh"
+   ],
+   "category": "PROFESSIONAL",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "LM-",
+   "invoice_start": 5100,
+   "address": {
+    "street": "17 Counting House Lane",
+    "city": "Pelham Green",
+    "state": "OR",
+    "zip": "00302"
+   },
+   "phone": "555-0131",
+   "email": "accounts@linnetmarsh.example.com",
+   "items": [
+    {
+     "description": "Bookkeeping, hour",
+     "unit_price": "68.00",
+     "qty": [
+      4,
+      20
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Payroll processing, per run",
+     "unit_price": "75.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Quarterly tax filing",
+     "unit_price": "240.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Annual review, hour",
+     "unit_price": "120.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V12",
+   "name": "Quill Press Printing",
+   "aliases": [
+    "Quill Press",
+    "QUILL PRESS PRINTING",
+    "Quill Printing"
+   ],
+   "category": "MARKETING",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "QP-",
+   "invoice_start": 29700,
+   "address": {
+    "street": "73 Ink Alley",
+    "city": "Ketchum Bend",
+    "state": "OR",
+    "zip": "00455"
+   },
+   "phone": "555-0142",
+   "email": "accounts@quillpress.example.com",
+   "items": [
+    {
+     "description": "Appointment cards, box of 500",
+     "unit_price": "49.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Vaccination certificates, pad of 50",
+     "unit_price": "14.50",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Trifold brochure, 250 copies",
+     "unit_price": "96.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Yard sign, 18x24",
+     "unit_price": "32.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Rush fee",
+     "unit_price": "20.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V13",
+   "name": "Copper Kettle Coffee Cart",
+   "aliases": [
+    "Copper Kettle Coffee",
+    "COPPER KETTLE COFFEE CART",
+    "Copper Kettle"
+   ],
+   "category": "FOOD",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "CK-",
+   "invoice_start": 200,
+   "address": {
+    "street": "Corner of Market and 3rd",
+    "city": "Aldermoor",
+    "state": "OR",
+    "zip": "00514"
+   },
+   "phone": "555-0153",
+   "email": "accounts@copperkettle.example.com",
+   "items": [
+    {
+     "description": "Drip coffee, large",
+     "unit_price": "3.25",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Latte, medium",
+     "unit_price": "4.50",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Breakfast sandwich",
+     "unit_price": "6.25",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Pastry assortment, half dozen",
+     "unit_price": "14.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Bottled juice",
+     "unit_price": "3.75",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V14",
+   "name": "Radiant Imaging Service",
+   "aliases": [
+    "Radiant Imaging",
+    "RADIANT IMAGING SERVICE",
+    "Radiant Service"
+   ],
+   "category": "REPAIRS",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "RI-",
+   "invoice_start": 11900,
+   "address": {
+    "street": "28 Calibration Court",
+    "city": "Harrow Falls",
+    "state": "OR",
+    "zip": "00678"
+   },
+   "phone": "555-0164",
+   "email": "accounts@radiantimaging.example.com",
+   "items": [
+    {
+     "description": "X-ray unit annual service",
+     "unit_price": "420.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Dental unit service call",
+     "unit_price": "165.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Replacement film cassette",
+     "unit_price": "88.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Technician travel, hour",
+     "unit_price": "55.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Calibration check",
+     "unit_price": "135.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V15",
+   "name": "Petrichor Practice Software",
+   "aliases": [
+    "Petrichor Software",
+    "PETRICHOR PRACTICE SOFTWARE",
+    "Petrichor"
+   ],
+   "category": "SOFTWARE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": false,
+   "invoice_prefix": "PS-",
+   "invoice_start": 45000,
+   "address": {
+    "street": "5 Cloud Street",
+    "city": "Pelham Green",
+    "state": "OR",
+    "zip": "00302"
+   },
+   "phone": "555-0175",
+   "email": "accounts@petrichorsoft.example.com",
+   "items": [
+    {
+     "description": "Practice management, seat per month",
+     "unit_price": "79.00",
+     "qty": [
+      3,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Online booking module, month",
+     "unit_price": "49.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Text reminders, bundle of 500",
+     "unit_price": "35.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Data backup, month",
+     "unit_price": "24.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V16",
+   "name": "Ironwood Hardware",
+   "aliases": [
+    "Ironwood Hardware Store",
+    "IRONWOOD HARDWARE",
+    "Ironwood"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "IW-",
+   "invoice_start": 3000,
+   "address": {
+    "street": "61 Main Street",
+    "city": "Oatley",
+    "state": "OR",
+    "zip": "00391"
+   },
+   "phone": "555-0186",
+   "email": "accounts@ironwoodhw.example.com",
+   "items": [
+    {
+     "description": "Light bulbs, 4-pack",
+     "unit_price": "6.99",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Duct tape",
+     "unit_price": "5.49",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Padlock",
+     "unit_price": "12.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Garden hose, 50 ft",
+     "unit_price": "29.99",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Batteries AA, 24-pack",
+     "unit_price": "14.49",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Extension cord",
+     "unit_price": "13.25",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ],
+ "unlisted_vendors": [
+  {
+   "id": "X01",
+   "name": "Dunnock Medical Surplus",
+   "aliases": [
+    "Dunnock Surplus",
+    "DUNNOCK MEDICAL SURPLUS"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "DM-",
+   "invoice_start": 7700,
+   "address": {
+    "street": "310 Liquidation Road",
+    "city": "Wexham",
+    "state": "OR",
+    "zip": "00640"
+   },
+   "phone": "555-0197",
+   "email": "accounts@dunnocksurplus.example.com",
+   "items": [
+    {
+     "description": "Surgical instrument set",
+     "unit_price": "142.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Exam table pad",
+     "unit_price": "38.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Autoclave pouches, box of 200",
+     "unit_price": "21.50",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X02",
+   "name": "Sorrel Courier Services",
+   "aliases": [
+    "Sorrel Courier",
+    "SORREL COURIER SERVICES"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "SC-",
+   "invoice_start": 9100,
+   "address": {
+    "street": "12 Dispatch Row",
+    "city": "Wexham",
+    "state": "OR",
+    "zip": "00640"
+   },
+   "phone": "555-0108",
+   "email": "accounts@sorrelcourier.example.com",
+   "items": [
+    {
+     "description": "Same-day delivery",
+     "unit_price": "28.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Rural surcharge",
+     "unit_price": "9.50",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Weekend pickup",
+     "unit_price": "35.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X03",
+   "name": "Hawthorn Waste Contractors",
+   "aliases": [
+    "Hawthorn Waste",
+    "HAWTHORN WASTE CONTRACTORS"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "HW-",
+   "invoice_start": 2300,
+   "address": {
+    "street": "88 Landfill Lane",
+    "city": "Wexham",
+    "state": "OR",
+    "zip": "00640"
+   },
+   "phone": "555-0119",
+   "email": "accounts@hawthornwaste.example.com",
+   "items": [
+    {
+     "description": "Roll-off container rental, week",
+     "unit_price": "185.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Disposal fee, ton",
+     "unit_price": "64.00",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Delivery fee",
+     "unit_price": "75.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ]
+}

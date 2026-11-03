@@ -106,6 +106,10 @@ Details, with the scoring correction made after the first look, are in D-067 and
 
 **What this cannot tell you.** The documents are invented, with layouts and noise made by one generator; real invoices are messier and handwriting is absent. Truth is known by construction. There are 17 or 18 held-out documents per condition and 13 planted problems, so read the intervals, not the second decimal. One machine, one model, one OCR engine. The held-out and sealed splits are both spent: each was opened once, and any change made after reading them needs a new sealed set. The person who built the system also wrote the test documents, so they are unseen but not blind. The full list is in each report.
 
+### Sealed means run once
+
+A sealed test set is generated, and the hash of its answer key committed, before the fixes it will test. It is run once, with the product's own settings and one pass, after those fixes are merged. Its documents and key are not opened before the run, nothing is tuned on it, and it is never regenerated after the hash is committed (a test fails if the generator stops reproducing the hash, and the runner refuses a second run). Once read, it is spent: a change made because of what it showed is tested on a newer set. Two sets are spent so far (`held-out`, `sealed`); a third (`sealed2`, a different invented business and five more layouts) exists, with its hash committed in [`eval/golden/citetally_v3_sealed2.sha256`](eval/golden/citetally_v3_sealed2.sha256), and has not been run. See D-069 in [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
 ## Safety and privacy rules
 
 These are in the code and checked by tests (see [`docs/HARDENING.md`](docs/HARDENING.md)):
