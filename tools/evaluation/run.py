@@ -34,7 +34,7 @@ from citetally.config import Settings
 from citetally.extract import PROMPT_VERSION
 from citetally.matching import normalize_name
 from citetally.pipeline import Services
-from tools.evaluation.suites import SPLITS, load_suite
+from tools.evaluation.suites import OPENS_ONCE, SPLITS, load_suite
 from tools.evaluation.world import World, order, seed
 from tools.synthetic.facts import Facts
 from tools.synthetic.golden import GOLDEN_FILE, Item
@@ -44,6 +44,7 @@ RUNS = ROOT / "eval" / "runs"
 SCRATCH = ROOT / "data" / "eval"
 HELDOUT_LOCK = RUNS / "HELDOUT_RUN.lock"
 SEALED_LOCK = RUNS / "SEALED_RUN.lock"
+SEALED2_LOCK = RUNS / "SEALED2_RUN.lock"
 
 # What each variant changes, as environment names. Anything not listed is the default.
 VARIANTS: dict[str, dict[str, str]] = {
@@ -364,9 +365,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="open the sealed split. Allowed once, after the fixes are made.",
     )
+    parser.add_argument(
+        "--confirm-sealed2-once",
+        action="store_true",
+        help="open the second sealed split. Allowed once, after the second round of fixes.",
+    )
     args = parser.parse_args(argv)
 
-    opens_once = args.split in {"heldout", "sealed"}
+    opens_once = args.split in OPENS_ONCE
     suffix = ""
     conditions = [c for c in args.conditions.split(",") if c]
     if conditions:
@@ -376,11 +382,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     run_id = f"{args.split}-{args.variant}-p{args.pass_number}{suffix}"
 
     if opens_once:
-        flag = "--confirm-heldout-once" if args.split == "heldout" else "--confirm-sealed-once"
-        lock = HELDOUT_LOCK if args.split == "heldout" else SEALED_LOCK
-        confirmed = (
-            args.confirm_heldout_once if args.split == "heldout" else args.confirm_sealed_once
-        )
+        flag = f"--confirm-{args.split}-once"
+        lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK, "sealed2": SEALED2_LOCK}[args.split]
+        confirmed = getattr(args, f"confirm_{args.split}_once")
         if not confirmed:
             print(f"The {args.split} split is sealed. Add {flag} to open it, once.")
             return 2

@@ -1,16 +1,19 @@
-"""Build the second evaluation sets: `dev2` (develop fixes on it) and `sealed` (run once, last).
+"""Build the second evaluation sets: `dev2` (develop fixes on it), `sealed` (run once, last) and
+`sealed2` (a fresh set for the second round of fixes, also run once).
 
   python -m tools.synthetic.fresh_build --suite dev2
   python -m tools.synthetic.fresh_build --suite sealed
-  python -m tools.synthetic.fresh_build --suite sealed --verify     regenerate, compare the hash
+  python -m tools.synthetic.fresh_build --suite sealed2
+  python -m tools.synthetic.fresh_build --suite sealed2 --verify    regenerate, compare the hash
 
-Both use a second invented business (`universe/facts_ridge.json`) and ten new layouts
-(`fresh_families.py`), with each condition at several levels of damage (`fresh_degrade.py`).
+`dev2` and `sealed` use a second invented business (`universe/facts_ridge.json`) and ten new
+layouts (`fresh_families.py`); `sealed2` uses a third (`universe/facts_marigold.json`) and five
+more layouts. Each condition has several levels of damage (`fresh_degrade.py`).
 
-The sealed set is made before any fix and kept out of git: its answer key is written under
-`data/synthetic/sealed/`, and only the SHA-256 of that key's contents is committed, in
-`eval/golden/citetally_v2_sealed.sha256`. Run again later with `--verify`, the generator must
-reproduce the same hash, which shows the documents were not changed after the fixes were made.
+A sealed set is made before the fixes it will test and kept out of git: its answer key is written
+under `data/synthetic/<suite>/`, and only the SHA-256 of that key's contents is committed, in
+`eval/golden/`. Run again later with `--verify`, the generator must reproduce the same hash, which
+shows the documents were not changed after the fixes were made.
 """
 
 from __future__ import annotations
@@ -38,18 +41,28 @@ from tools.synthetic.fresh_degrade import LEVELS, make_fresh_file
 from tools.synthetic.fresh_families import FreshFamily, families_of
 from tools.synthetic.fresh_render import render_fresh_pdf
 from tools.synthetic.golden import GoldenSet, Header, Item
+from tools.synthetic.injection_sealed2 import INJECTION_TEXT_SEALED2
 from tools.synthetic.planting import EXPECTED_CHECKS, PLANTED_KINDS
 from tools.synthetic.render import business_block
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FACTS_RIDGE = REPO_ROOT / "universe" / "facts_ridge.json"
+FACTS_MARIGOLD = REPO_ROOT / "universe" / "facts_marigold.json"
+FACTS_OF = {"dev2": FACTS_RIDGE, "sealed": FACTS_RIDGE, "sealed2": FACTS_MARIGOLD}
+SEALED_SUITES = ("sealed", "sealed2")
 DATA_ROOT = REPO_ROOT / "data" / "synthetic"
 GOLDEN_DIR = REPO_ROOT / "eval" / "golden"
 GENERATOR = "citetally-synthetic-fresh 1"
-SEEDS = {"dev2": 4417201, "sealed": 9083377}
-PER_FAMILY = {"dev2": 20, "sealed": 50}
-PREFIX = {"dev2": "d2-", "sealed": "s2-"}
-PLANTED_SHARE = 0.30
+SEEDS = {"dev2": 4417201, "sealed": 9083377, "sealed2": 6120589}
+PER_FAMILY = {"dev2": 20, "sealed": 50, "sealed2": 60}
+PREFIX = {"dev2": "d2-", "sealed": "s2-", "sealed2": "s3-"}
+PLANTED_SHARE = {"dev2": 0.30, "sealed": 0.30, "sealed2": 0.36}
+# sealed2 deals tax and injection problems twice as often as the others: seven of each (D-066) was
+# too few to say anything about them. Every kind still has at least seven documents.
+PLANT_CYCLE = {"sealed2": (*PLANTED_KINDS, "tax_mismatch", "injection_text")}
+PLANT_PHRASES = {"sealed2": INJECTION_TEXT_SEALED2}
+MIN_PER_KIND = {"dev2": 2, "sealed": 4, "sealed2": 7}
+MIN_PER_CONDITION = {"dev2": 20, "sealed": 50, "sealed2": 60}
 # Ten combinations, so a family of 20 or 50 documents holds each equally often: clean twice.
 COMBOS: tuple[tuple[str, str], ...] = (
     ("clean_pdf", "clean"), ("clean_pdf", "clean"),
@@ -62,7 +75,7 @@ SOURCE_KIND = {"clean_pdf": "digital_pdf", "scan_light": "scanned_pdf",
 
 
 class FreshItem(Item):
-    split: Literal["dev2", "sealed"]  # type: ignore[assignment]
+    split: Literal["dev2", "sealed", "sealed2"]  # type: ignore[assignment]
     level: Literal["clean", "mild", "typical", "harsh"]
     features: list[str]
 
@@ -72,13 +85,14 @@ class FreshGoldenSet(GoldenSet):
 
 
 def golden_path(suite: str) -> Path:
-    if suite == "sealed":
-        return DATA_ROOT / "sealed" / "golden_sealed.json"
+    if suite in SEALED_SUITES:
+        return DATA_ROOT / suite / f"golden_{suite}.json"
     return GOLDEN_DIR / f"citetally_v2_{suite}.json"
 
 
-def hash_path() -> Path:
-    return GOLDEN_DIR / "citetally_v2_sealed.sha256"
+def hash_path(suite: str = "sealed") -> Path:
+    version = "v3" if suite == "sealed2" else "v2"
+    return GOLDEN_DIR / f"citetally_{version}_{suite}.sha256"
 
 
 def entries_for(suite: str, facts: Facts) -> list[Entry]:
@@ -194,10 +208,10 @@ def problems(items: list[FreshItem], suite: str, facts: Facts) -> list[str]:
             found.append(f"{i.id}: duplicate_of is not in this set")
     kinds: list[str] = [p.kind for i in items for p in i.planted]
     for kind in PLANTED_KINDS:
-        if kinds.count(kind) < (2 if suite == "dev2" else 4):
+        if kinds.count(kind) < MIN_PER_KIND[suite]:
             found.append(f"only {kinds.count(kind)} documents with planted {kind}")
     for condition in LEVELS:
-        if sum(1 for i in items if i.condition == condition) < (20 if suite == "dev2" else 50):
+        if sum(1 for i in items if i.condition == condition) < MIN_PER_CONDITION[suite]:
             found.append(f"too few {condition} documents")
     return found
 
@@ -229,13 +243,21 @@ def write_files(entries: list[Entry], suite: str, facts: Facts, root: Path) -> s
 def prepare(suite: str, facts: Facts) -> list[Entry]:
     """Every document of the suite, with its planted problem (if any), before it is drawn."""
     entries = entries_for(suite, facts)
-    plan_planting(entries, facts, SEEDS[suite], share=PLANTED_SHARE)
+    plan_planting(
+        entries,
+        facts,
+        SEEDS[suite],
+        share=PLANTED_SHARE[suite],
+        cycle=PLANT_CYCLE.get(suite, PLANTED_KINDS),
+        injection_phrases=PLANT_PHRASES.get(suite),
+    )
     number_receipts(entries, SEEDS[suite])
     return entries
 
 
 def build(suite: str, *, files: bool = True, root: Path = DATA_ROOT) -> tuple[FreshGoldenSet, str]:
-    facts = load_facts(FACTS_RIDGE)
+    facts_file = FACTS_OF[suite]
+    facts = load_facts(facts_file)
     seed = SEEDS[suite]
     entries = prepare(suite, facts)
     digest = write_files(entries, suite, facts, root) if files else None
@@ -260,12 +282,12 @@ def build(suite: str, *, files: bool = True, root: Path = DATA_ROOT) -> tuple[Fr
     golden = FreshGoldenSet(
         header=Header(
             version=2, seed=seed, generator=GENERATOR,
-            facts_sha256=hashlib.sha256(FACTS_RIDGE.read_bytes()).hexdigest(),
+            facts_sha256=hashlib.sha256(facts_file.read_bytes()).hexdigest(),
             files_digest=digest, counts=counts,
             note=(
-                "SYNTHETIC TEST DATA. A second invented business. Truth is what is printed on "
-                "each page, planted errors included."
-                + (" Sealed: run once, after the fixes." if suite == "sealed" else "")
+                f"SYNTHETIC TEST DATA. An invented business ({facts.business.name}). Truth is "
+                "what is printed on each page, planted errors included."
+                + (" Sealed: run once, after the fixes." if suite in SEALED_SUITES else "")
             ),
         ),
         items=items,
@@ -286,7 +308,7 @@ def load_fresh(path: Path, split: str | None = None) -> list[FreshItem]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
-    parser.add_argument("--suite", choices=["dev2", "sealed"], required=True)
+    parser.add_argument("--suite", choices=list(FACTS_OF), required=True)
     parser.add_argument("--check", action="store_true", help="validate only; write nothing")
     parser.add_argument("--verify", action="store_true", help="sealed: regenerate and compare hash")
     args = parser.parse_args(argv)
@@ -297,7 +319,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(f"answer-key digest {digest}")
     if args.verify:
-        committed = hash_path().read_text(encoding="utf-8").split()[0]
+        committed = hash_path(args.suite).read_text(encoding="utf-8").split()[0]
         ok = committed == digest
         print(
             "MATCHES the committed hash" if ok else f"DIFFERS from the committed hash {committed}"
@@ -305,8 +327,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if ok else 1
     if not args.check:
         write(golden, golden_path(args.suite))
-        if args.suite == "sealed":
-            hash_path().write_text(
+        if args.suite in SEALED_SUITES:
+            hash_path(args.suite).write_text(
                 f"{digest}  sealed answer key, see tools/synthetic/fresh_build.py\n",
                 encoding="utf-8",
                 newline="\n",

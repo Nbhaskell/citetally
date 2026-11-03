@@ -19,7 +19,14 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-from tools.evaluation.run import HELDOUT_LOCK, ROOT, RUNS, SEALED_LOCK, read_records
+from tools.evaluation.run import (
+    HELDOUT_LOCK,
+    ROOT,
+    RUNS,
+    SEALED2_LOCK,
+    SEALED_LOCK,
+    read_records,
+)
 from tools.evaluation.score import (
     BLOCKING,
     CONDITIONS,
@@ -30,7 +37,7 @@ from tools.evaluation.score import (
     summarise,
 )
 from tools.evaluation.stats import compare, t_halfwidth
-from tools.evaluation.suites import SPLITS, load_suite
+from tools.evaluation.suites import OPENS_ONCE, SPLITS, load_suite
 from tools.synthetic.golden import Item
 
 REPORTS = ROOT / "eval" / "reports"
@@ -163,7 +170,7 @@ def compare_variants(
 def build(
     split: str, only: Sequence[str] | None = None, primary: str = "baseline"
 ) -> dict[str, Any]:
-    items_list = load_suite(split, unseal=split in {"heldout", "sealed"}).items
+    items_list = load_suite(split, unseal=split in OPENS_ONCE).items
     items = {i.id: i for i in items_list}
     runs = {v: r for v, r in load_runs(split).items() if only is None or v in only}
     if primary not in runs:
@@ -499,6 +506,11 @@ def render(report: dict[str, Any]) -> str:
             "- The sealed set was run once, with the product's own settings and one pass, after the fixes and the review-screen change were merged. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
         )
 
+    if split == "sealed2":
+        out.append(
+            "- The second sealed set was run once, with the product's own settings and one pass, after the second round of fixes. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
+        )
+
     out += ["", "## Reading list", "", "Documents worth opening by hand (not a failure count):", ""]
     for name, ids in report["reading_list"].items():
         out.append(
@@ -518,7 +530,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="the setting the tables describe and the others are compared with (the sealed split has only `final`)",
     )
     args = parser.parse_args(argv)
-    lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK}.get(args.split)
+    lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK, "sealed2": SEALED2_LOCK}.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2

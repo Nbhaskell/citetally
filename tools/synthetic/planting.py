@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import math
 import random
+from collections.abc import Sequence
 from datetime import timedelta
 from decimal import Decimal
 from typing import Any
@@ -104,6 +105,7 @@ def plant(
     *,
     original: Doc | None = None,
     vendor_median_minor: int | None = None,
+    injection_phrases: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Change `doc` in place so that it carries `kind`. Returns the golden `planted` record."""
     if kind not in PLANTED_KINDS:
@@ -157,7 +159,7 @@ def plant(
         doc.currency = "CAD"
         record["detail"] = "printed in Canadian dollars; the vendor's usual currency is USD"
     elif kind == "injection_text":
-        phrase = rng.choice(_INJECTION_TEXT)
+        phrase = rng.choice(injection_phrases or _INJECTION_TEXT)
         doc.notes.append(phrase)
         record["detail"] = "an instruction aimed at an assistant is printed on the page"
     elif kind == "unknown_vendor":

@@ -738,3 +738,27 @@ Header fields exact by condition (clean PDF, light scan, heavy scan, phone photo
 **Limits.** One reviewer who built the system and knows how it fails; a new user would likely be slower. 34 approved documents, 40 chosen; the heavy-scan row has 4 documents because the other 6 were rejected as unreadable. Review seconds include any pause with the screen open. Typing was done in a console helper that asked for vendor, number, date, lines and total, not subtotal or tax, which makes typing look slightly faster than a full entry. The documents are invented. p10's review time is for its second upload.
 
 **Next.** The README numbers, each matching a saved report; then the owner's decisions on publishing.
+
+
+### D-069. A fresh sealed set (`sealed2`), built and hashed before the second round of fixes
+
+**Why.** The sealed set (D-066) is spent, and reading its results exposed gaps that call for changes after the fact: the tax check missed 0 of 7 planted tax problems, instruction-like text was caught 3 of 6 times, and the review screen let wrong values through (D-068). A change made because of a result cannot be tested on the data that suggested it. A new set is needed, and it has to exist, with its answer key hashed and committed, before any of those fixes is written, so that none of them can be shaped by it.
+
+**Rule: sealed means run once.** A sealed set is generated and its answer-key hash committed before the fixes it will test. It is run once, with the product's own settings and one pass, after those fixes are merged. Its documents and answer key are not opened before the run (only aggregate counts are printed), nothing is tuned on it, and it is never regenerated after the hash is committed; `--verify` and a test fail if the generator stops reproducing the hash. After the run it is spent: a change made because of what it showed needs a newer set. The runner enforces the one-time part with a lock file and a flag per set (`--confirm-sealed2-once`, `eval/runs/SEALED2_RUN.lock`).
+
+**What it is.**
+
+| | |
+|---|---|
+| Business | A third invented business, `universe/facts_marigold.json` (a small veterinary clinic): 16 listed vendors, 3 unlisted, items and prices that share nothing with the first two businesses except a few generic utility line names |
+| Layouts | Five, T26 to T30, written down before the fixes: per-line tax amounts in a column (T26), a credit note with no tax rate printed (T27), a service ticket in labour and parts with the rate printed (T28), an account statement with ageing and a usage chart (T29), a till slip with a card panel and the rate printed (T30). They are new arrangements of the renderer engines used for T16 to T25, not new engines |
+| Size | 300 documents, 60 per layout, the same four conditions and levels of damage as `sealed` (60 clean PDFs, 90 light scans, 60 heavy scans, 90 phone photos) |
+| Planted problems | 108 (36%), one per document, 12 kinds. Tax and instruction-text problems are dealt twice as often as the rest (15 and 14 documents; every other kind 7 or 8), because 7 and 6 were too few to read in `sealed`. Pooled "planted problems caught" is therefore not comparable with earlier reports; the per-kind rows are |
+| Instruction text | Fourteen phrasings, none shared with the four used so far, in `tools/synthetic/injection_sealed2.py` |
+| Key | Written under `data/synthetic/sealed2/` (git-ignored). Its SHA-256 is committed in `eval/golden/citetally_v3_sealed2.sha256` (`491a09bba442e5b0…`) |
+
+**Changes to shared generator code.** `plan_planting` takes an optional deal order (`cycle`) and an optional list of injection phrasings, and `plant` takes the phrasings; the defaults are the old behaviour. The first sealed set's hash and the `dev2` key are checked by tests and are unchanged.
+
+**What it still cannot show.** The documents are invented, and the injection phrasings and the layouts were written by the same author as the detector and the checks, so they are unseen but not blind. Layouts are rearranged engines, so a failure that depends on the drawing code would repeat. There is no real handwriting, no multi-page document and no other language.
+
+**Next.** The tax and instruction-text fixes, developed and measured on the development sets only; then the review-screen aid; then the one run of `sealed2` and the pilot on documents from it.

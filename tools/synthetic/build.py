@@ -16,6 +16,7 @@ import random
 import statistics
 import sys
 import zlib
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
@@ -158,16 +159,24 @@ def _separate_accidental_duplicates(entries: list[Entry], rng: random.Random, fa
 
 
 def plan_planting(
-    entries: list[Entry], facts: Facts, seed: int, share: float = PLANTED_SHARE
+    entries: list[Entry],
+    facts: Facts,
+    seed: int,
+    share: float = PLANTED_SHARE,
+    cycle: Sequence[str] = PLANTED_KINDS,
+    injection_phrases: Sequence[str] | None = None,
 ) -> None:
-    """Give about a quarter of the documents (`share`) exactly one known problem."""
+    """Give about a quarter of the documents (`share`) exactly one known problem.
+
+    `cycle` is the order kinds are dealt in; listing a kind twice plants it twice as often.
+    """
     rng = random.Random(f"{seed}:planting")
     medians = vendor_medians(entries)
     counts: dict[str, int] = {}
     for e in entries:
         counts[e.doc.vendor.id] = counts.get(e.doc.vendor.id, 0) + 1
     target = round(share * len(entries))
-    kinds = [PLANTED_KINDS[i % len(PLANTED_KINDS)] for i in range(target)]
+    kinds = [cycle[i % len(cycle)] for i in range(target)]
     taken: set[int] = set()
     stranger_serial = 100
     for kind in kinds:
@@ -211,7 +220,15 @@ def plan_planting(
                 continue
             if not eligible(kind, e.doc, original=original, vendor_median_minor=median):
                 continue
-            record = plant(kind, e.doc, rng, facts, original=original, vendor_median_minor=median)
+            record = plant(
+                kind,
+                e.doc,
+                rng,
+                facts,
+                original=original,
+                vendor_median_minor=median,
+                injection_phrases=injection_phrases,
+            )
             e.planted.append(record)
             taken.add(idx)
             if original_idx is not None:
