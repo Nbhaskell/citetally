@@ -99,6 +99,9 @@ class Services:
     settings: Settings
     ocr: OcrEngine
     provider: ModelProvider
+    # A second engine whose words only help locate values (the first engine's text and confidence
+    # are what the model and the read-quality check use).
+    locator: OcrEngine | None = None
     run_checks: Callable[[sqlite3.Connection, int], None] | None = None  # tests inject one
     extract_mode: ExtractMode = ExtractMode.TEXT_ONLY
     # With `automatic_pictures` a page read by OCR is sent with its picture to `vision_provider`,
@@ -153,6 +156,7 @@ class _ReadJob:
     min_chars: int
     ocr: OcrEngine
     readings: int = 1
+    locator: OcrEngine | None = None
 
 
 @dataclass(frozen=True)
@@ -240,7 +244,19 @@ def _read_job(job: _ReadJob) -> _ReadResult:
             plan = _reading_plan(job.ocr.name, job.readings)
             first_pre = preprocess(image, min_long=plan[0][1], max_long=plan[0][2])
             first = job.ocr.read_page(first_pre.image, psm=plan[0][0])
-            extras = _extra_readings(job.ocr, image, plan[1:])
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                located = (
+                    pool.submit(
+                        _extra_readings,
+                        job.locator,
+                        image,
+                        _reading_plan(job.locator.name, job.readings),
+                    )
+                    if job.locator is not None
+                    else None
+                )
+                extras = _extra_readings(job.ocr, image, plan[1:])
+                locating = [mask_words(words) for words in located.result()] if located else []
         except OcrUnavailable:
             return _ReadResult([], "ocr_unavailable")
         except OcrTimeout:
@@ -253,16 +269,17 @@ def _read_job(job: _ReadJob) -> _ReadResult:
         readings.sort(key=_mean_confidence, reverse=True)
         merged = merge_readings(readings[0], readings[1:]) if len(readings) > 1 else readings[0]
         best = _mean_confidence(readings[0])
+        separate = [*readings, *locating] if len(readings) > 1 or locating else []
         pages.append(
             _PageRead(
                 merged,
                 layout.build_text(merged),
                 ReadMethod.OCR,
-                job.ocr.name,
+                f"{job.ocr.name}+{job.locator.name}" if locating and job.locator else job.ocr.name,
                 best if len(readings) > 1 and readings[0] else first.mean_confidence,
                 first_pre.skew_degrees,
                 *image.size,
-                alt_words=readings if len(readings) > 1 else [],
+                alt_words=separate,
             )
         )
     return _ReadResult(pages)
@@ -280,6 +297,7 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
         min_chars=services.settings.text_layer_min_chars,
         ocr=services.ocr,
         readings=services.settings.ocr_readings,
+        locator=services.locator,
     )
     try:
         if services.isolate:
@@ -325,8 +343,8 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
     confidences = [p.mean_confidence for p in ocr_pages if p.mean_confidence is not None]
     if confidences:
         payload["mean_confidence"] = round(sum(confidences) / len(confidences), 1)
-    if ocr_pages and services.ocr.name in ("tesseract", "rapidocr"):
-        payload["ocr_engine"] = services.ocr.name
+    if ocr_pages and ocr_pages[0].engine in ("tesseract", "rapidocr", "tesseract+rapidocr"):
+        payload["ocr_engine"] = ocr_pages[0].engine
     return payload
 
 
