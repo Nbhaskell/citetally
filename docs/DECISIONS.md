@@ -798,3 +798,46 @@ Planted problems caught overall: 59 of 72 to 65 of 72. No document got worse on 
 - **Arithmetic checks.** For `LINE_MATH`, `SUBTOTAL_MATCH`, `TAX_MATCH` and `TOTAL_MATCH` the button reads "Go to the value" and a line says to keep the figures as the page prints them, change one only if it was misread, and accept the check with a reason if the page itself is wrong. "Fix value" stays for the other checks.
 
 **What it does not do.** It cannot make anyone look at the picture. A reviewer can mark every value as matching without comparing it, and can tick the quantity box without opening the page. Nothing here is measured yet: the effect on wrong values approved is what the next pilot, on documents from `sealed2`, is for. A reviewer who has seen the old pilot documents would be biased on those, so the rerun uses new ones.
+
+
+### D-072. The second sealed run (`sealed2`), as it came out
+
+**What was run.** 300 documents from a third invented business (Marigold Lane Veterinary Clinic) in five new layouts, 108 with a planted problem. The answer-key hash (`491a09bba442e5b0…`) was committed before the tax and instruction-text fixes of D-070 and the build was verified against it again after the run. One pass, the product's own settings (`final`), run on commit `8b5446e` with a clean tree, after D-070 and D-071 were merged. Nothing was tuned on it. It is now spent: a change made because of what it showed is tested on a newer set. Report: `eval/reports/eval_sealed2.md`.
+
+**Result, all 300 documents.**
+
+| Measure | Result | Target |
+|---|---|---|
+| Header fields exact | 93.1% (92 to 94) | by condition, below |
+| Money exact | 91.7% (90 to 93) | by condition, below |
+| Line-item F1 | 87.6% | by condition, below |
+| Planted problems caught | 73.2% (64 to 81) | per kind, below |
+| Clean documents with a blocking false alarm | 42.2% (35 to 49) | at most 10% per blocking check |
+| Median seconds per page | 16.4 | under 20 |
+
+| Condition | Header fields exact | Money exact | Line F1 | Clean documents blocked |
+|---|---|---|---|---|
+| clean pdf (60) | 95.4% (target 95%: met) | 99.4% (target 95%: met) | 95.8% (target 85%: met) | 8.8% |
+| scan light (90) | 97.8% (target 85%: met) | 95.8% (target 85%: met) | 95.1% (target 70%: met) | 20.9% |
+| scan heavy (60) | 83.1% (target 85%: missed) | 80.7% (target 85%: missed) | 71.8% (target 70%: met) | 90.6% |
+| phone photo (90) | 93.4% (no target) | 89.8% (target 85%: met) | 85.0% | 59.3% |
+
+**Planted problems, by kind** (each interval is wide; 8 to 16 documents per kind):
+
+| Kind | Caught | Target |
+|---|---|---|
+| line math (8), total mismatch (8) | 100% | arithmetic errors pooled with tax: at least 95% |
+| tax mismatch | 40.0% (4 of 10) | the three arithmetic kinds pooled are 20 of 26 (76.9%) |
+| duplicates (invoice number and content) | 15 of 16 | at least 95% |
+| amount outliers | 75.0% (6 of 8) | at least 80% |
+| instruction text (`SUSPICIOUS_TEXT`) | 7.1% (1 of 14) | reported either way |
+| unknown vendor, due before entry | 100% | none |
+| future date, missing invoice number | 87.5% each | none |
+| currency mismatch | 71.4% (5 of 7) | none |
+
+**What the two fixes did on unseen documents.**
+- **Tax.** The fix was developed on six documents (6 of 6 after) and caught 4 of 10 here, against 2 of 6 before on the development sets. Each of the six misses has `rate_printed: false`: the model returned no printed rate on any of them, including a clean PDF, so the check had no rate to compare and used the fallback in D-070, which passes when some subset of the lines reaches the stated tax. With four or five lines, the planted error was within reach of some subset on all six. The fix helps only when the rate is read; the weak point is the rate not being returned, which D-070 listed as a limit and which this run shows is common. The subset test is also loose with many lines.
+- **Instruction text.** 1 of 14 caught, against 4 of 6 on the development sets. Five of the misses are clean PDFs, so OCR damage is not the cause: the widened patterns of D-070 matched the phrasings they were written from and little else. The 14 phrasings in this set were written before the fix and not seen while writing it, and that is what the result measures.
+- **Clean documents blocked.** 42.2% overall, against 42.9% and 49.0% on the two development sets. `VALUE_IN_DOCUMENT` fails 36.5% of clean documents. Without it the clean-document false alarm is 8.8% on clean PDFs, 6.0% on light scans, 28.1% on heavy scans and 13.6% on phone photos. This is the limit named in D-063 and left open in D-070.
+
+**Not changed by this run.** Nothing in the code, the checks or the prompts. The README and the held-out comparison are updated from these numbers next. Candidate follow-ups, each to be tested on a newer sealed set: requiring a printed rate to be read before relying on the subset fallback (or flagging its use), reading per-line tax amounts, and broadening instruction-text detection by meaning rather than by phrase lists.
