@@ -7,8 +7,10 @@ REQUIRED_FIELDS' job. Amounts in details are integer minor units.
 
 from __future__ import annotations
 
+import json
 import re
 import statistics
+from collections import Counter
 from collections.abc import Callable, Sequence
 from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
@@ -17,8 +19,9 @@ from typing import Any
 from citetally.checks.injection import scan
 from citetally.checks.inputs import CheckInput, Other, Outcome
 from citetally.dates import parse_date
-from citetally.models import CheckCode, HeaderField, LineField, Page, required_fields
+from citetally.models import CheckCode, HeaderField, LineField, Page, Word, required_fields
 from citetally.money import line_amount_minor, parse_decimal, parse_money, tax_minor
+from citetally.reading.layout import build_text
 
 MIN_WORDS = 15  # a document with fewer words than this was probably not read
 MAX_SKEW_DEGREES = 5.0  # a page straightened by more than this was badly photographed
@@ -131,21 +134,55 @@ def subtotal_match(i: CheckInput) -> Outcome:
     )
 
 
-_TAX_RATE = re.compile(r"tax[^\n%$\d]{0,24}\(?\s*(\d{1,2}(?:\.\d{1,3})?)\s*%", re.IGNORECASE)
+# The rate printed beside a tax label: "Tax (8.25%)", "Levy 8.25%", "Sales tax total 14 (8.25%)".
+# A scan can lose the decimal point ("8 25%") or read it as a comma; both are taken as the point.
+# A number straight after the label that is followed by a bracket is a count, not the rate.
+_TAX_RATE = re.compile(
+    r"(?:tax|levy|vat|gst)[^\n%$\d]{0,24}(?:\d{1,3}\s*(?=\())?\(?\s*"
+    r"(\d{1,2})(?:[.,\s](\d{1,3}))?\s*%",
+    re.IGNORECASE,
+)
+MAX_PLAUSIBLE_TAX_RATE = Decimal("0.30")
+
+
+def _readings(page: Page) -> list[str]:
+    """The text of the page as merged, then the text of each separate reading of it."""
+    texts = [page.text or ""]
+    try:
+        stored = json.loads(page.alt_words or "[]")
+        texts += [build_text([Word.model_validate(w) for w in reading]) for reading in stored]
+    except (ValueError, TypeError):
+        pass
+    return texts
+
+
+def _rate_in(text: str) -> Decimal | None:
+    """The one plausible rate this text prints beside a tax label, or None."""
+    rates = set()
+    for found in _TAX_RATE.finditer(text):
+        rate = Decimal(f"{found.group(1)}.{found.group(2) or '0'}") / 100
+        if rate <= MAX_PLAUSIBLE_TAX_RATE:
+            rates.add(rate)
+    return next(iter(rates)) if len(rates) == 1 else None
 
 
 def printed_tax_rate(pages: Sequence[Page]) -> Decimal | None:
-    """The one rate the page prints beside the word "tax", as a fraction, or None.
+    """The rate the page prints beside a tax label, as a fraction, or None.
 
-    Two different rates, or a percentage that is not beside "tax" ("save 3%"), give None: with
-    nothing certain to hold the tax against, no bound is applied.
+    The page may have been read more than once (the merged text and each separate reading). Each
+    text gives one rate or none: two different rates in one text, or a percentage that is not
+    beside a label ("save 3%"), give none for that text. The rate most texts agree on is the page's;
+    a tie, or no text with a rate, gives None and no bound is applied.
     """
-    rates = {
-        Decimal(found.group(1)) / 100
-        for page in pages
-        for found in _TAX_RATE.finditer(page.text or "")
-    }
-    return next(iter(rates)) if len(rates) == 1 else None
+    votes = Counter(
+        rate for page in pages for text in _readings(page) if (rate := _rate_in(text)) is not None
+    )
+    if not votes:
+        return None
+    ranked = votes.most_common(2)
+    if len(ranked) == 2 and ranked[0][1] == ranked[1][1]:
+        return None
+    return ranked[0][0]
 
 
 def _tax_reachable(
