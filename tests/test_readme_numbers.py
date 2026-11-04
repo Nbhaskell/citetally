@@ -171,3 +171,53 @@ def test_the_stage_2_numbers_match_the_stage_2_reports() -> None:
         f"about {round(stage2('dev2')['all']['seconds_per_page_median'])} seconds per page"
         in README
     )
+
+
+def sealed_run(name: str, variant: str) -> dict[str, Any]:
+    passes = load(name)["variants"][variant]["passes"]
+    out: dict[str, Any] = passes[min(passes, key=int)]
+    return out
+
+
+def test_the_sealed_comparison_table_matches_the_reports() -> None:
+    runs = (
+        ("Held-out (first system)", first_pass(HELD)),
+        ("`sealed`", sealed_final()),
+        ("`sealed2`", sealed_run("sealed2", "final")),
+        ("`sealed3`", sealed_run("sealed3", "final_hybrid")),
+    )
+    for label, report in runs:
+        block = report["all"]
+        row = (
+            f"| {label} | {report['documents']} "
+            f"| {pct(block['header_field_exact']['rate'])} "
+            f"| {pct(block['money_exact']['rate'])} "
+            f"| {pct(block['line_f1'])} "
+            f"| {pct(block['planted_recall']['rate'])} "
+            f"| {pct(block['clean_any_blocking_alarm']['rate'])} |"
+        )
+        assert row in README, row
+
+
+def test_the_sealed2_and_sealed3_figures_quoted_in_words_match() -> None:
+    second = sealed_run("sealed2", "final")["all"]
+    third = sealed_run("sealed3", "final_hybrid")
+    block = third["all"]
+    for kind, report, noun in (
+        ("tax_mismatch", second, "tax mismatches"),
+        ("injection_text", second, "instruction texts"),
+        ("tax_mismatch", block, "tax mismatches"),
+        ("injection_text", block, "instruction texts"),
+    ):
+        found = report["planted_recall_by_kind"][kind]
+        assert f"{found['k']} of {found['n']} {noun}" in README, (kind, noun)
+    heavy = third["by_condition"]["scan_heavy"]
+    for text in (
+        f"{pct(heavy['header_field_exact']['rate'])} of header fields exact",
+        f"{pct(heavy['line_f1'])} line-item F1",
+        f"{pct(heavy['clean_any_blocking_alarm']['rate'])} of clean documents blocked",
+        f"found {pct(block['values_found']['rate'])} of returned values on the page",
+        f"Median {block['seconds_per_page_median']:.1f} seconds per page",
+        f"fails {pct(block['false_alarm_by_check']['VALUE_IN_DOCUMENT']['rate'])} of clean",
+    ):
+        assert text in README, text
