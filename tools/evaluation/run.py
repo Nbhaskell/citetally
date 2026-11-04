@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import platform
 import shutil
@@ -74,6 +75,9 @@ VARIANTS: dict[str, dict[str, str]] = {
         "CITETALLY_VISION_MODEL": "qwen3-vl:8b-instruct",
         "CITETALLY_OCR_READINGS": "3",
     },
+    # The product's own settings with RapidOCR in place of Tesseract (D-073). A page with a text
+    # layer is read as before, so only scans and photos differ.
+    "final_rapid": {"CITETALLY_OCR_ENGINE": "rapidocr"},
     # The model thinks before it answers; the token budget and timeout are raised with it.
     "thinking": {
         "CITETALLY_ENABLE_THINKING": "true",
@@ -106,6 +110,13 @@ def _tesseract_version(path: str) -> str:
     return (done.stdout or done.stderr).splitlines()[0] if (done.stdout or done.stderr) else ""
 
 
+def _rapidocr_version() -> str:
+    try:
+        return "rapidocr " + importlib.metadata.version("rapidocr")
+    except importlib.metadata.PackageNotFoundError:
+        return "rapidocr not installed"
+
+
 def provenance(
     settings: Settings, variant: str, run_id: str, split: str, golden_file: Path = GOLDEN_FILE
 ) -> dict[str, Any]:
@@ -131,6 +142,7 @@ def provenance(
         "text_layer_min_chars": settings.text_layer_min_chars,
         "ocr_engine": settings.ocr_engine,
         "tesseract": _tesseract_version(cmd) if cmd else "not found",
+        "ocr_version": _rapidocr_version() if settings.ocr_engine == "rapidocr" else None,
         "prompt_version": PROMPT_VERSION,
         "temperature": 0.0,
         "seed": 0,

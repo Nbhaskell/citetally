@@ -873,3 +873,35 @@ The exception holds on these conditions: the engine is optional and off by defau
 - **Time.** Each document is read in a separate process, so the engine is loaded once per document (in the smoke test on one photo, one reading took 4.6 s including start-up, and two readings 5.3 s with the engine already loaded).
 
 **Limits of the trial.** 80 development documents; the cleaning step was tuned for Tesseract and RapidOCR was not tuned at all, which favours Tesseract if anything. The measure is whether a value can be found, not whether the extracted value is right, and it has not run through the model, the checks or a sealed set.
+
+
+### D-074. RapidOCR in the whole pipeline, development sets: more values located, but not a clear win
+
+**What was run.** The `final_rapid` variant (the product's settings with `CITETALLY_OCR_ENGINE=rapidocr`, so a cleaned reading and a reading of the page as it came) on the scans and photos of `dev2` (80) and `tuned` (105), with the real model and checks. The comparison is against the earlier Tesseract `final` runs of the same documents, replayed under today's checks (`tools/evaluation/replay.py`) so that the checks are the same on both sides. Clean PDFs are not included: they are read from their text layer. Numbers are from `tools/compare_runs.py`, saved in `eval/reports/rapidocr_dev_comparison.json`. These are development sets, which the fixes were made on; the sealed sets were not touched.
+
+| 185 scans and photos | Tesseract | RapidOCR |
+|---|---|---|
+| Values located in the page words | 86.3% | 93.6% |
+| Clean documents blocked | 56.5% | 45.0% |
+| Clean documents failing `VALUE_IN_DOCUMENT` | 53.4% | 38.2% |
+| Header fields exact | 96.3% | 95.8% |
+| Money exact | 94.5% | 94.7% |
+| Line-item F1 | 87.8% | 84.6% |
+| Planted problems caught | 92.3% | 92.0% |
+| Median seconds per page | 16.7 | 16.1 |
+
+Of 133 clean documents, 19 were blocked only with Tesseract, 4 only with RapidOCR, and 55 with both. For header fields, 11 documents improved and 12 got worse; for line items, 7 improved and 18 got worse.
+
+**Where it helped and where it did not.**
+- Light scans: clean documents blocked 16.7% to 4.2%; header fields exact 99.5% to 100%.
+- Phone photos: blocked 79.1% to 65.1%; line F1 90.6% to 87.3%.
+- Heavy scans: values located 69.9% to 84.5% and blocked 80.0% to 72.5%, but header fields exact fell from 92.3% to 88.8%, line F1 from 74.5% to 68.8%, and clean heavy scans failing a blocking check other than `VALUE_IN_DOCUMENT` rose from 32.5% to 47.5%.
+- The new failures are `REQUIRED_FIELDS`: 10 of 40 clean heavy scans (1 with Tesseract) and 4 of 44 clean photos (1 with Tesseract). Across the heavy scans and photos, the documents failing `REQUIRED_FIELDS` with RapidOCR lacked the entry date (12 documents), the total (5) or the invoice number (2); in several of them the Tesseract run had returned a value, which was often not located on the page and so was blocked by `VALUE_IN_DOCUMENT` instead. Why the model returns nothing with RapidOCR's page words has not been looked into.
+
+**The read-quality warning loses its signal.** `LOW_READ_QUALITY` fired on 37 of 55 heavy scans with Tesseract and 4 of 55 with RapidOCR; on photos 27 of 64 and 21 of 64; on light scans neither. The median confidence on heavy scans was 62.4 with Tesseract and 98.8 with RapidOCR. The threshold of 75 means nothing on that scale. The check is a warning only.
+
+**Decision.** RapidOCR stays optional and Tesseract stays the default; the engine is not changed. The run supports the lab result (more values can be located, so fewer clean scans are blocked) and shows two costs: on heavy scans the model returns empty fields more often, and the read-quality warning goes quiet. The next steps are to find out why dates and totals come back empty, and to test a combination that keeps Tesseract's confidence for the warning. Any change after this run is tested on a fresh sealed set.
+
+**Why dates and totals came back empty (checked on ten of the failing documents).** The model was asked again on the same page pictures with four kinds of page text: RapidOCR's, Tesseract's, both merged, and none. With RapidOCR's text, 7 of the 10 returned a value the page does not print: a date with a full stop for the comma ("April 21. 2026", "Feb.5. 2026", "Aug 14. 2026") or a total with an S for the dollar sign ("(S540.00)"). The model copies what the text shows, as instructed, the date parser and the money parser then refuse the value, the entry is left without a date or total, and `REQUIRED_FIELDS` blocks. The value still counts as located, because grounding matches dates and amounts on their digits, so `VALUE_IN_DOCUMENT` stays quiet; this is also why the OCR trial, which uses the same lenient matching, did not show the cost. With Tesseract's text or with no text at all, the same seven came back with the printed punctuation. The remaining three differ: on one very damaged page RapidOCR read 8 words and no date, and the model returned none, while with the other three kinds of text it returned a date the page does not print (a different day and year), which grounding flags as not located; one page returned empty for every kind of text; and one total that appears once on the page was located for the subtotal only. So RapidOCR misreads small punctuation and symbols on degraded scans, and the model passes the misreading on. The picture alone reads those correctly.
+
+**What follows.** Giving the model RapidOCR's page text is the problem; using its words to locate values is the gain. A combination that keeps Tesseract's text and confidence for the model and the read-quality warning, and adds RapidOCR's words only for locating values, would keep both. That is not built; it would be a change to the reading stage, tested on the development sets and then on a fresh sealed set.
