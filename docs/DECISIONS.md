@@ -827,7 +827,7 @@ Planted problems caught overall: 59 of 72 to 65 of 72. No document got worse on 
 | Kind | Caught | Target |
 |---|---|---|
 | line math (8), total mismatch (8) | 100% | arithmetic errors pooled with tax: at least 95% |
-| tax mismatch | 40.0% (4 of 10) | the three arithmetic kinds pooled are 20 of 26 (76.9%) |
+| tax mismatch | 40.0% (6 of 15) | the three arithmetic kinds pooled are 22 of 31 (71.0%) |
 | duplicates (invoice number and content) | 15 of 16 | at least 95% |
 | amount outliers | 75.0% (6 of 8) | at least 80% |
 | instruction text (`SUSPICIOUS_TEXT`) | 7.1% (1 of 14) | reported either way |
@@ -836,7 +836,7 @@ Planted problems caught overall: 59 of 72 to 65 of 72. No document got worse on 
 | currency mismatch | 71.4% (5 of 7) | none |
 
 **What the two fixes did on unseen documents.**
-- **Tax.** The fix was developed on six documents (6 of 6 after) and caught 4 of 10 here, against 2 of 6 before on the development sets. Each of the six misses has `rate_printed: false`: the model returned no printed rate on any of them, including a clean PDF, so the check had no rate to compare and used the fallback in D-070, which passes when some subset of the lines reaches the stated tax. With four or five lines, the planted error was within reach of some subset on all six. The fix helps only when the rate is read; the weak point is the rate not being returned, which D-070 listed as a limit and which this run shows is common. The subset test is also loose with many lines.
+- **Tax.** The fix was developed on six documents (6 of 6 after) and caught 6 of 15 here, against 2 of 6 before on the development sets. In all nine misses the check had no printed rate to hold the tax against. It reads the rate from the page text, and it could not: the page prints "Levy (8.25%)" (a label it did not know), "Sales tax total 14 (8.25%)" (a stray number before the rate), "Tax (8 25%}" (the decimal point lost to the scan), "(826%)", or the tax line is not in the OCR text at all (heavy scans). With no rate, the check falls back to what D-070 allows, which passes a tax that some subset of the lines can reach, and with four or five lines nearly any tax is within reach. (This entry first read "4 of 10" and put the cause in the model not returning a rate; the saved report says 6 of 15 and the cause is the reader. Corrected in D-077.)
 - **Instruction text.** 1 of 14 caught, against 4 of 6 on the development sets. Five of the misses are clean PDFs, so OCR damage is not the cause: the widened patterns of D-070 matched the phrasings they were written from and little else. The 14 phrasings in this set were written before the fix and not seen while writing it, and that is what the result measures.
 - **Clean documents blocked.** 42.2% overall, against 42.9% and 49.0% on the two development sets. `VALUE_IN_DOCUMENT` fails 36.5% of clean documents. Without it the clean-document false alarm is 8.8% on clean PDFs, 6.0% on light scans, 28.1% on heavy scans and 13.6% on phone photos. This is the limit named in D-063 and left open in D-070.
 
@@ -947,3 +947,20 @@ Against Tesseract, of 132 clean documents, 30 were blocked only with Tesseract a
 **The hash.** The answer key is written under `data/synthetic/sealed3/` (git-ignored) and its SHA-256, `ee7d7f054a0e5f9d…` in full in `eval/golden/citetally_v4_sealed3.sha256`, is committed with this entry. The generator reproduces it (`--verify`; a test fails if it stops). The documents and the key have not been opened.
 
 **How it will be used.** Run once, with the product's own settings and one pass, after the fixes planned for this round are merged: the hybrid reading of D-075 switched on as part of what is tested, and whatever is changed for the tax and instruction-text findings of D-072, each tested first on the development sets. The runner needs `--confirm-sealed3-once` and writes a lock; nothing is tuned on the set; it is spent once read.
+
+
+### D-077. Reading the printed tax rate through label variants, small damage and every reading
+
+**Why.** On `sealed2` the tax check caught 6 of 15 planted mismatches (D-072, corrected above: that entry first said 4 of 10). The nine misses, read by hand from the saved run: the label was "Levy" (1); a count stood between the label and the rate, "Sales tax total 14 (8.25%)" (1); the scan lost the decimal point, "Tax (8 25%}" (2) and "(826%)" (1); the tax line is not in the OCR text at all (4: one heavy scan and three heavy-scan receipts). `printed_tax_rate` could not read the first four kinds, so the check had no rate to hold the tax against and fell back to the subset test, which passes almost any tax on four or five lines. The model was not the weak point.
+
+**What changed** (`citetally/checks/rules.py`, plain code with tests).
+- The label may be tax, levy, VAT or GST.
+- A number straight after the label that is followed by a bracket is a count, not the rate.
+- A space or comma where the decimal point should be ("8 25%", "8,25%") is read as the point. A rate of more than 30% is not a tax rate and is ignored. Three digits with no separator ("826%") are not guessed.
+- The page may have been read more than once. The merged text and each stored reading are searched; a text with exactly one rate gives a vote, a text with two different rates or none gives none, and the rate most texts agree on is used. A tie gives no rate. This is what lets RapidOCR's readings (D-075) read a rate Tesseract damaged.
+
+**Result.** Development sets: the hybrid runs replayed with the change, against the same runs without it (184 scans and photos). Planted problems caught and clean documents blocked are unchanged (94.0%, 33.9%). Clean documents failing `TAX_MATCH` went from 3 to 4: two are newly flagged, a phone photo whose stated tax is far above the printed 6.5% (its extraction is wrong) and a heavy scan whose rate was misread as 16.5% (a false alarm), and both were already blocked by another check; one phone photo whose rate was misread as 0.65% no longer fails. The development sets hold too few tax problems (six) to show a gain.
+
+A diagnostic, not a test, on the spent `sealed2` run, worked out after reading it: planted mismatches caught 6 to 11 of 15, clean documents failing `TAX_MATCH` 6 to 7 of 192. Four misses remain: the "(826%)" page and three receipts whose tax line is not in the OCR text. Of the seven clean failures, three have a printed rate the scan misread (5%, 6.26%, 6.25% for 8.25%), which is the known limit of holding a tax against an OCR-read rate; two have the right rate and line items the scan misread.
+
+**Not decided.** Whether the hybrid reading recovers the four remaining pages is for the `sealed3` run. A fallback to the vendor's usual rate when no rate is read was considered and not built: it would turn the business's history into a bound on documents that may legitimately differ.

@@ -741,3 +741,88 @@ def test_without_a_single_printed_rate_the_subset_test_is_not_applied() -> None:
     assert run(CheckCode.TAX_MATCH, entry=entry, lines=lines, pages=[rate_page("Tax $5.00")]).passed
     two = rate_page("Tax (7%) and state tax 5%")
     assert run(CheckCode.TAX_MATCH, entry=entry, lines=lines, pages=[two]).passed
+
+
+# --- Round 3: the printed rate, read through label variants, small damage and every reading ----
+#
+# The second sealed set's tax misses had a printed rate the check could not read: "Levy (8.25%)"
+# for a label, "Sales tax total 14 (8.25%)" for a stray count, "Tax (8 25%}" for a lost point.
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Tax 8.25%",
+        "TAX  8.25%",
+        "Sales tax (8.25%)       $42.75",
+        "Levy (8.25%) amount",
+        "VAT 8.25%",
+        "GST (8.25%)",
+        "Sales tax total 14 (8.25%)   $42.75",
+        "Tax (8 25%} -  ...",
+        "Tax :8 25%)    $37 15",
+        "Tax 8,25%",
+    ],
+)
+def test_the_printed_rate_is_read_beside_any_tax_label_and_through_small_damage(text: str) -> None:
+    assert r.printed_tax_rate([rate_page(text)]) == Decimal("0.0825")
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Tax 45%",  # no tax is that high
+        "Tax 825%",
+        "Tax 100%",
+        "Save 3% on tax",  # the percentage is not beside the label
+        "Tax ID 14",
+        "Tax (7%) and levy 5%",  # two different rates on one reading
+    ],
+)
+def test_a_percentage_that_is_not_one_plausible_tax_rate_is_not_used(text: str) -> None:
+    assert r.printed_tax_rate([rate_page(text)]) is None
+
+
+def reading(*lines: str) -> list[dict[str, Any]]:
+    """One reading of a page as stored: words laid out in rows."""
+    words: list[dict[str, Any]] = []
+    for row, line in enumerate(lines):
+        x = 0.05
+        for token in line.split():
+            words.append(
+                {"t": token, "x0": x, "y0": 0.05 + 0.04 * row, "x1": x + 0.012 * len(token),
+                 "y1": 0.07 + 0.04 * row, "c": None}
+            )  # fmt: skip
+            x += 0.012 * len(token) + 0.01
+    return words
+
+
+def read_twice(text: str, *others: list[str]) -> Page:
+    import json
+
+    return make_page(text=text, alt_words=json.dumps([reading(*lines) for lines in others]))
+
+
+def test_a_rate_that_most_readings_agree_on_is_used_over_one_that_differs() -> None:
+    page = read_twice("Sales tax (826%)", ["Sales tax (8.25%)"], ["Sales tax (8.25%)"])
+    assert r.printed_tax_rate([page]) == Decimal("0.0825")
+    odd = read_twice("Tax 8.25%", ["Tax 8.26%"], ["Tax 8.25%"])
+    assert r.printed_tax_rate([odd]) == Decimal("0.0825")
+
+
+def test_readings_that_disagree_evenly_set_no_rate() -> None:
+    page = read_twice("Tax 8.25%", ["Tax 8.26%"])
+    assert r.printed_tax_rate([page]) is None
+
+
+def test_a_reading_with_two_rates_does_not_vote() -> None:
+    page = read_twice("Tax (7%)", ["Tax (7%) and levy 5%"])
+    assert r.printed_tax_rate([page]) == Decimal("0.07")
+
+
+def test_a_tax_too_high_for_a_rate_only_another_reading_could_read_fails() -> None:
+    page = read_twice("Sales tax total (826%)  $107.29", ["Sales tax total (8.25%)  $107.29"])
+    entry = make_entry(subtotal_minor=124000, tax_total_minor=10729)
+    outcome = run(CheckCode.TAX_MATCH, entry=entry, pages=[page])
+    assert not outcome.passed and outcome.detail["printed_rate"] == "0.0825"
+    assert outcome.detail["most"] == 10230
