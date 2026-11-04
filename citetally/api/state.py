@@ -52,9 +52,11 @@ def real_services(settings: Settings) -> Services:
         if settings.ocr_engine == "rapidocr"
         else TesseractOcr(find_tesseract(settings.tesseract_cmd) or "")
     )
+    locator: OcrEngine | None = RapidOcr() if settings.ocr_locator == "rapidocr" else None
     return Services(
         settings=settings,
         ocr=ocr,
+        locator=locator,
         provider=build_provider(settings),
         extract_mode=(
             ExtractMode.TEXT_AND_IMAGE

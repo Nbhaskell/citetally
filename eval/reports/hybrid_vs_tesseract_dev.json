@@ -1,0 +1,313 @@
+{
+ "old": [
+  "dev2-cur-p1",
+  "tuned-curl-p1",
+  "tuned-curhp-p1"
+ ],
+ "new": [
+  "dev2-hy3-p1",
+  "tuned-hy3-p1"
+ ],
+ "excluded": [
+  "inv-0077"
+ ],
+ "groups": {
+  "all": {
+   "documents": 184,
+   "metrics": {
+    "header_field_exact": {
+     "old": 0.9631,
+     "new": 0.9631
+    },
+    "money_exact": {
+     "old": 0.9446,
+     "new": 0.9487
+    },
+    "line_f1": {
+     "old": 0.8768,
+     "new": 0.8948
+    },
+    "planted_recall": {
+     "old": 0.9231,
+     "new": 0.94
+    },
+    "clean_any_blocking_alarm": {
+     "old": 0.5692,
+     "new": 0.3385
+    },
+    "clean_alarm_without_value_in_document": {
+     "old": 0.1615,
+     "new": 0.1538
+    },
+    "values_found": {
+     "old": 0.8626,
+     "new": 0.9496
+    }
+   },
+   "seconds_per_page_median": {
+    "old": 16.8,
+    "new": 19.6
+   },
+   "paired": {
+    "header_better": 4,
+    "header_worse": 3,
+    "lines_better": 5,
+    "lines_worse": 1,
+    "clean": 132,
+    "blocked_only_old": 30,
+    "blocked_only_new": 0,
+    "blocked_both": 44
+   },
+   "checks_failing_on_clean_documents": {
+    "old": {
+     "DATE_SANITY": 4,
+     "LINE_MATH": 8,
+     "REQUIRED_FIELDS": 2,
+     "SUBTOTAL_MATCH": 5,
+     "TAX_MATCH": 3,
+     "TOTAL_MATCH": 9,
+     "UNKNOWN_VENDOR": 1,
+     "VALUE_IN_DOCUMENT": 71
+    },
+    "new": {
+     "DATE_SANITY": 3,
+     "LINE_MATH": 9,
+     "REQUIRED_FIELDS": 3,
+     "SUBTOTAL_MATCH": 5,
+     "TAX_MATCH": 3,
+     "TOTAL_MATCH": 9,
+     "UNKNOWN_VENDOR": 1,
+     "VALUE_IN_DOCUMENT": 42
+    }
+   },
+   "low_read_quality": {
+    "old": {
+     "fired": 64,
+     "median_confidence": 88.11500675384615
+    },
+    "new": {
+     "fired": 64,
+     "median_confidence": 88.11500675384615
+    }
+   }
+  },
+  "phone_photo": {
+   "documents": 64,
+   "metrics": {
+    "header_field_exact": {
+     "old": 0.9646,
+     "new": 0.9693
+    },
+    "money_exact": {
+     "old": 0.9195,
+     "new": 0.9425
+    },
+    "line_f1": {
+     "old": 0.9064,
+     "new": 0.9353
+    },
+    "planted_recall": {
+     "old": 0.95,
+     "new": 0.95
+    },
+    "clean_any_blocking_alarm": {
+     "old": 0.7907,
+     "new": 0.5116
+    },
+    "clean_alarm_without_value_in_document": {
+     "old": 0.1628,
+     "new": 0.1395
+    },
+    "values_found": {
+     "old": 0.8787,
+     "new": 0.9671
+    }
+   },
+   "seconds_per_page_median": {
+    "old": 16.3,
+    "new": 19.7
+   },
+   "paired": {
+    "header_better": 1,
+    "header_worse": 0,
+    "lines_better": 2,
+    "lines_worse": 0,
+    "clean": 44,
+    "blocked_only_old": 12,
+    "blocked_only_new": 0,
+    "blocked_both": 22
+   },
+   "checks_failing_on_clean_documents": {
+    "old": {
+     "DATE_SANITY": 1,
+     "REQUIRED_FIELDS": 1,
+     "SUBTOTAL_MATCH": 2,
+     "TAX_MATCH": 2,
+     "TOTAL_MATCH": 4,
+     "UNKNOWN_VENDOR": 1,
+     "VALUE_IN_DOCUMENT": 33
+    },
+    "new": {
+     "DATE_SANITY": 1,
+     "REQUIRED_FIELDS": 1,
+     "SUBTOTAL_MATCH": 1,
+     "TAX_MATCH": 2,
+     "TOTAL_MATCH": 3,
+     "UNKNOWN_VENDOR": 1,
+     "VALUE_IN_DOCUMENT": 20
+    }
+   },
+   "low_read_quality": {
+    "old": {
+     "fired": 27,
+     "median_confidence": 87.52766918627451
+    },
+    "new": {
+     "fired": 27,
+     "median_confidence": 87.52766918627451
+    }
+   }
+  },
+  "scan_heavy": {
+   "documents": 55,
+   "metrics": {
+    "header_field_exact": {
+     "old": 0.9226,
+     "new": 0.9169
+    },
+    "money_exact": {
+     "old": 0.9085,
+     "new": 0.8944
+    },
+    "line_f1": {
+     "old": 0.7453,
+     "new": 0.7702
+    },
+    "planted_recall": {
+     "old": 0.8,
+     "new": 0.8462
+    },
+    "clean_any_blocking_alarm": {
+     "old": 0.8,
+     "new": 0.525
+    },
+    "clean_alarm_without_value_in_document": {
+     "old": 0.325,
+     "new": 0.325
+    },
+    "values_found": {
+     "old": 0.6986,
+     "new": 0.8667
+    }
+   },
+   "seconds_per_page_median": {
+    "old": 17.9,
+    "new": 20.3
+   },
+   "paired": {
+    "header_better": 3,
+    "header_worse": 3,
+    "lines_better": 3,
+    "lines_worse": 1,
+    "clean": 40,
+    "blocked_only_old": 11,
+    "blocked_only_new": 0,
+    "blocked_both": 21
+   },
+   "checks_failing_on_clean_documents": {
+    "old": {
+     "DATE_SANITY": 3,
+     "LINE_MATH": 8,
+     "REQUIRED_FIELDS": 1,
+     "SUBTOTAL_MATCH": 3,
+     "TOTAL_MATCH": 5,
+     "VALUE_IN_DOCUMENT": 30
+    },
+    "new": {
+     "DATE_SANITY": 2,
+     "LINE_MATH": 9,
+     "REQUIRED_FIELDS": 2,
+     "SUBTOTAL_MATCH": 4,
+     "TOTAL_MATCH": 6,
+     "VALUE_IN_DOCUMENT": 22
+    }
+   },
+   "low_read_quality": {
+    "old": {
+     "fired": 37,
+     "median_confidence": 62.4082386746988
+    },
+    "new": {
+     "fired": 37,
+     "median_confidence": 62.4082386746988
+    }
+   }
+  },
+  "scan_light": {
+   "documents": 65,
+   "metrics": {
+    "header_field_exact": {
+     "old": 0.9952,
+     "new": 0.9952
+    },
+    "money_exact": {
+     "old": 1.0,
+     "new": 1.0
+    },
+    "line_f1": {
+     "old": 0.9611,
+     "new": 0.9611
+    },
+    "planted_recall": {
+     "old": 1.0,
+     "new": 1.0
+    },
+    "clean_any_blocking_alarm": {
+     "old": 0.1702,
+     "new": 0.0213
+    },
+    "clean_alarm_without_value_in_document": {
+     "old": 0.0213,
+     "new": 0.0213
+    },
+    "values_found": {
+     "old": 0.9833,
+     "new": 1.0
+    }
+   },
+   "seconds_per_page_median": {
+    "old": 17.3,
+    "new": 18.1
+   },
+   "paired": {
+    "header_better": 0,
+    "header_worse": 0,
+    "lines_better": 0,
+    "lines_worse": 0,
+    "clean": 48,
+    "blocked_only_old": 7,
+    "blocked_only_new": 0,
+    "blocked_both": 1
+   },
+   "checks_failing_on_clean_documents": {
+    "old": {
+     "TAX_MATCH": 1,
+     "VALUE_IN_DOCUMENT": 8
+    },
+    "new": {
+     "TAX_MATCH": 1
+    }
+   },
+   "low_read_quality": {
+    "old": {
+     "fired": 0,
+     "median_confidence": 94.86422238554216
+    },
+    "new": {
+     "fired": 0,
+     "median_confidence": 94.86422238554216
+    }
+   }
+  }
+ }
+}

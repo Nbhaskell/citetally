@@ -372,3 +372,28 @@ def test_an_order_number_label_is_left_alone_because_some_layouts_use_it_for_the
         HeaderField.INVOICE_NUMBER
         not in ground(fields(invoice_number="RO-40126"), [words]).rejected
     )
+
+
+def test_an_amount_is_counted_in_the_reading_that_printed_it_both_times() -> None:
+    primary = page("Item 2 x 70.00", "Total due $140.00")
+    other = page("Subtotal $140.00", "Total due $140.00")
+    result = ground(fields(subtotal="$140.00", total="$140.00"), [primary], alternatives=[[other]])
+    assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found
+
+
+def test_the_same_single_printing_in_two_readings_is_still_one_printing() -> None:
+    words = page("Item 2 x 70.00", "Total due $140.00")
+    result = ground(
+        fields(subtotal="$140.00", total="$140.00"),
+        [words],
+        alternatives=[[page("Item 2 x 70.00", "Total due $140.00")]],
+    )
+    assert not [v for v in result.values if v.field == HeaderField.SUBTOTAL]
+    assert one(result, HeaderField.TOTAL).found
+
+
+def test_printings_found_by_different_readings_are_all_counted() -> None:
+    first = page("Item 2 x 70.00", "Total due $140.00")
+    second = page("Subtotal $140.00", "Notes")
+    result = ground(fields(subtotal="$140.00", total="$140.00"), [first], alternatives=[[second]])
+    assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found

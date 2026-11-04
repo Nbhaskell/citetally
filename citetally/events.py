@@ -45,7 +45,9 @@ _ENUM_KEYS: dict[str, type[StrEnum]] = {
     "stage": Stage,
 }
 _CLOSED_KEYS: dict[str, frozenset[str]] = {
-    "ocr_engine": frozenset({"tesseract", "rapidocr"}),  # add an engine here when one is added
+    "ocr_engine": frozenset(
+        {"tesseract", "rapidocr", "tesseract+rapidocr"}
+    ),  # add an engine here when one is added
     "trigger": TRIGGERS,
 }
 _NUMBER_KEYS = frozenset(

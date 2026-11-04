@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     ocr_engine: Literal["tesseract", "rapidocr"] = Field(
         default="tesseract", validation_alias="CITETALLY_OCR_ENGINE"
     )
+    # A second engine whose words are used only to locate values on the page; the text the model
+    # reads and the read-quality confidence stay the first engine's (D-075).
+    ocr_locator: Literal["none", "rapidocr"] = Field(
+        default="none", validation_alias="CITETALLY_OCR_LOCATOR"
+    )
     tesseract_cmd: str = Field(default="", validation_alias="TESSERACT_CMD")
     # How many ways each scanned page is read. Tesseract: 1 the usual way; 2 adds block mode; 3 also
     # a larger copy. RapidOCR: 1 the cleaned page; 2 or 3 add a reading of the page as it came.
@@ -110,6 +115,14 @@ class Settings(BaseSettings):
     def image_mode_needs_a_vision_model(self) -> "Settings":
         if self.extract_mode == "text_and_image" and not self.vision_model:
             raise ValueError("CITETALLY_EXTRACT_MODE=text_and_image needs CITETALLY_VISION_MODEL.")
+        return self
+
+    @model_validator(mode="after")
+    def locator_helps_tesseract(self) -> "Settings":
+        if self.ocr_locator != "none" and self.ocr_engine != "tesseract":
+            raise ValueError(
+                "CITETALLY_OCR_LOCATOR adds to Tesseract: set CITETALLY_OCR_ENGINE=tesseract."
+            )
         return self
 
     @model_validator(mode="after")

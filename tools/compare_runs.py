@@ -70,11 +70,22 @@ def _low_read(records: dict[str, dict[str, Any]], ids: Sequence[str]) -> dict[st
     }
 
 
-def compare(old_names: Sequence[str], new_names: Sequence[str]) -> dict[str, Any]:
+def compare(
+    old_names: Sequence[str], new_names: Sequence[str], exclude: Sequence[str] = ()
+) -> dict[str, Any]:
     items = {i.id: i for s in SPLITS if s not in OPENS_ONCE for i in load_suite(s).items}
     old, new = _load(old_names), _load(new_names)
-    ids = [i for i in new if i in old and i in items and items[i].condition != "clean_pdf"]
-    result: dict[str, Any] = {"old": list(old_names), "new": list(new_names), "groups": {}}
+    ids = [
+        i
+        for i in new
+        if i in old and i in items and items[i].condition != "clean_pdf" and i not in exclude
+    ]
+    result: dict[str, Any] = {
+        "old": list(old_names),
+        "new": list(new_names),
+        "excluded": list(exclude),
+        "groups": {},
+    }
     for label, wanted in (
         ("all", None),
         *((c, c) for c in sorted({items[i].condition for i in ids})),
@@ -123,9 +134,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("--old", nargs="+", required=True)
     parser.add_argument("--new", nargs="+", required=True)
+    parser.add_argument("--exclude", nargs="*", default=[], help="document ids to leave out")
     parser.add_argument("--name", help="also write eval/reports/<name>.json")
     args = parser.parse_args(argv)
-    result = compare(args.old, args.new)
+    result = compare(args.old, args.new, args.exclude)
     text = json.dumps(result, indent=1)
     print(text)
     if args.name:

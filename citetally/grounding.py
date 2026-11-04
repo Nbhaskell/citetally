@@ -308,7 +308,7 @@ def ground(
         parse_rate(rate, locale) if (rate := _text(line.tax_rate)) is not None else None
         for line in fields.lines
     ]
-    settled = _settle(values, indexed, locale, currency)
+    settled = _settle(values, searched, locale, currency)
     rejected: tuple[HeaderField, ...] = ()
     if _not_an_invoice_number(settled, indexed, fields):
         rejected = (HeaderField.INVOICE_NUMBER,)
@@ -318,15 +318,32 @@ def ground(
     )
 
 
+_SAME_PLACE = 0.004  # slack around a word's box when two readings are of the same printing
+
+
 def _occurrences(pages: Sequence[_Page], wanted: Decimal, locale: str, currency: str) -> int:
-    """How many single words on the page read as exactly this amount."""
-    count = 0
+    """How many places on the page print exactly this amount, over all readings of the page.
+
+    A page may have been read more than once, and each reading can miss a printing another found.
+    The places are counted once each: a word from another reading whose centre falls inside a word
+    already counted is the same printing, not another one.
+    """
+    found: dict[int, list[Word]] = {}
     for page in pages:
+        places = found.setdefault(page.number, [])
         for position in page.order:
-            parsed = parse_money(clean_token(page.words[position].t), locale, currency)
-            if parsed is not None and parsed.value == wanted:
-                count += 1
-    return count
+            word = page.words[position]
+            parsed = parse_money(clean_token(word.t), locale, currency)
+            if parsed is None or parsed.value != wanted:
+                continue
+            x, y = (word.x0 + word.x1) / 2, (word.y0 + word.y1) / 2
+            if not any(
+                have.x0 - _SAME_PLACE <= x <= have.x1 + _SAME_PLACE
+                and have.y0 - _SAME_PLACE <= y <= have.y1 + _SAME_PLACE
+                for have in places
+            ):
+                places.append(word)
+    return sum(len(places) for places in found.values())
 
 
 def _label_left(page: _Page, value: GroundedValue) -> str:

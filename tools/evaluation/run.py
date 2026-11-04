@@ -78,6 +78,9 @@ VARIANTS: dict[str, dict[str, str]] = {
     # The product's own settings with RapidOCR in place of Tesseract (D-073). A page with a text
     # layer is read as before, so only scans and photos differ.
     "final_rapid": {"CITETALLY_OCR_ENGINE": "rapidocr"},
+    # Tesseract's text and confidence for the model and the read-quality check, with RapidOCR's
+    # words added only for locating values (D-075).
+    "final_hybrid": {"CITETALLY_OCR_LOCATOR": "rapidocr"},
     # The model thinks before it answers; the token budget and timeout are raised with it.
     "thinking": {
         "CITETALLY_ENABLE_THINKING": "true",
@@ -117,6 +120,14 @@ def _rapidocr_version() -> str:
         return "rapidocr not installed"
 
 
+def _ocr_version(settings: Settings, tesseract: str) -> str | None:
+    if settings.ocr_engine == "rapidocr":
+        return _rapidocr_version()
+    if settings.ocr_locator == "rapidocr":
+        return f"{tesseract}, with {_rapidocr_version()} locating values"
+    return None
+
+
 def provenance(
     settings: Settings, variant: str, run_id: str, split: str, golden_file: Path = GOLDEN_FILE
 ) -> dict[str, Any]:
@@ -142,7 +153,7 @@ def provenance(
         "text_layer_min_chars": settings.text_layer_min_chars,
         "ocr_engine": settings.ocr_engine,
         "tesseract": _tesseract_version(cmd) if cmd else "not found",
-        "ocr_version": _rapidocr_version() if settings.ocr_engine == "rapidocr" else None,
+        "ocr_version": _ocr_version(settings, _tesseract_version(cmd) if cmd else "not found"),
         "prompt_version": PROMPT_VERSION,
         "temperature": 0.0,
         "seed": 0,

@@ -905,3 +905,34 @@ Of 133 clean documents, 19 were blocked only with Tesseract, 4 only with RapidOC
 **Why dates and totals came back empty (checked on ten of the failing documents).** The model was asked again on the same page pictures with four kinds of page text: RapidOCR's, Tesseract's, both merged, and none. With RapidOCR's text, 7 of the 10 returned a value the page does not print: a date with a full stop for the comma ("April 21. 2026", "Feb.5. 2026", "Aug 14. 2026") or a total with an S for the dollar sign ("(S540.00)"). The model copies what the text shows, as instructed, the date parser and the money parser then refuse the value, the entry is left without a date or total, and `REQUIRED_FIELDS` blocks. The value still counts as located, because grounding matches dates and amounts on their digits, so `VALUE_IN_DOCUMENT` stays quiet; this is also why the OCR trial, which uses the same lenient matching, did not show the cost. With Tesseract's text or with no text at all, the same seven came back with the printed punctuation. The remaining three differ: on one very damaged page RapidOCR read 8 words and no date, and the model returned none, while with the other three kinds of text it returned a date the page does not print (a different day and year), which grounding flags as not located; one page returned empty for every kind of text; and one total that appears once on the page was located for the subtotal only. So RapidOCR misreads small punctuation and symbols on degraded scans, and the model passes the misreading on. The picture alone reads those correctly.
 
 **What follows.** Giving the model RapidOCR's page text is the problem; using its words to locate values is the gain. A combination that keeps Tesseract's text and confidence for the model and the read-quality warning, and adds RapidOCR's words only for locating values, would keep both. That is not built; it would be a change to the reading stage, tested on the development sets and then on a fresh sealed set.
+
+
+### D-075. RapidOCR to locate values only (`CITETALLY_OCR_LOCATOR`), development sets
+
+**What was built.** With `CITETALLY_OCR_LOCATOR=rapidocr` (default `none`; needs Tesseract as the engine and the packages in `requirements-rapidocr.txt`), each scanned page is read by Tesseract as before and also by RapidOCR (a cleaned reading and a reading of the page as it came). The text the model reads, the merged words and the confidence behind `LOW_READ_QUALITY` are Tesseract's alone. RapidOCR's readings are stored beside Tesseract's as separate readings, which grounding already searched, so they only help to locate values. If RapidOCR is missing or fails, the page is read as before. The page row and the audit event record the engine as `tesseract+rapidocr`. This follows from D-074: RapidOCR's misreadings of small punctuation reached the model as page text; here they cannot.
+
+**A grounding fix found on the way.** `_settle` drops the subtotal when it equals the total and the page prints that amount fewer times than there are claims on it. It counted printings only in the primary words. With RapidOCR's readings a value could be located in a reading the count did not look at, so one of the two claims was dropped and its amount lost (money fields missing across the 185 documents: 18 before the fix, 14 after, 13 with Tesseract). Printings are now counted once per place on the page across all readings of it (three tests added). Two documents still lose a subtotal that equals the total; that is not explained. A replay of the saved runs under the fixed code is used below.
+
+**Result.** The same 184 development scans and photos as in D-074 (`dev2` 80 and `tuned` 104; clean PDFs are read from their text layer and are not touched), with the real model and checks. Tesseract numbers are the earlier `final` runs replayed under today's checks; the hybrid is the `final_hybrid` run replayed under the grounding fix (`tools/compare_runs.py`, `eval/reports/hybrid_vs_tesseract_dev.json` and `hybrid_vs_rapidocr_dev.json`). `tuned` `inv-0077` is left out of all three: in the replay of the combined run it is the second of two byte-identical files and is set aside as a duplicate, which has nothing to do with reading.
+
+| | Tesseract | RapidOCR alone | Hybrid |
+|---|---|---|---|
+| Values located in the page words | 86.3% | 93.5% | 95.0% |
+| Clean documents blocked | 56.9% | 45.4% | 33.9% |
+| Blocked by a check other than `VALUE_IN_DOCUMENT` | 16.2% | 20.8% | 15.4% |
+| Header fields exact | 96.3% | 95.8% | 96.3% |
+| Money exact | 94.5% | 94.7% | 94.9% |
+| Line-item F1 | 87.7% | 84.5% | 89.5% |
+| Planted problems caught | 92.3% | 92.0% | 94.0% |
+| `LOW_READ_QUALITY` fired (of 184) | 64 | 25 | 64 |
+| Median seconds per page | 16.8 | 16.1 | 19.6 |
+
+Against Tesseract, of 132 clean documents, 30 were blocked only with Tesseract and none only with the hybrid. By condition, clean documents blocked: light scans 17.0% to 2.1%, phone photos 79.1% to 51.2%, heavy scans 80.0% to 52.5%. Heavy scans are still the weakest: header fields exact 91.7% (92.3% with Tesseract), 52.5% of clean documents blocked, a median of 20.3 seconds per page. `REQUIRED_FIELDS` on clean documents: 2 with Tesseract, 14 with RapidOCR alone, 3 with the hybrid. The read-quality warning fires on exactly the documents it did.
+
+**What it costs.** About 2.8 seconds more per page (RapidOCR runs alongside Tesseract's extra readings), which takes heavy scans just over the 20 seconds aimed for in the PRD. One more package set to install and its license exception (D-073).
+
+**One thing to watch.** Wrong header values that no blocking check flagged: 4 documents with the hybrid, 2 with Tesseract, none with RapidOCR alone. Two are the same in both (an invoice number with O and 0 swapped). Of the other two, one is a due date printed with a semicolon ("July 11; 2026"), a copy of the misreading that still reads as the right date, and one is a due-date year read as 2025 for 2026 on a phone photo, where `DATE_SANITY` and `LOW_READ_QUALITY` fired as warnings. That is one wrong value of substance in 184 documents; the number is too small to say more.
+
+**Limits.** Development sets, which the fixes were made on; the sealed sets were not touched. The earlier Tesseract runs were made before the later checks, and are compared under replay. One document (`inv-0100`) got different model answers in the Tesseract and hybrid runs from the same page text (all its amounts came back empty in the hybrid run), so the model's own run-to-run variation is part of every difference here; the paired counts (30 against 0 for blocking) are larger than that. A fresh sealed set is needed before anything is claimed about unseen documents.
+
+**Decision.** The hybrid stays off by default. It is the better reading on every development measure except time; turning it on by default, and what the README says about it, wait for a run on a fresh sealed set.

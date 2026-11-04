@@ -54,10 +54,12 @@ def current_status(state: AppState) -> StatusResponse:
         database_ok = False
     if state.services_injected:
         ocr = True
-    elif settings.ocr_engine == "rapidocr":
-        ocr = rapidocr_installed()
     else:
-        ocr = find_tesseract(settings.tesseract_cmd) is not None
+        ocr = (
+            rapidocr_installed()
+            if settings.ocr_engine == "rapidocr"
+            else find_tesseract(settings.tesseract_cmd) is not None
+        ) and (settings.ocr_locator == "none" or rapidocr_installed())
     return StatusResponse(
         app="citetally",
         version=__version__,
