@@ -271,7 +271,7 @@ def render(report: dict[str, Any]) -> str:
                     f"{meta['provider']} / {meta['text_model']}, temperature {meta['temperature']}, seed {meta['seed']}",
                 ],
                 ["Prompt version", meta["prompt_version"]],
-                ["OCR", f"{meta['ocr_engine']} ({meta['tesseract']})"],
+                ["OCR", f"{meta['ocr_engine']} ({meta.get('ocr_version') or meta['tesseract']})"],
                 ["Machine", meta["machine"]],
                 ["Documents", f"{first['documents']} ({split})"],
                 [
