@@ -11,7 +11,8 @@ from citetally.config import Settings
 from citetally.models import ExtractMode
 from citetally.pipeline import Services
 from citetally.providers import build_provider, build_vision_provider
-from citetally.reading.ocr import TesseractOcr, find_tesseract
+from citetally.reading.ocr import OcrEngine, TesseractOcr, find_tesseract
+from citetally.reading.rapid_ocr import RapidOcr
 from citetally.worker import Worker
 
 
@@ -44,8 +45,13 @@ class Database:
 
 
 def real_services(settings: Settings) -> Services:
-    """The Tesseract and Ollama pipeline. Built when the first document is processed."""
-    ocr = TesseractOcr(find_tesseract(settings.tesseract_cmd) or "")
+    """The OCR (Tesseract, or RapidOCR when chosen) and Ollama pipeline. Built when the first
+    document is processed."""
+    ocr: OcrEngine = (
+        RapidOcr()
+        if settings.ocr_engine == "rapidocr"
+        else TesseractOcr(find_tesseract(settings.tesseract_cmd) or "")
+    )
     return Services(
         settings=settings,
         ocr=ocr,

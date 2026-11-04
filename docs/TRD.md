@@ -42,7 +42,7 @@ Design principle carried over from `citewise-markets`: **the model reads; code d
 | Tests | pytest; Vitest for the UI | Unit tests need no model, OCR binary or network |
 | CI | GitHub Actions, tests and lint only | Same pattern as sister projects |
 
-Licensing rule: no AGPL or other copyleft dependencies, so the repository can stay MIT. Some popular PDF libraries are AGPL; do not use them. Check each new dependency's license before adding it.
+Licensing rule: no AGPL or other copyleft dependencies, so the repository can stay MIT. Some popular PDF libraries are AGPL; do not use them. Check each new dependency's license before adding it. One documented exception: the optional RapidOCR engine (D-073), whose OpenCV package bundles an LGPL FFmpeg library; it is installed separately from `requirements-rapidocr.txt`, is not in the default requirements or CI, and nothing is redistributed with the project.
 
 No LangChain or LlamaIndex. The pipeline is plain Python so every step that shapes a number is visible.
 
@@ -242,7 +242,7 @@ Errors use one shape: `{ "error": { "code": "...", "message": "...", "request_id
 
 Environment variables with defaults in `.env.example`. Settings owned by this project use the `CITETALLY_` prefix; standard tool variables keep their usual names.
 
-`CITETALLY_DB_PATH`, `CITETALLY_DATA_DIR`, `CITETALLY_PORT=8200`, `CITETALLY_MODEL_PROVIDER=ollama`, `OLLAMA_URL`, `CITETALLY_TEXT_MODEL=qwen3:8b`, `CITETALLY_VISION_MODEL` (empty means disabled), `CITETALLY_EXTRACT_MODE=text_only`, `CITETALLY_ENABLE_THINKING=false`, `CITETALLY_OCR_ENGINE=tesseract`, `TESSERACT_CMD`, `CITETALLY_MAX_FILE_MB=20`, `CITETALLY_MAX_PAGES=10`, `CITETALLY_MAX_IMAGE_PIXELS`, `CITETALLY_TEXT_LAYER_MIN_CHARS=80`, `CITETALLY_LOW_CONFIDENCE=75`, `CITETALLY_GROUNDING_MATCH_THRESHOLD=0.85`, `CITETALLY_DEFAULT_CURRENCY=USD`, `CITETALLY_LOCALE=en-US`, `CITETALLY_MATH_TOLERANCE_MINOR=1`, `CITETALLY_DUPLICATE_DATE_WINDOW_DAYS=7`, `CITETALLY_OUTLIER_MIN_HISTORY=5`, `CITETALLY_OUTLIER_RATIO=3`, `CITETALLY_MAX_AGE_DAYS=400`, `CITETALLY_ALLOW_HOSTED=false`, `CITETALLY_SYNTHETIC_DATA=true`.
+`CITETALLY_DB_PATH`, `CITETALLY_DATA_DIR`, `CITETALLY_PORT=8200`, `CITETALLY_MODEL_PROVIDER=ollama`, `OLLAMA_URL`, `CITETALLY_TEXT_MODEL=qwen3:8b`, `CITETALLY_VISION_MODEL` (empty means disabled), `CITETALLY_EXTRACT_MODE=text_only`, `CITETALLY_ENABLE_THINKING=false`, `CITETALLY_OCR_ENGINE=tesseract` (or `rapidocr`), `TESSERACT_CMD`, `CITETALLY_MAX_FILE_MB=20`, `CITETALLY_MAX_PAGES=10`, `CITETALLY_MAX_IMAGE_PIXELS`, `CITETALLY_TEXT_LAYER_MIN_CHARS=80`, `CITETALLY_LOW_CONFIDENCE=75`, `CITETALLY_GROUNDING_MATCH_THRESHOLD=0.85`, `CITETALLY_DEFAULT_CURRENCY=USD`, `CITETALLY_LOCALE=en-US`, `CITETALLY_MATH_TOLERANCE_MINOR=1`, `CITETALLY_DUPLICATE_DATE_WINDOW_DAYS=7`, `CITETALLY_OUTLIER_MIN_HISTORY=5`, `CITETALLY_OUTLIER_RATIO=3`, `CITETALLY_MAX_AGE_DAYS=400`, `CITETALLY_ALLOW_HOSTED=false`, `CITETALLY_SYNTHETIC_DATA=true`.
 
 ## 9. Security and privacy
 

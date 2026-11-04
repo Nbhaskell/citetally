@@ -129,6 +129,21 @@ _READING_PLANS: dict[int, tuple[tuple[int | None, int, int], ...]] = {
     ),
 }
 
+# A step with `low` of 0 reads the page as it came, only capped at `high` pixels on its long side.
+_AS_CAME = (None, 0, 3400)
+# RapidOCR chooses its own layout, so a page mode means nothing to it. In the same trial a cleaned
+# reading found 91% of the true values, one of the page as it came 92%, and the two together 93%
+# (Tesseract's three readings 79%): a second reading helps, a third adds nothing.
+_RAPID_READING_PLANS: dict[int, tuple[tuple[int | None, int, int], ...]] = {
+    1: ((None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE),),
+    2: ((None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE), _AS_CAME),
+    3: ((None, WORKING_MIN_LONG_SIDE, WORKING_MAX_LONG_SIDE), _AS_CAME),
+}
+
+
+def _reading_plan(engine: str, readings: int) -> tuple[tuple[int | None, int, int], ...]:
+    return (_RAPID_READING_PLANS if engine == "rapidocr" else _READING_PLANS)[readings]
+
 
 @dataclass(frozen=True)
 class _ReadJob:
@@ -173,6 +188,17 @@ def _extra_readings(
     def one(step: tuple[int | None, int, int]) -> list[Word] | None:
         mode, low, high = step
         try:
+            if low == 0:
+                scale = min(1.0, high / max(image.size))
+                kept = (
+                    image.resize(
+                        (round(image.width * scale), round(image.height * scale)),
+                        Image.Resampling.LANCZOS,
+                    )
+                    if scale < 1.0
+                    else image
+                )
+                return ocr.read_page(kept, psm=mode).words
             prepared = preprocess(image, min_long=low, max_long=high)
             return preprocess_words(prepared, ocr.read_page(prepared.image, psm=mode).words)
         except OcrError:
@@ -211,7 +237,7 @@ def _read_job(job: _ReadJob) -> _ReadResult:
             )
             continue
         try:
-            plan = _READING_PLANS[job.readings]
+            plan = _reading_plan(job.ocr.name, job.readings)
             first_pre = preprocess(image, min_long=plan[0][1], max_long=plan[0][2])
             first = job.ocr.read_page(first_pre.image, psm=plan[0][0])
             extras = _extra_readings(job.ocr, image, plan[1:])
@@ -299,8 +325,8 @@ def read_stage(conn: sqlite3.Connection, document: Document, services: Services)
     confidences = [p.mean_confidence for p in ocr_pages if p.mean_confidence is not None]
     if confidences:
         payload["mean_confidence"] = round(sum(confidences) / len(confidences), 1)
-    if ocr_pages and services.ocr.name == "tesseract":
-        payload["ocr_engine"] = "tesseract"
+    if ocr_pages and services.ocr.name in ("tesseract", "rapidocr"):
+        payload["ocr_engine"] = services.ocr.name
     return payload
 
 

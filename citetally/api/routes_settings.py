@@ -30,6 +30,7 @@ from citetally.config import Settings
 from citetally.dates import LOCALES
 from citetally.models import CheckCode
 from citetally.reading.ocr import find_tesseract
+from citetally.reading.rapid_ocr import rapidocr_installed
 from citetally.selftest import run_self_test
 
 router = APIRouter(prefix="/api", tags=["settings"])
@@ -51,7 +52,12 @@ def current_status(state: AppState) -> StatusResponse:
         database_ok = True
     except (sqlite3.Error, OSError):
         database_ok = False
-    ocr = True if state.services_injected else find_tesseract(settings.tesseract_cmd) is not None
+    if state.services_injected:
+        ocr = True
+    elif settings.ocr_engine == "rapidocr":
+        ocr = rapidocr_installed()
+    else:
+        ocr = find_tesseract(settings.tesseract_cmd) is not None
     return StatusResponse(
         app="citetally",
         version=__version__,

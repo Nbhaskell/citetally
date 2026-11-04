@@ -49,12 +49,14 @@ class Settings(BaseSettings):
         default=180, ge=10, validation_alias="CITETALLY_EXTRACT_TIMEOUT_S"
     )
 
-    ocr_engine: Literal["tesseract"] = Field(
+    # `rapidocr` is optional and installed separately (`requirements-rapidocr.txt`, D-073).
+    ocr_engine: Literal["tesseract", "rapidocr"] = Field(
         default="tesseract", validation_alias="CITETALLY_OCR_ENGINE"
     )
     tesseract_cmd: str = Field(default="", validation_alias="TESSERACT_CMD")
-    # How many ways each scanned page is read: 1 the usual way; 2 adds block mode; 3 also a larger
-    # copy. Each reading finds values the others lose; every value is still located in the words.
+    # How many ways each scanned page is read. Tesseract: 1 the usual way; 2 adds block mode; 3 also
+    # a larger copy. RapidOCR: 1 the cleaned page; 2 or 3 add a reading of the page as it came.
+    # Each reading finds values the others lose; every value is still located in the words.
     ocr_readings: int = Field(default=3, ge=1, le=3, validation_alias="CITETALLY_OCR_READINGS")
 
     max_file_mb: int = Field(default=20, ge=1, validation_alias="CITETALLY_MAX_FILE_MB")
