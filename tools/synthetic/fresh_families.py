@@ -10,6 +10,8 @@ watermarks, barcodes.
     sealed  T21 to T25  written down and hashed before any fix, run once at the end
     sealed2 T26 to T30  a third business, written down and hashed before the second round of
                         fixes, run once at the end
+    sealed3 T31 to T35  a fourth business, written down and hashed before the third round of
+                        fixes, run once at the end
 
 Nothing printed beside the document's own values is in the answer key, and every distractor carries
 a label that names what it is (customer ID, account, order ref), so a careful reader can tell it
@@ -33,7 +35,7 @@ class FreshFamily(Family):
     features: tuple[str, ...] = ()
 
 
-FRESH_SPLITS = ("dev2", "sealed", "sealed2")
+FRESH_SPLITS = ("dev2", "sealed", "sealed2", "sealed3")
 
 FRESH_FAMILIES: tuple[FreshFamily, ...] = (
     # ---- dev2 -------------------------------------------------------------------------------
@@ -312,6 +314,106 @@ FRESH_FAMILIES: tuple[FreshFamily, ...] = (
         engine="till",
         size=7.5,
         features=("card", "barcode", "scrawl"),
+    ),
+    # ---- sealed3 (fourth business, universe/facts_fernwick.json) ----------------------------
+    FreshFamily(
+        "T31",
+        "invoice with a freight line, a discount and the tax rate printed",
+        "sealed3",
+        "dense",
+        ("V01", "V02", "V03", "V10"),
+        ("invoice",),
+        Style(
+            money="us_symbol",
+            date="mdy_mon",
+            prints_tax_rate=True,
+            has_shipping=True,
+            has_discount=True,
+        ),
+        font="Helvetica",
+        header="left",
+        table="ruled",
+        accent=(0.1, 0.35, 0.2),
+        labels=_labels(number="Invoice no.", total="Total due", tax="Sales tax"),
+        engine="dense",
+        size=8.5,
+        features=("remit", "terms", "stamp"),
+    ),
+    FreshFamily(
+        "T32",
+        "credit note with the tax rate printed and amounts in brackets",
+        "sealed3",
+        "airy",
+        ("V01", "V02", "V03", "V04", "V07", "V08", "V10", "V12", "V14"),
+        ("credit_note",),
+        Style(money="us_symbol", date="long", prints_tax_rate=True, credit_style="paren"),
+        font="Times-Roman",
+        header="left",
+        table="ruled",
+        accent=(0.45, 0.15, 0.2),
+        labels=_labels(number="Credit note no.", total="Credit total", date="Date issued"),
+        engine="airy",
+        size=10.0,
+        features=("scrawl", "watermark"),
+    ),
+    FreshFamily(
+        "T33",
+        "job ticket on A4 with a banner, a call-out line and the tax rate printed",
+        "sealed3",
+        "sections",
+        ("V07", "V08", "V03", "V14"),
+        ("invoice",),
+        Style(
+            money="us_nocomma",
+            date="iso",
+            prints_tax_rate=True,
+            has_shipping=True,
+            has_discount=True,
+        ),
+        font="Helvetica",
+        page="a4",
+        header="banner",
+        table="zebra",
+        accent=(0.2, 0.3, 0.45),
+        labels=_labels(number="Ticket", total="Amount owing", date="Closed", tax="Tax"),
+        engine="sections",
+        size=9.0,
+        features=("order_dates", "terms", "stamp"),
+    ),
+    FreshFamily(
+        "T34",
+        "monthly statement with an account box and a usage chart",
+        "sealed3",
+        "bill",
+        ("V05", "V06", "V12", "V13"),
+        ("invoice",),
+        Style(money="us_symbol", date="long", prints_tax_rate=False),
+        font="Helvetica",
+        page="a4",
+        header="two_col",
+        table="ruled",
+        accent=(0.1, 0.35, 0.5),
+        labels=_labels(number="Statement no.", total="Total due now", date="Statement date"),
+        engine="bill",
+        size=9.0,
+        features=("account_box", "usage_bars", "period"),
+    ),
+    FreshFamily(
+        "T35",
+        "till slip with a card panel and the tax rate printed",
+        "sealed3",
+        "till",
+        ("V09", "V15", "V16"),
+        ("receipt",),
+        Style(money="us_plain", date="mdy_mon", prints_tax_rate=True),
+        font="Helvetica",
+        page="roll",
+        header="centered",
+        accent=(0.2, 0.2, 0.2),
+        labels=_labels(number="Receipt", total="TOTAL", tax="Tax", subtotal="Subtotal"),
+        engine="till",
+        size=7.5,
+        features=("card", "scrawl"),
     ),
 )
 

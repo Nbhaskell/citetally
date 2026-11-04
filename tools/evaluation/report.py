@@ -24,6 +24,7 @@ from tools.evaluation.run import (
     ROOT,
     RUNS,
     SEALED2_LOCK,
+    SEALED3_LOCK,
     SEALED_LOCK,
     read_records,
 )
@@ -511,6 +512,11 @@ def render(report: dict[str, Any]) -> str:
             "- The second sealed set was run once, with the product's own settings and one pass, after the second round of fixes. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
         )
 
+    if split == "sealed3":
+        out.append(
+            "- The third sealed set was run once, with the product's own settings and one pass, after the third round of fixes. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
+        )
+
     out += ["", "## Reading list", "", "Documents worth opening by hand (not a failure count):", ""]
     for name, ids in report["reading_list"].items():
         out.append(
@@ -530,7 +536,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="the setting the tables describe and the others are compared with (the sealed split has only `final`)",
     )
     args = parser.parse_args(argv)
-    lock = {"heldout": HELDOUT_LOCK, "sealed": SEALED_LOCK, "sealed2": SEALED2_LOCK}.get(args.split)
+    lock = {
+        "heldout": HELDOUT_LOCK,
+        "sealed": SEALED_LOCK,
+        "sealed2": SEALED2_LOCK,
+        "sealed3": SEALED3_LOCK,
+    }.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")
         return 2

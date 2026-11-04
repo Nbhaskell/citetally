@@ -4,9 +4,10 @@
     dev2             the second business, for developing fixes (`citetally_v2_dev2.json`)
     sealed           the second business, run once after the fixes (answer key under `data/`)
     sealed2          a third business, run once after the second round of fixes (key under `data/`)
+    sealed3          a fourth business, run once after the third round of fixes (key under `data/`)
 
-`heldout`, `sealed` and `sealed2` open only on purpose. A sealed key must also hash to the value
-committed before the fixes it tests, so a changed set cannot be run by mistake.
+`heldout`, `sealed`, `sealed2` and `sealed3` open only on purpose. A sealed key must also hash to
+the value committed before the fixes it tests, so a changed set cannot be run by mistake.
 """
 
 from __future__ import annotations
@@ -18,8 +19,8 @@ from tools.synthetic import fresh_build
 from tools.synthetic.facts import Facts, load_facts
 from tools.synthetic.golden import GOLDEN_FILE, Item, load_golden
 
-SPLITS = ("tuned", "heldout", "dev2", "sealed", "sealed2")
-OPENS_ONCE = ("heldout", "sealed", "sealed2")
+SPLITS = ("tuned", "heldout", "dev2", "sealed", "sealed2", "sealed3")
+OPENS_ONCE = ("heldout", "sealed", "sealed2", "sealed3")
 
 
 @dataclass(frozen=True)

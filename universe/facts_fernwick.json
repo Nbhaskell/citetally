@@ -1,0 +1,1235 @@
+{
+ "schema": 1,
+ "note": "SYNTHETIC TEST DATA. A fourth invented business for the evaluation, with vendors and names that appear nowhere in universe/facts.json, universe/facts_ridge.json or universe/facts_marigold.json (a few generic line descriptions, such as utility charges, fuel and a policy fee, recur). Every name, address, phone number and email is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range.",
+ "as_of": "2026-11-04",
+ "date_range": [
+  "2026-01-12",
+  "2026-11-02"
+ ],
+ "business": {
+  "name": "Fernwick Landscape & Garden Co.",
+  "kind": "landscaping and garden maintenance company",
+  "address": {
+   "street": "9 Fernwick Row",
+   "city": "Fernwick Glen",
+   "state": "OR",
+   "zip": "00718"
+  },
+  "phone": "555-0100",
+  "email": "office@example.com",
+  "default_currency": "USD",
+  "locale": "en-US",
+  "sales_tax_rate": "0.0775"
+ },
+ "categories": [
+  "SUPPLIES",
+  "FOOD",
+  "CLEANING",
+  "UTILITIES",
+  "REPAIRS",
+  "INSURANCE",
+  "SOFTWARE",
+  "PROFESSIONAL",
+  "VEHICLE",
+  "MARKETING",
+  "OTHER"
+ ],
+ "vendors": [
+  {
+   "id": "V01",
+   "name": "Bramblewood Nursery Wholesale",
+   "aliases": [
+    "Bramblewood Nursery",
+    "BRAMBLEWOOD NURSERY WHOLESALE",
+    "Bramblewood Wholesale"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "BW-",
+   "invoice_start": 40800,
+   "address": {
+    "street": "27 Seedling Road",
+    "city": "Alder Bluff",
+    "state": "OR",
+    "zip": "00761"
+   },
+   "phone": "555-0124",
+   "email": "accounts@bramblewood.example.com",
+   "items": [
+    {
+     "description": "Boxwood shrub, 3 gal",
+     "unit_price": "14.80",
+     "qty": [
+      10,
+      80
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Japanese maple, 5 gal",
+     "unit_price": "62.50",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Lavender, 1 gal",
+     "unit_price": "7.95",
+     "qty": [
+      12,
+      90
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Ornamental grass, 2 gal",
+     "unit_price": "10.40",
+     "qty": [
+      8,
+      60
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Hydrangea, 3 gal",
+     "unit_price": "19.25",
+     "qty": [
+      4,
+      36
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bulb assortment, bag of 50",
+     "unit_price": "16.00",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "name": "Quarry Hill Stone & Mulch",
+   "aliases": [
+    "Quarry Hill Stone",
+    "QUARRY HILL STONE & MULCH",
+    "Quarry Hill Mulch"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "QH-",
+   "invoice_start": 12300,
+   "address": {
+    "street": "401 Gravel Pit Road",
+    "city": "Tamarack Flats",
+    "state": "OR",
+    "zip": "00822"
+   },
+   "phone": "555-0135",
+   "email": "accounts@quarryhill.example.com",
+   "items": [
+    {
+     "description": "Bark mulch, cubic yard",
+     "unit_price": "38.00",
+     "qty": [
+      4,
+      30
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Pea gravel, ton",
+     "unit_price": "46.50",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Topsoil blend, cubic yard",
+     "unit_price": "34.00",
+     "qty": [
+      3,
+      24
+     ],
+     "taxable": true
+    },
+    {
+     "description": "River rock, ton",
+     "unit_price": "92.00",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Landscape fabric, roll",
+     "unit_price": "58.75",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "name": "Redwing Irrigation Supply",
+   "aliases": [
+    "Redwing Irrigation",
+    "REDWING IRRIGATION SUPPLY",
+    "Redwing Supply"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "RW-",
+   "invoice_start": 77600,
+   "address": {
+    "street": "18 Valve Street",
+    "city": "Whitby Cross",
+    "state": "OR",
+    "zip": "00649"
+   },
+   "phone": "555-0146",
+   "email": "accounts@redwingirrig.example.com",
+   "items": [
+    {
+     "description": "Drip emitter, bag of 25",
+     "unit_price": "8.40",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "PVC pipe 1 in, 10 ft",
+     "unit_price": "5.95",
+     "qty": [
+      6,
+      60
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Sprinkler head, rotor",
+     "unit_price": "11.20",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Valve box, 10 in",
+     "unit_price": "13.85",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Controller, 8-zone",
+     "unit_price": "148.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "PVC cement, quart",
+     "unit_price": "12.30",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "name": "Stonecrop Seed & Turf",
+   "aliases": [
+    "Stonecrop Seed",
+    "STONECROP SEED & TURF",
+    "Stonecrop Turf"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "SS-",
+   "invoice_start": 25900,
+   "address": {
+    "street": "5 Meadow Mill Lane",
+    "city": "Lorne Heights",
+    "state": "OR",
+    "zip": "00573"
+   },
+   "phone": "555-0157",
+   "email": "accounts@stonecropseed.example.com",
+   "items": [
+    {
+     "description": "Fescue blend seed, 25 lb",
+     "unit_price": "74.00",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Starter fertilizer, 50 lb",
+     "unit_price": "41.50",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Sod, pallet",
+     "unit_price": "310.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Weed control concentrate, 1 gal",
+     "unit_price": "56.20",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "name": "Harbor Light Electric",
+   "aliases": [
+    "Harbor Light",
+    "HARBOR LIGHT ELECTRIC",
+    "Harbor Light Power"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 20,
+   "credit_notes": false,
+   "invoice_prefix": "HL-",
+   "invoice_start": 630200,
+   "address": {
+    "street": "1 Pylon Drive",
+    "city": "Fernwick Glen",
+    "state": "OR",
+    "zip": "00718"
+   },
+   "phone": "555-0168",
+   "email": "accounts@harborlight.example.com",
+   "items": [
+    {
+     "description": "Electric service, kWh",
+     "unit_price": "0.1180",
+     "qty": [
+      900,
+      3400
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Customer charge, month",
+     "unit_price": "14.0000",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Demand charge, kW",
+     "unit_price": "8.7500",
+     "qty": [
+      4,
+      18
+     ],
+     "taxable": false
+    }
+   ],
+   "tax_rate": "0.03"
+  },
+  {
+   "id": "V06",
+   "name": "Millstream Water District",
+   "aliases": [
+    "Millstream Water",
+    "MILLSTREAM WATER DISTRICT",
+    "Millstream District"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 20,
+   "credit_notes": false,
+   "invoice_prefix": "MW-",
+   "invoice_start": 215400,
+   "address": {
+    "street": "40 Reservoir Way",
+    "city": "Fernwick Glen",
+    "state": "OR",
+    "zip": "00718"
+   },
+   "phone": "555-0179",
+   "email": "accounts@millstreamwater.example.com",
+   "items": [
+    {
+     "description": "Water, per 100 cubic feet",
+     "unit_price": "4.8800",
+     "qty": [
+      60,
+      380
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Sewer, per 100 cubic feet",
+     "unit_price": "5.6000",
+     "qty": [
+      60,
+      380
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Service charge, month",
+     "unit_price": "22.5000",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "name": "Tanager Equipment Rental",
+   "aliases": [
+    "Tanager Rental",
+    "TANAGER EQUIPMENT RENTAL",
+    "Tanager Equipment"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "TE-",
+   "invoice_start": 9400,
+   "address": {
+    "street": "71 Yard Road",
+    "city": "Alder Bluff",
+    "state": "OR",
+    "zip": "00761"
+   },
+   "phone": "555-0181",
+   "email": "accounts@tanagerrental.example.com",
+   "items": [
+    {
+     "description": "Skid steer rental, day",
+     "unit_price": "285.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Stump grinder rental, day",
+     "unit_price": "165.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Trencher rental, day",
+     "unit_price": "142.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Delivery fee",
+     "unit_price": "75.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fuel surcharge",
+     "unit_price": "18.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "name": "Plover & Pine Small Engine",
+   "aliases": [
+    "Plover and Pine",
+    "PLOVER & PINE SMALL ENGINE",
+    "Plover Pine"
+   ],
+   "category": "REPAIRS",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "PP-",
+   "invoice_start": 58100,
+   "address": {
+    "street": "9 Gear Lane",
+    "city": "Whitby Cross",
+    "state": "OR",
+    "zip": "00649"
+   },
+   "phone": "555-0192",
+   "email": "accounts@ploverpine.example.com",
+   "items": [
+    {
+     "description": "Mower blade sharpening",
+     "unit_price": "12.00",
+     "qty": [
+      2,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Chainsaw tune-up",
+     "unit_price": "68.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Trimmer line spool",
+     "unit_price": "9.75",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Spark plug",
+     "unit_price": "5.60",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Carburetor rebuild",
+     "unit_price": "94.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V09",
+   "name": "Cottonwood Fuel & Lube",
+   "aliases": [
+    "Cottonwood Fuel",
+    "COTTONWOOD FUEL & LUBE",
+    "Cottonwood"
+   ],
+   "category": "VEHICLE",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "CF-",
+   "invoice_start": 2000,
+   "address": {
+    "street": "Highway 14 and Dray Road",
+    "city": "Tamarack Flats",
+    "state": "OR",
+    "zip": "00822"
+   },
+   "phone": "555-0103",
+   "email": "accounts@cottonwoodfuel.example.com",
+   "items": [
+    {
+     "description": "Diesel, gallons",
+     "unit_price": "3.8990",
+     "qty": [
+      12,
+      38
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Regular unleaded, gallons",
+     "unit_price": "3.4590",
+     "qty": [
+      6,
+      20
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Two-cycle oil, quart",
+     "unit_price": "8.49",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Coffee, large",
+     "unit_price": "2.25",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V10",
+   "name": "Alder Creek Uniform Co.",
+   "aliases": [
+    "Alder Creek Uniform",
+    "ALDER CREEK UNIFORM CO",
+    "Alder Creek Uniforms"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "AC-",
+   "invoice_start": 31700,
+   "address": {
+    "street": "62 Weaver Street",
+    "city": "Lorne Heights",
+    "state": "OR",
+    "zip": "00573"
+   },
+   "phone": "555-0114",
+   "email": "accounts@aldercreekuniform.example.com",
+   "items": [
+    {
+     "description": "Work shirt, embroidered",
+     "unit_price": "27.50",
+     "qty": [
+      4,
+      24
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Safety vest, high visibility",
+     "unit_price": "14.90",
+     "qty": [
+      4,
+      20
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Work gloves, pair",
+     "unit_price": "8.25",
+     "qty": [
+      6,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Brimmed hat",
+     "unit_price": "13.00",
+     "qty": [
+      4,
+      20
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V11",
+   "name": "Granger Tree Disposal",
+   "aliases": [
+    "Granger Tree",
+    "GRANGER TREE DISPOSAL",
+    "Granger Disposal"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "GT-",
+   "invoice_start": 4800,
+   "address": {
+    "street": "130 Compost Lane",
+    "city": "Tamarack Flats",
+    "state": "OR",
+    "zip": "00822"
+   },
+   "phone": "555-0125",
+   "email": "accounts@grangertree.example.com",
+   "items": [
+    {
+     "description": "Green waste dump fee, yard",
+     "unit_price": "18.00",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Chipper service, hour",
+     "unit_price": "95.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Log haul, load",
+     "unit_price": "120.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V12",
+   "name": "Nighthawk Insurance Group",
+   "aliases": [
+    "Nighthawk Insurance",
+    "NIGHTHAWK INSURANCE GROUP",
+    "Nighthawk Group"
+   ],
+   "category": "INSURANCE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "NI-",
+   "invoice_start": 830500,
+   "address": {
+    "street": "300 Surety Plaza",
+    "city": "Fernwick Glen",
+    "state": "OR",
+    "zip": "00718"
+   },
+   "phone": "555-0136",
+   "email": "accounts@nighthawkins.example.com",
+   "items": [
+    {
+     "description": "General liability premium, month",
+     "unit_price": "286.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Commercial auto premium, month",
+     "unit_price": "372.50",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Equipment floater premium, month",
+     "unit_price": "94.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Policy fee",
+     "unit_price": "20.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V13",
+   "name": "Seedling Software Works",
+   "aliases": [
+    "Seedling Software",
+    "SEEDLING SOFTWARE WORKS",
+    "Seedling Works"
+   ],
+   "category": "SOFTWARE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": false,
+   "invoice_prefix": "SW-",
+   "invoice_start": 66000,
+   "address": {
+    "street": "2 Sync Street",
+    "city": "Whitby Cross",
+    "state": "OR",
+    "zip": "00649"
+   },
+   "phone": "555-0147",
+   "email": "accounts@seedlingsoft.example.com",
+   "items": [
+    {
+     "description": "Scheduling and invoicing, seat per month",
+     "unit_price": "45.00",
+     "qty": [
+      2,
+      9
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Route optimizer, month",
+     "unit_price": "39.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Customer text alerts, bundle of 300",
+     "unit_price": "27.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V14",
+   "name": "Dovetail Sign & Print",
+   "aliases": [
+    "Dovetail Sign",
+    "DOVETAIL SIGN & PRINT",
+    "Dovetail Print"
+   ],
+   "category": "MARKETING",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "DS-",
+   "invoice_start": 17200,
+   "address": {
+    "street": "55 Press Alley",
+    "city": "Lorne Heights",
+    "state": "OR",
+    "zip": "00573"
+   },
+   "phone": "555-0158",
+   "email": "accounts@dovetailprint.example.com",
+   "items": [
+    {
+     "description": "Truck door magnets, pair",
+     "unit_price": "58.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Business cards, box of 500",
+     "unit_price": "42.00",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Yard signs, 24x18",
+     "unit_price": "11.50",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Door hangers, 1000",
+     "unit_price": "88.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V15",
+   "name": "Waxwing Lunch Counter",
+   "aliases": [
+    "Waxwing Lunch",
+    "WAXWING LUNCH COUNTER",
+    "Waxwing"
+   ],
+   "category": "FOOD",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "WL-",
+   "invoice_start": 600,
+   "address": {
+    "street": "Market Square, stall 4",
+    "city": "Alder Bluff",
+    "state": "OR",
+    "zip": "00761"
+   },
+   "phone": "555-0169",
+   "email": "accounts@waxwinglunch.example.com",
+   "items": [
+    {
+     "description": "Sandwich, turkey",
+     "unit_price": "8.50",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Soup of the day",
+     "unit_price": "5.25",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Iced tea, large",
+     "unit_price": "2.75",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Cookie",
+     "unit_price": "1.95",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Salad bowl",
+     "unit_price": "7.95",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V16",
+   "name": "Fiddlehead Hardware",
+   "aliases": [
+    "Fiddlehead Hardware Store",
+    "FIDDLEHEAD HARDWARE",
+    "Fiddlehead"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "FH-",
+   "invoice_start": 5000,
+   "address": {
+    "street": "14 Commons Street",
+    "city": "Whitby Cross",
+    "state": "OR",
+    "zip": "00649"
+   },
+   "phone": "555-0170",
+   "email": "accounts@fiddleheadhw.example.com",
+   "items": [
+    {
+     "description": "Work gloves",
+     "unit_price": "9.99",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Hose nozzle",
+     "unit_price": "12.49",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bypass pruners",
+     "unit_price": "24.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Lawn bags, 20-pack",
+     "unit_price": "7.49",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Garden rake",
+     "unit_price": "21.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ],
+ "unlisted_vendors": [
+  {
+   "id": "X01",
+   "name": "Marlin Pavers Direct",
+   "aliases": [
+    "Marlin Pavers",
+    "MARLIN PAVERS DIRECT"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "MP-",
+   "invoice_start": 8300,
+   "address": {
+    "street": "230 Kiln Road",
+    "city": "Wexley",
+    "state": "OR",
+    "zip": "00690"
+   },
+   "phone": "555-0141",
+   "email": "accounts@marlinpavers.example.com",
+   "items": [
+    {
+     "description": "Concrete paver, pallet",
+     "unit_price": "412.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Polymeric sand, 50 lb",
+     "unit_price": "36.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Edge restraint, 8 ft",
+     "unit_price": "9.80",
+     "qty": [
+      4,
+      30
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X02",
+   "name": "Egret Pest Control",
+   "aliases": [
+    "Egret Pest",
+    "EGRET PEST CONTROL"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "EP-",
+   "invoice_start": 3900,
+   "address": {
+    "street": "6 Trap Lane",
+    "city": "Wexley",
+    "state": "OR",
+    "zip": "00690"
+   },
+   "phone": "555-0152",
+   "email": "accounts@egretpest.example.com",
+   "items": [
+    {
+     "description": "Grub treatment, per acre",
+     "unit_price": "180.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Mole control visit",
+     "unit_price": "65.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Inspection",
+     "unit_price": "45.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X03",
+   "name": "Sundial Tire Center",
+   "aliases": [
+    "Sundial Tire",
+    "SUNDIAL TIRE CENTER"
+   ],
+   "category": "VEHICLE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "ST-",
+   "invoice_start": 6700,
+   "address": {
+    "street": "88 Axle Street",
+    "city": "Wexley",
+    "state": "OR",
+    "zip": "00690"
+   },
+   "phone": "555-0163",
+   "email": "accounts@sundialtire.example.com",
+   "items": [
+    {
+     "description": "Truck tire, mounted",
+     "unit_price": "186.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Alignment",
+     "unit_price": "89.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Tire rotation",
+     "unit_price": "25.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ]
+}
