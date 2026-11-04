@@ -93,7 +93,7 @@ Other numbers, all documents: money exact 95.9%; line-item F1 91.8%; planted pro
 
 - **Reading held up.** The aim was at least 90% of header fields exact in each of the four conditions, and it was met in all four. The development results held on layouts the system had never seen.
 - **Blocking is still too common.** The aim was at most 30% of clean documents wrongly blocked, and it was **not met** (46.9%). Almost all of it is one check, a value the model returned that cannot be located in the page words (44.6% of clean documents), worst on heavy scans and phone photos, where the page words are poor. The rule that a value must be located has not been loosened. Instead, the review screen offers one deliberate "checked against the picture" confirmation for those values, recorded with the approval as the reviewer's decision.
-- **Weak spots, as they came out.** 0 of 7 planted tax mismatches were caught; why has not been looked into. 3 of 6 planted pieces of instruction-like text were caught.
+- **Weak spots, as they came out.** 0 of 7 planted tax mismatches were caught; why has not been looked into. 3 of 6 planted pieces of instruction-like text were caught. The tax misses were looked into afterwards; see the next subsection.
 
 #### The pilot (one reviewer, 34 documents)
 
@@ -104,7 +104,26 @@ Other numbers, all documents: money exact 95.9%; line-item F1 91.8%; planted pro
 
 Details, with the scoring correction made after the first look, are in D-067 and D-068 and in [`eval/reports/pilot.md`](eval/reports/pilot.md). One reviewer who knows how the system fails, invented documents, and 34 documents: read the figures as an indication.
 
-**What this cannot tell you.** The documents are invented, with layouts and noise made by one generator; real invoices are messier and handwriting is absent. Truth is known by construction. There are 17 or 18 held-out documents per condition and 13 planted problems, so read the intervals, not the second decimal. One machine, one model, one OCR engine. The held-out and sealed splits are both spent: each was opened once, and any change made after reading them needs a new sealed set. The person who built the system also wrote the test documents, so they are unseen but not blind. The full list is in each report.
+#### Held-out against sealed, and two more sealed runs
+
+The held-out figure (50.7% of header fields exact) and the first sealed figure (96.7%) are **not a before and after on the same documents**, and the gap is not generalisation improving. The held-out run measured the system as first built, on 70 documents in five layouts the system had never seen, and showed that scans and photos did not work. The fixes above were then made on the development sets, and the sealed run measured the changed system on 250 different documents with new layouts. What the pair supports is that the fixes held up on layouts they were not developed on. It does not support a claim that the system is 46 points better in general: different documents, a different invented business, and only one generator behind all of them.
+
+The same method was used twice more. Each set was written down and its answer-key hash committed before the fixes it would test, it was run once after those fixes were merged, and it was then spent. Each used a new invented business and five new layouts.
+
+| Run | Documents | Header fields exact | Money exact | Line-item F1 | Planted problems caught | Clean documents wrongly blocked |
+|---|---|---|---|---|---|---|
+| Held-out (first system) | 70 | 50.7% | 56.2% | 23.2% | 61.5% | 80.7% |
+| `sealed` | 250 | 96.7% | 95.9% | 91.8% | 84.0% | 46.9% |
+| `sealed2` | 300 | 93.1% | 91.7% | 87.6% | 73.2% | 42.2% |
+| `sealed3` | 300 | 95.5% | 95.1% | 87.1% | 83.3% | 27.6% |
+
+- **`sealed2` looked into the weak spots of the first sealed run** (0 of 7 planted tax mismatches caught, 3 of 6 pieces of instruction-like text) and was run after fixes for both. It caught 6 of 15 tax mismatches and 1 of 14 instruction texts. The causes were found afterwards: the tax check could not read a printed rate written with an unfamiliar label or a damaged decimal point, the instruction-text patterns matched little beyond the phrasings they were written from, and two layouts (the till slip and the pad) never printed the planted line, so nothing could have flagged those documents (D-072, D-078).
+- **`sealed3` was run after a third round** (D-075, D-077, D-078): the optional RapidOCR engine reads the page a second time only to locate values, the printed tax rate is read through label variants and every reading, instruction text is matched by kind of request, and the layout fault was fixed. It caught 13 of 15 tax mismatches and 10 of 14 instruction texts, found 95.2% of returned values on the page (88.4% in `sealed2`), and wrongly blocked 27.6% of clean documents, inside the 30% aim for the first time. Median 18.6 seconds per page. The 10 of 14 is generous: the detector and the test phrasings were written by the same author, and the three misses on readable pages were new wordings it did not cover.
+- **Still weak in `sealed3`.** Heavy scans: 87.0% of header fields exact, 73.0% line-item F1 and 64.9% of clean documents blocked. A value the model returned that cannot be located in the page words still fails 22.9% of clean documents, against an aim of 10% for any one check. Planted arithmetic errors flagged are below the 95% aim (line math 7 of 8, tax 13 of 15), and so are content duplicates (5 of 8). Several kinds scored lower than in `sealed2`, on 8 documents each, which is within what different documents could produce.
+
+Differences of a few points between these runs should not be read as trends: each uses different documents, and the intervals in [`eval/reports/eval_sealed2.md`](eval/reports/eval_sealed2.md) and [`eval/reports/eval_sealed3.md`](eval/reports/eval_sealed3.md) are wide. The results are in D-072 and D-079 of [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+**What this cannot tell you.** The documents are invented, with layouts and noise made by one generator; real invoices are messier and handwriting is absent. Truth is known by construction. There are 17 or 18 held-out documents per condition and 13 planted problems, so read the intervals, not the second decimal. One machine, one model, one OCR engine. The held-out split and the sealed sets are all spent: each was opened once, and any change made after reading them needs a new sealed set. The person who built the system also wrote the test documents, so they are unseen but not blind. The full list is in each report.
 
 ### Sealed means run once
 
