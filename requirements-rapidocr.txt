@@ -1,0 +1,21 @@
+# Optional: RapidOCR, a second OCR engine (CITETALLY_OCR_ENGINE=rapidocr). Not needed for the
+# default setup and not installed by CI. Install on top of the usual requirements:
+#   pip install -r requirements-dev.txt -r requirements-rapidocr.txt
+# These packages are all permissive except two weak-copyleft ones (certifi, tqdm: MPL-2.0) and the
+# LGPL FFmpeg library bundled inside opencv-python-headless. See D-073 for why that is accepted.
+certifi==2026.10.23
+colorlog==6.12.0
+flatbuffers==25.12.19
+omegaconf==2.4.0
+onnxruntime==1.31.1
+opencv-python-headless==5.0.0.93
+opentelemetry-api==1.45.2
+protobuf==7.36.2
+pyclipper==1.4.0
+PyYAML==6.0.3
+rapidocr==3.10.0
+requests==2.34.2
+shapely==2.2.0
+six==1.17.0
+tqdm==4.70.1
+urllib3==2.8.0

@@ -1,0 +1,193 @@
+{
+ "about": "RapidOCR against Tesseract on 80 development scans and photos (tuned and dev2 splits, clean PDFs excluded). The model is not involved: each value in the answer key is looked for in the OCR words with the pipeline's own grounding, and found_share is the share found. Median seconds are for the readings of one page run one after another. Run once with tools/ocr_lab.py and a RapidOCR variant added outside the repository; packages in requirements-rapidocr.txt. See D-073.",
+ "sample": 80,
+ "packages": {
+  "rapidocr": "3.10.0",
+  "onnxruntime": "1.31.1",
+  "opencv-python-headless": "5.0.0.93"
+ },
+ "variants": [
+  {
+   "variant": "current",
+   "documents": 80,
+   "found_share": 0.7077,
+   "by_group": {
+    "phone_photo/harsh": 0.3361,
+    "phone_photo/mild": 0.9008,
+    "phone_photo/phone_photo": 0.6779,
+    "phone_photo/typical": 0.6923,
+    "scan_heavy/harsh": 0.3529,
+    "scan_heavy/scan_heavy": 0.5667,
+    "scan_heavy/typical": 0.7456,
+    "scan_light/harsh": 0.9231,
+    "scan_light/scan_light": 0.8941,
+    "scan_light/typical": 0.8443
+   },
+   "by_kind": {
+    "header": 0.779,
+    "line:amount": 0.7845,
+    "line:description": 0.625,
+    "line:quantity": 0.4741,
+    "line:unit_price": 0.7802
+   },
+   "median_seconds": 2.8499999999999996,
+   "words_median": 93.5
+  },
+  {
+   "variant": "rapid",
+   "documents": 80,
+   "found_share": 0.9089,
+   "by_group": {
+    "phone_photo/harsh": 0.8145,
+    "phone_photo/mild": 0.9835,
+    "phone_photo/phone_photo": 0.8586,
+    "phone_photo/typical": 1.0,
+    "scan_heavy/harsh": 0.7059,
+    "scan_heavy/scan_heavy": 0.8176,
+    "scan_heavy/typical": 0.9912,
+    "scan_light/harsh": 1.0,
+    "scan_light/scan_light": 1.0,
+    "scan_light/typical": 0.9918
+   },
+   "by_kind": {
+    "header": 0.8969,
+    "line:amount": 0.9483,
+    "line:description": 0.8836,
+    "line:quantity": 0.9267,
+    "line:unit_price": 0.9052
+   },
+   "median_seconds": 6.75,
+   "words_median": 89.0
+  },
+  {
+   "variant": "rapid_raw",
+   "documents": 80,
+   "found_share": 0.9151,
+   "by_group": {
+    "phone_photo/harsh": 0.871,
+    "phone_photo/mild": 0.9917,
+    "phone_photo/phone_photo": 0.8923,
+    "phone_photo/typical": 1.0,
+    "scan_heavy/harsh": 0.1765,
+    "scan_heavy/scan_heavy": 0.8242,
+    "scan_heavy/typical": 0.9737,
+    "scan_light/harsh": 1.0,
+    "scan_light/scan_light": 1.0,
+    "scan_light/typical": 0.9918
+   },
+   "by_kind": {
+    "header": 0.9283,
+    "line:amount": 0.9353,
+    "line:description": 0.875,
+    "line:quantity": 0.9095,
+    "line:unit_price": 0.9095
+   },
+   "median_seconds": 3.8,
+   "words_median": 88.0
+  },
+  {
+   "variant": "rapid_big",
+   "documents": 80,
+   "found_share": 0.9103,
+   "by_group": {
+    "phone_photo/harsh": 0.8145,
+    "phone_photo/mild": 0.9917,
+    "phone_photo/phone_photo": 0.862,
+    "phone_photo/typical": 1.0,
+    "scan_heavy/harsh": 0.7647,
+    "scan_heavy/scan_heavy": 0.8207,
+    "scan_heavy/typical": 0.9825,
+    "scan_light/harsh": 1.0,
+    "scan_light/scan_light": 0.9969,
+    "scan_light/typical": 0.9918
+   },
+   "by_kind": {
+    "header": 0.8987,
+    "line:amount": 0.9483,
+    "line:description": 0.8922,
+    "line:quantity": 0.9138,
+    "line:unit_price": 0.9138
+   },
+   "median_seconds": 7.4,
+   "words_median": 89.0
+  },
+  {
+   "variant": "best:current+psm6+bigger",
+   "documents": 80,
+   "found_share": 0.7913,
+   "by_group": {
+    "phone_photo/harsh": 0.3852,
+    "phone_photo/mild": 0.9669,
+    "phone_photo/phone_photo": 0.7886,
+    "phone_photo/typical": 0.8462,
+    "scan_heavy/harsh": 0.4706,
+    "scan_heavy/scan_heavy": 0.6212,
+    "scan_heavy/typical": 0.8509,
+    "scan_light/harsh": 0.9231,
+    "scan_light/scan_light": 0.9813,
+    "scan_light/typical": 0.959
+   },
+   "by_kind": {
+    "header": 0.7993,
+    "line:amount": 0.8362,
+    "line:description": 0.6552,
+    "line:quantity": 0.8276,
+    "line:unit_price": 0.8276
+   },
+   "median_seconds": 9.0,
+   "words_median": 111.0
+  },
+  {
+   "variant": "best:current+psm6+bigger+rapid_raw",
+   "documents": 80,
+   "found_share": 0.9232,
+   "by_group": {
+    "phone_photo/harsh": 0.8871,
+    "phone_photo/mild": 0.9917,
+    "phone_photo/phone_photo": 0.8956,
+    "phone_photo/typical": 0.8462,
+    "scan_heavy/harsh": 0.5294,
+    "scan_heavy/scan_heavy": 0.8394,
+    "scan_heavy/typical": 0.9737,
+    "scan_light/harsh": 1.0,
+    "scan_light/scan_light": 1.0,
+    "scan_light/typical": 0.9918
+   },
+   "by_kind": {
+    "header": 0.9228,
+    "line:amount": 0.944,
+    "line:description": 0.8578,
+    "line:quantity": 0.9698,
+    "line:unit_price": 0.9224
+   },
+   "median_seconds": 10.9,
+   "words_median": 109.0
+  },
+  {
+   "variant": "best:rapid_raw+rapid",
+   "documents": 80,
+   "found_share": 0.9321,
+   "by_group": {
+    "phone_photo/harsh": 0.871,
+    "phone_photo/mild": 0.9835,
+    "phone_photo/phone_photo": 0.8923,
+    "phone_photo/typical": 1.0,
+    "scan_heavy/harsh": 0.7647,
+    "scan_heavy/scan_heavy": 0.8697,
+    "scan_heavy/typical": 0.9825,
+    "scan_light/harsh": 1.0,
+    "scan_light/scan_light": 1.0,
+    "scan_light/typical": 0.9918
+   },
+   "by_kind": {
+    "header": 0.9301,
+    "line:amount": 0.9526,
+    "line:description": 0.8966,
+    "line:quantity": 0.9569,
+    "line:unit_price": 0.9267
+   },
+   "median_seconds": 9.350000000000001,
+   "words_median": 89.5
+  }
+ ]
+}

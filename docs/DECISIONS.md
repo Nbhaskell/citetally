@@ -841,3 +841,35 @@ Planted problems caught overall: 59 of 72 to 65 of 72. No document got worse on 
 - **Clean documents blocked.** 42.2% overall, against 42.9% and 49.0% on the two development sets. `VALUE_IN_DOCUMENT` fails 36.5% of clean documents. Without it the clean-document false alarm is 8.8% on clean PDFs, 6.0% on light scans, 28.1% on heavy scans and 13.6% on phone photos. This is the limit named in D-063 and left open in D-070.
 
 **Not changed by this run.** Nothing in the code, the checks or the prompts. The README and the held-out comparison are updated from these numbers next. Candidate follow-ups, each to be tested on a newer sealed set: requiring a printed rate to be read before relying on the subset fallback (or flagging its use), reading per-line tax amounts, and broadening instruction-text detection by meaning rather than by phrase lists.
+
+
+### D-073. RapidOCR as an optional second OCR engine, and a documented exception to rule 10
+
+**Why.** D-041 chose Tesseract over Windows OCR and left the question open for other engines, and D-063 and D-072 show where the limit is: on heavy scans and phone photos the OCR cannot place values the picture supplies, and 36.5% of clean documents were blocked by `VALUE_IN_DOCUMENT` on `sealed2`. RapidOCR (the PP-OCR models run through ONNX Runtime) was skipped in D-041 over licensing, not accuracy. It was measured in a throwaway environment outside the repository, with `tools/ocr_lab.py` and a RapidOCR variant added from outside, on 80 development scans and photos (clean PDFs excluded, the model not involved). The measure is the share of the answer key's printed values that can be found in the OCR words with the pipeline's own grounding. Report: `eval/reports/ocr_rapidocr_lab.json`.
+
+| Reading | Values found | Heavy scans, harsh | Phone photos, harsh |
+|---|---|---|---|
+| Tesseract, the pipeline's three readings merged | 79.1% | 47% | 39% |
+| RapidOCR, page cleaned the way Tesseract's is | 90.9% | 71% | 81% |
+| RapidOCR, page as it came | 91.5% | 18% | 87% |
+| RapidOCR, the two merged | 93.2% | 76% | 87% |
+| Tesseract's three readings plus RapidOCR as it came | 92.3% | 53% | 89% |
+
+Quantities were found 83% of the time with Tesseract's three readings and 96% with RapidOCR's two; descriptions 66% and 90%. One RapidOCR reading of the page as it came (a median of 3.8 seconds) beat the three Tesseract readings. The cleaned reading stays in because the page as it came fails on the worst heavy scans.
+
+**What changed.**
+- `citetally/reading/rapid_ocr.py`: `RapidOcr`, behind `OcrEngine`, with word boxes and per-word confidence from the package. The engine is built once per process, on the first page. The packages are imported only when it is used, so nothing changes without them; without them a read fails as a missing Tesseract does (`OcrUnavailable`).
+- `CITETALLY_OCR_ENGINE` accepts `rapidocr` (default stays `tesseract`). `ocr_engine` in audit events accepts `rapidocr`. The status route reports `ocr_available` by whether the package is installed.
+- Reading plan: with RapidOCR, one reading is the cleaned page and two or three readings add the page as it came (capped at 3400 pixels on its long side). A third reading added nothing in the trial. Tesseract's plans are unchanged.
+- `requirements-rapidocr.txt`: the optional packages at exact versions. They are not in `requirements.txt` or `requirements-dev.txt`, and CI does not install them; the tests use a stub in place of the engine.
+
+**The exception to rule 10.** `opencv-python-headless`, which RapidOCR depends on, bundles an FFmpeg library; the package's own `LICENSE-3RD-PARTY.txt` says "FFmpeg is redistributed within all opencv-python packages" and includes the LGPL (2.1 and 3). The headless build does not remove it. Two other new packages, `certifi` and `tqdm`, are MPL-2.0 (file-level copyleft, the same category as `pathspec` in D-005). The models ship inside the `rapidocr` package, so no download happens at run time. The rest are MIT, BSD or Apache-2.0.
+
+The exception holds on these conditions: the engine is optional and off by default; its packages are installed separately by whoever wants them, from a file that says what is in them; the project does not redistribute them (no bundle, image or installer that contains them); and the exception is stated in `CLAUDE.md` rule 10, the PRD, the TRD and the README. Packaging the project with its dependencies would bring the LGPL notice and replaceability terms into play and needs a new decision. This is a policy decision, not legal advice.
+
+**Not decided.**
+- Whether `rapidocr` becomes the default. That needs a development run of the whole pipeline with it, then a fresh sealed set; `sealed` and `sealed2` are spent. Until then the default and every reported number stay on Tesseract.
+- **Read-quality warning.** `LOW_READ_QUALITY` compares mean OCR confidence with a threshold of 75 chosen for Tesseract. RapidOCR scores are on another scale (a mean of 99.5 on one clean photo), so the warning may fire much less often. The development run has to show how often it fires by condition before the engine is trusted to replace Tesseract; the check is a warning only, and `VALUE_IN_DOCUMENT` does not depend on confidence.
+- **Time.** Each document is read in a separate process, so the engine is loaded once per document (in the smoke test on one photo, one reading took 4.6 s including start-up, and two readings 5.3 s with the engine already loaded).
+
+**Limits of the trial.** 80 development documents; the cleaning step was tuned for Tesseract and RapidOCR was not tuned at all, which favours Tesseract if anything. The measure is whether a value can be found, not whether the extracted value is right, and it has not run through the model, the checks or a sealed set.

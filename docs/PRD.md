@@ -156,7 +156,7 @@ Priority: M = must for v1, S = should, C = could.
 - **Robustness to hostile files:** documents are untrusted input. Limits on size, pages and pixels; no execution of embedded content; parsing with timeouts.
 - **Accessibility:** keyboard path for the full review flow; evidence overlays have a non-visual equivalent; status changes announced to screen readers.
 - **Maintainability:** OCR engine, model provider and export profile each sit behind an interface so they can be swapped.
-- **Licensing:** dependencies must be compatible with an MIT-licensed project. Avoid copyleft libraries such as AGPL ones.
+- **Licensing:** dependencies must be compatible with an MIT-licensed project. Avoid copyleft libraries such as AGPL ones. The one documented exception is the optional RapidOCR engine (D-073).
 - **Testability:** every check and parser has unit tests that need no model; model behavior is measured by the evaluation, not unit tests.
 
 ## 11. Scope and phasing
