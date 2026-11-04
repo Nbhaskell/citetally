@@ -447,12 +447,17 @@ def ambiguous_format(i: CheckInput) -> Outcome:
 
 
 def suspicious_text(i: CheckInput) -> Outcome:
-    findings = scan([page.text for page in i.pages], i.thresholds.extra_phrases)
-    return Outcome(
-        CheckCode.SUSPICIOUS_TEXT,
-        not findings,
-        {"matches": [{"pattern": f.pattern, "page": f.page_number} for f in findings]},
-    )
+    """Instruction-like text in the page as merged or in any separate reading of it: a scan damaged
+    in one reading can be read cleanly in another. A match is reported once per pattern and page."""
+    matches: list[dict[str, Any]] = []
+    for number, page in enumerate(i.pages, start=1):
+        seen: set[str] = set()
+        for index, text in enumerate(_readings(page)):
+            for found in scan([text], i.thresholds.extra_phrases):
+                if index == 0 or found.pattern not in seen:  # the merged text reports everything
+                    matches.append({"pattern": found.pattern, "page": number})
+                seen.add(found.pattern)
+    return Outcome(CheckCode.SUSPICIOUS_TEXT, not matches, {"matches": matches})
 
 
 RULES: dict[CheckCode, Callable[[CheckInput], Outcome]] = {

@@ -537,6 +537,12 @@ def _till(c: Canvas, doc: Doc, fam: FreshFamily, business: list[str], rng: rando
         barcode(c, x0 + 10, y - 26, w - 40, 26, rng)
         y -= 50
     pen.text(w / 2, y, "THANK YOU - COME AGAIN", size, align="c")
+    if doc.notes:  # extra printed lines, such as a planted instruction
+        y -= size + 8
+        for note in doc.notes:
+            for line in wrap(note, fam.font, size, w - 2 * x0):
+                pen.text(x0, y, line, size)
+                y -= size + 3
     if "scrawl" in fam.features and _chance(rng, 0.5):
         scrawl(
             c,
@@ -607,6 +613,11 @@ def _pad(c: Canvas, doc: Doc, fam: FreshFamily, business: list[str], rng: random
         stamp(c, w * 0.34, y + 10, "PAID IN FULL", rng.uniform(-14, 14), 20)
     if "scrawl" in fam.features:
         scrawl(c, m, y - 70, "Rec'd by: " + rng.choice(["J. T.", "M. Ruiz", "dk"]), 14, rng)
+    notes_y = 70.0  # extra printed lines, such as a planted instruction, at the foot of the page
+    for note in doc.notes:
+        for line in wrap(note, fam.font, 8, w - 2 * m):
+            pen.text(m, notes_y, line, 8)
+            notes_y -= 10
 
 
 _ENGINES = {
@@ -628,12 +639,16 @@ def render_fresh_pdf(doc: Doc, fam: FreshFamily, business: list[str]) -> bytes:
             len(wrap(r["description"], fam.font, fam.size, _ROLL_WIDTH - 20))
             for r in doc.line_printed
         )
+        notes_lines = sum(
+            len(wrap(note, fam.font, fam.size, _ROLL_WIDTH - 20)) for note in doc.notes
+        )
         size = (
             _ROLL_WIDTH,
             250.0
             + len(doc.line_printed) * 24
             + extra * 9
-            + (60 if "barcode" in fam.features else 0),
+            + (60 if "barcode" in fam.features else 0)
+            + (notes_lines * (fam.size + 3) + fam.size + 8 if notes_lines else 0),
         )
     else:
         size = _page_size(fam)

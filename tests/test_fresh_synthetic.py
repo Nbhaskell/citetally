@@ -117,6 +117,9 @@ def test_every_clean_pdf_carries_its_printed_values_in_the_text_layer(suite: str
             for word in row["description"].split():  # a long description may wrap onto two lines
                 assert word in text, (doc.id, word)
         assert "SYNTHETIC TEST DATA" in text
+        for note in doc.notes:  # a planted instruction line must really be on the page
+            for word in note.split():
+                assert word in text, (doc.id, "note", word)
 
 
 @pytest.mark.parametrize("suite", ["dev2", "sealed", "sealed2", "sealed3"])
