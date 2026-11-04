@@ -418,6 +418,21 @@ def test_the_second_sealed_split_has_its_own_flag_and_lock(
     )
 
 
+def test_the_third_sealed_split_has_its_own_flag_and_lock(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(running, "RUNS", tmp_path)
+    monkeypatch.setattr(running, "SEALED3_LOCK", tmp_path / "SEALED3_RUN.lock")
+    assert running.main(["--split", "sealed3"]) == 2
+    assert running.main(["--split", "sealed3", "--confirm-sealed2-once"]) == 2  # the other flag
+    assert not (tmp_path / "SEALED3_RUN.lock").exists()
+    assert running.main(["--split", "sealed3", "--confirm-sealed3-once", "--limit", "3"]) == 2
+    (tmp_path / "SEALED3_RUN.lock").write_text("sealed3-final-p1", encoding="utf-8")
+    assert (
+        running.main(["--split", "sealed3", "--confirm-sealed3-once", "--variant", "thinking"]) == 2
+    )
+
+
 def test_the_new_splits_load_with_their_own_business_and_the_sealed_one_only_on_purpose() -> None:
     from tools.evaluation.suites import load_suite
 
@@ -430,6 +445,8 @@ def test_the_new_splits_load_with_their_own_business_and_the_sealed_one_only_on_
         load_suite("sealed")
     with pytest.raises(PermissionError):
         load_suite("sealed2")
+    with pytest.raises(PermissionError):
+        load_suite("sealed3")
     with pytest.raises(PermissionError):
         load_suite("heldout")
     with pytest.raises(ValueError):
