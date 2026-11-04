@@ -1,6 +1,7 @@
 """The pilot (D-062, D-067): is reviewing faster than typing, and does review let wrong values through?
 
-Run after the sealed run, on documents from the sealed set, in this order:
+Run after a sealed run, on documents from that sealed set (`--suite sealed` or `--suite sealed2`, given
+before the step name; each set has its own folder under `data/`), in this order:
 
     prepare   pick 40 sealed documents (10 per condition), copy them under neutral names, and make a
               separate database seeded the way the sealed run was (vendor list, earlier entries)
@@ -11,7 +12,8 @@ Run after the sealed run, on documents from the sealed set, in this order:
     report    medians of both, the ratio, and every approved entry whose values differ from the
               answer key, with whether it carried an override
 
-Everything lives under `data/pilot/` (git-ignored). The report is `eval/reports/pilot.md` and `.json`.
+Everything lives under `data/pilot/` (`data/pilot_sealed2/` for the second set), git-ignored. The report is
+`eval/reports/pilot.md` and `.json` (`pilot_sealed2` for the second set).
 """
 
 from __future__ import annotations
@@ -42,11 +44,20 @@ from tools.evaluation.world import seed
 from tools.synthetic.golden import Item
 
 REPO = Path(__file__).resolve().parents[1]
-PILOT = REPO / "data" / "pilot"
+SUITES = {"sealed": "pilot", "sealed2": "pilot_sealed2"}
+SUITE = "sealed"
+PILOT = REPO / "data" / SUITES[SUITE]
 REPORTS = REPO / "eval" / "reports"
 PER_CONDITION = 10
 SEED = 7
 CONDITIONS = ("clean_pdf", "scan_light", "scan_heavy", "phone_photo")
+
+
+def use_suite(suite: str) -> None:
+    """Point every step at one sealed set. Each set has its own folder, so an earlier pilot is kept."""
+    global SUITE, PILOT
+    SUITE = suite
+    PILOT = REPO / "data" / SUITES[suite]
 
 
 class _Candidate(Protocol):
@@ -214,7 +225,7 @@ def prepare(force: bool = False) -> int:
         print(f"{database} already exists, so reviews may be in it. Nothing was changed.")
         print("Use --force only to throw the pilot away and start again.")
         return 1
-    suite = load_suite("sealed", unseal=True)
+    suite = load_suite(SUITE, unseal=True)
     by_id = {i.id: i for i in suite.items}
     ids = select(suite.items)
     shutil.rmtree(PILOT, ignore_errors=True)
@@ -239,11 +250,12 @@ def prepare(force: bool = False) -> int:
     )
     print()
     print("Next, in two PowerShell windows from the repository root:")
+    folder = PILOT.relative_to(REPO)
     print(
-        "  $env:CITETALLY_DB_PATH = 'data\\pilot\\pilot.db'; .\\.venv\\Scripts\\python.exe -m citetally"
+        f"  $env:CITETALLY_DB_PATH = '{folder}\\pilot.db'; .\\.venv\\Scripts\\python.exe -m citetally"
     )
     print("  npm --prefix web run dev")
-    print("Open http://127.0.0.1:5175, upload everything in data\\pilot\\files, wait until all are")
+    print(f"Open http://127.0.0.1:5175, upload everything in {folder}\\files, wait until all are")
     print("read, then review them one at a time from the Inbox, approving, rejecting or setting")
     print(
         "aside each. Review all of them before you run the typing step, and do not open the files"
@@ -385,7 +397,7 @@ def _stored_entry(
 
 def collect() -> dict[str, Any]:
     selection = json.loads((PILOT / "selection.json").read_text(encoding="utf-8"))
-    suite = load_suite("sealed", unseal=True)
+    suite = load_suite(SUITE, unseal=True)
     by_id = {i.id: i for i in suite.items}
     golden_ids = {normalize_name(v.name): v.id for v in suite.facts.vendors}
     typed = _read_typed()
@@ -496,7 +508,7 @@ def render(s: Mapping[str, Any]) -> str:
     out = [
         "# Pilot: reviewing against typing by hand",
         "",
-        "Invented documents only, taken from the sealed set. One reviewer, the person who built the system.",
+        f"Invented documents only, taken from the {'second sealed' if SUITE == 'sealed2' else 'sealed'} set. One reviewer, the person who built the system.",
         "",
         "## Targets",
         "",
@@ -559,7 +571,8 @@ def render(s: Mapping[str, Any]) -> str:
     return "\n".join(out) + "\n"
 
 
-def report(name: str = "pilot") -> int:
+def report(name: str | None = None) -> int:
+    name = name or SUITES[SUITE]
     summary = collect()
     REPORTS.mkdir(parents=True, exist_ok=True)
     (REPORTS / f"{name}.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
@@ -570,14 +583,18 @@ def report(name: str = "pilot") -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
+    parser.add_argument(
+        "--suite", choices=sorted(SUITES), default="sealed", help="which sealed set the pilot uses"
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("prepare", help="choose the documents and make the pilot database")
     p.add_argument("--force", action="store_true", help="throw the pilot away and start again")
     t = sub.add_parser("type", help="type the approved documents by hand, timed")
     t.add_argument("--all", action="store_true", help="type every document, approved or not")
     r = sub.add_parser("report", help="medians, ratio and wrong values approved")
-    r.add_argument("--name", default="pilot")
+    r.add_argument("--name", default=None, help="report file name (default: one per set)")
     args = parser.parse_args(argv)
+    use_suite(args.suite)
     if args.command == "prepare":
         return prepare(args.force)
     if args.command == "type":

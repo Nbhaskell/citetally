@@ -213,3 +213,15 @@ def test_summary_with_nothing_done_does_not_divide_by_zero() -> None:
     s = pilot.summarise([{"pilot": "p01", "condition": "clean_pdf", "id": "x"}])
     assert s["ratio"] is None
     assert "not measured" in pilot.render(s)
+
+
+def test_each_sealed_set_has_its_own_folder_and_report() -> None:
+    first = pilot.PILOT
+    try:
+        pilot.use_suite("sealed2")
+        assert pilot.PILOT.name == "pilot_sealed2"
+        assert first != pilot.PILOT
+        pilot.use_suite("sealed")
+        assert first == pilot.PILOT
+    finally:
+        pilot.use_suite("sealed")
