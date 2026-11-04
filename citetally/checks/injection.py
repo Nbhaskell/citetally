@@ -47,6 +47,20 @@ _INVISIBLE = {"Cf", "Cc", "Mn"}  # format controls, control characters, combinin
 _GAP = r"[^.\n]{0,40}?"
 _FIGURES = r"(?:totals?|figures?|amounts?|balances?|line items?|numbers?)"
 _BEFORE = r"(?:above|before|earlier|previous|preceding|prior)"
+# The step that would catch a document, and the words that may stand between a verb and it.
+_QUALIFIERS = (
+    r"(?:(?:the|a|an|all|any|every|each|further|usual|normal|regular|standard|routine|this|these"
+    r"|those|our|your|its|their|manual|second|extra|additional|vendor|supplier|duplicate|date"
+    r"|payment|approval|verification)\s+){0,4}"
+)
+_PROCESS_STEP = (
+    r"(?:checks?|reviews?|approvals?|queue|verifications?|validations?|audits?|sign-?offs?|look"
+    r"|step|scrutiny|controls?)"
+)
+_PROCESS_NOUN = (
+    r"(?:checks?|reviews?|reviewers?|approvals?|approvers?|queue|verifications?|validations?"
+    r"|audits?|sign-?offs?|discrepanc\w+|duplicates?|scrutiny)"
+)
 PATTERNS: dict[str, re.Pattern[str]] = {
     "ignore_instructions": re.compile(
         r"\b(?:ignore|disregard|forget|override|bypass)\b"
@@ -64,8 +78,10 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         r"|\bpretend (?:to be|you are)\b"
     ),
     "addresses_assistant": re.compile(
-        r"\b(?:dear|attention|note to|message for|instructions? for|hey)\s+(?:the\s+)?"
-        r"(?:ai|assistant|model|llm|bot|chatbot|approver|auditor|automated (?:system|reviewer))\b"
+        r"\b(?:dear|attention|note to|note for|message for|message to|instructions? for|hey)\s+"
+        r"(?:the\s+)?(?:ai(?: systems?| assistants?)?|assistant|model|llm|bot|chatbot|approver"
+        r"|auditor|reviewer|automated (?:system|reviewer|tool))\b"
+        r"|\bto whoever is (?:processing|reviewing|handling|reading|approving)\b"
     ),
     "approval_directive": re.compile(
         r"\bapprove (?:this|it|the) (?:invoice|payment|entry|document|expense|receipt)\b"
@@ -74,7 +90,8 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         r"|\bthis (?:vendor|supplier|invoice|payment|document|account|entry) "
         r"(?:(?:is|was) (?:already |pre-?)|has already been (?:pre-?)?)"
         r"(?:approved|authori[sz]ed|cleared|verified)\b"
-        r"|\bmark (?:this|it|the \w+) as (?:approved|paid|reviewed|verified|valid|checked)\b"
+        r"|\bmark(?: (?:this|it|the \w+))? as (?:approved|paid|reviewed|verified|valid|checked"
+        r"|reconciled|cleared)\b"
         r"|\b(?:do not|don't|never) (?:flag|check|review|verify|question|dispute|audit)\b"
         r"|\bskip (?:(?:the|all|any|every|further|these|this|those) )*"
         r"(?:checks?|review|verification|validation)\b"
@@ -84,6 +101,46 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         r"<\s*/?\s*(?:system|assistant|instructions?|prompt)\b|\[/?(?:inst|system)\]"
         r"|\bsystem (?:message|notice|override|instruction)s?\s*:"
         r"|\bsystem prompt\b|\bbegin (?:system|instructions?)\b|#{2,}\s*(?:system|instructions?)\b"
+        # a label that presents the line as coming from a machine or a hidden channel
+        r"|\[\s*(?:automated|system|ai)\s+(?:note|message|notice)\s*\]"
+        r"|\b(?:hidden|secret|embedded|invisible)\s+(?:instruction|note|message|command|directive)s?\b"
+    ),
+    # Telling the reader to leave out the step that would catch the document: skipping, bypassing
+    # or holding back a check, a review or an approval, or doing without one.
+    "skip_review": re.compile(
+        rf"\b(?:skip|bypass|suspend|waive|omit|disable|circumvent)s?\s+{_QUALIFIERS}{_PROCESS_STEP}\b"
+        rf"|\b(?:do not|don't|never|no need to|not to)\b(?: \w+){{0,3}}? "
+        rf"(?:hold|apply|run|perform|wait|mention|report|disclose|raise|escalate|delay)\b"
+        rf"{_GAP}\b{_PROCESS_NOUN}\b"
+        rf"|\bwithout (?:asking|any|further|more|waiting|requiring|raising|needing)\b"
+        rf"{_GAP}\b(?:questions?|approval|review|checks?|verification|confirmation|sign-?off)\b"
+        rf"|\bno (?:further |more |additional |extra )?(?:checks?|reviews?|approvals?|sign-?offs?"
+        rf"|verification|validation)(?: (?:is|are))? (?:needed|required|necessary|applies|apply)\b"
+    ),
+    # Asking for figures to be taken on trust, or for the document to be passed on unexamined.
+    "accept_as_verified": re.compile(
+        r"\b(?:treat|accept|take|regard|consider|handle)\b" + _GAP + r"\bas (?:verified|audited|"
+        r"checked|cleared|correct|authori[sz]ed|printed|pre-?approved)\b"
+        r"|\b(?:release|post|send|push|export|forward)\b" + _GAP + r"\b(?:straight|directly) "
+        r"(?:to|into) (?:the )?(?:ledger|books)\b"
+    ),
+    # Asking for a value to be replaced or left out.
+    "value_control": re.compile(
+        r"\b(?:record|set|change|replace|overwrite|substitute)\b" + _GAP + r"\b(?:the )?(?:vendor "
+        r"name|vendor|payee|supplier|total|balance|amount due)\b" + _GAP + r"\b(?:as|to|with)\b"
+        r"|\bleave\b" + _GAP + r"\b(?:the )?(?:vendor(?: name)?|payee|total|balance|amount due"
+        r"|invoice number)\b" + _GAP + r"\b(?:blank|empty|unset)\b"
+    ),
+    # Handing the reader a different job, or asking it to hand over what it holds.
+    "new_task": re.compile(
+        r"\b(?:your|the) (?:new|real|actual|true) (?:task|job|goal|purpose|mission|assignment)\b"
+        r"|\bfrom now on\b" + _GAP + r"\b(?:respond|reply|answer|you|always|only|ignore)\b"
+        r"|\b(?:list|reveal|disclose|leak|send)\b"
+        + _GAP
+        + r"\b(?:every|all)\b"
+        + _GAP
+        + r"\b(?:on file|in your (?:records|database|system|memory)|you (?:know|have))\b"
+        r"|\b(?:report|label|describe|present)\b" + _GAP + r"\bas (?:clean|valid|fine|having no)\b"
     ),
     "asks_for_output": re.compile(
         r"\b(?:reveal|print|show|repeat|output)\b"
