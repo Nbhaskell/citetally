@@ -1,15 +1,18 @@
 """Build the second evaluation sets: `dev2` (develop fixes on it), `sealed` (run once, last),
-`sealed2` and `sealed3` (fresh sets for the later rounds of fixes, also run once).
+`sealed2`, `sealed3` and `sealed4` (fresh sets for the later rounds of fixes, also run
+once).
 
   python -m tools.synthetic.fresh_build --suite dev2
   python -m tools.synthetic.fresh_build --suite sealed
   python -m tools.synthetic.fresh_build --suite sealed2
   python -m tools.synthetic.fresh_build --suite sealed2 --verify    regenerate, compare the hash
   python -m tools.synthetic.fresh_build --suite sealed3
+  python -m tools.synthetic.fresh_build --suite sealed4
 
 `dev2` and `sealed` use a second invented business (`universe/facts_ridge.json`) and ten new
 layouts (`fresh_families.py`); `sealed2` uses a third (`universe/facts_marigold.json`) and five
-more layouts; `sealed3` a fourth (`universe/facts_fernwick.json`) and five more. Each condition has
+more layouts; `sealed3` a fourth (`universe/facts_fernwick.json`) and five more; `sealed4` a fifth
+(`universe/facts_cobalt.json`) and five more. Each condition has
 several levels of damage (`fresh_degrade.py`).
 
 A sealed set is made before the fixes it will test and kept out of git: its answer key is written
@@ -45,6 +48,7 @@ from tools.synthetic.fresh_render import render_fresh_pdf
 from tools.synthetic.golden import GoldenSet, Header, Item
 from tools.synthetic.injection_sealed2 import INJECTION_TEXT_SEALED2
 from tools.synthetic.injection_sealed3 import INJECTION_TEXT_SEALED3
+from tools.synthetic.injection_sealed4 import INJECTION_TEXT_SEALED4
 from tools.synthetic.planting import EXPECTED_CHECKS, PLANTED_KINDS
 from tools.synthetic.render import business_block
 
@@ -52,29 +56,48 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 FACTS_RIDGE = REPO_ROOT / "universe" / "facts_ridge.json"
 FACTS_MARIGOLD = REPO_ROOT / "universe" / "facts_marigold.json"
 FACTS_FERNWICK = REPO_ROOT / "universe" / "facts_fernwick.json"
+FACTS_COBALT = REPO_ROOT / "universe" / "facts_cobalt.json"
 FACTS_OF = {
     "dev2": FACTS_RIDGE,
     "sealed": FACTS_RIDGE,
     "sealed2": FACTS_MARIGOLD,
     "sealed3": FACTS_FERNWICK,
+    "sealed4": FACTS_COBALT,
 }
-SEALED_SUITES = ("sealed", "sealed2", "sealed3")
+SEALED_SUITES = ("sealed", "sealed2", "sealed3", "sealed4")
 DATA_ROOT = REPO_ROOT / "data" / "synthetic"
 GOLDEN_DIR = REPO_ROOT / "eval" / "golden"
 GENERATOR = "citetally-synthetic-fresh 1"
-SEEDS = {"dev2": 4417201, "sealed": 9083377, "sealed2": 6120589, "sealed3": 3856114}
-PER_FAMILY = {"dev2": 20, "sealed": 50, "sealed2": 60, "sealed3": 60}
-PREFIX = {"dev2": "d2-", "sealed": "s2-", "sealed2": "s3-", "sealed3": "s4-"}
-PLANTED_SHARE = {"dev2": 0.30, "sealed": 0.30, "sealed2": 0.36, "sealed3": 0.36}
+SEEDS = {
+    "dev2": 4417201,
+    "sealed": 9083377,
+    "sealed2": 6120589,
+    "sealed3": 3856114,
+    "sealed4": 7240915,
+}
+PER_FAMILY = {"dev2": 20, "sealed": 50, "sealed2": 60, "sealed3": 60, "sealed4": 60}
+PREFIX = {"dev2": "d2-", "sealed": "s2-", "sealed2": "s3-", "sealed3": "s4-", "sealed4": "s5-"}
+PLANTED_SHARE = {
+    "dev2": 0.30,
+    "sealed": 0.30,
+    "sealed2": 0.36,
+    "sealed3": 0.36,
+    "sealed4": 0.36,
+}
 # sealed2 deals tax and injection problems twice as often as the others: seven of each (D-066) was
 # too few to say anything about them. Every kind still has at least seven documents.
 PLANT_CYCLE = {
     "sealed2": (*PLANTED_KINDS, "tax_mismatch", "injection_text"),
     "sealed3": (*PLANTED_KINDS, "tax_mismatch", "injection_text"),
+    "sealed4": (*PLANTED_KINDS, "tax_mismatch", "injection_text"),
 }
-PLANT_PHRASES = {"sealed2": INJECTION_TEXT_SEALED2, "sealed3": INJECTION_TEXT_SEALED3}
-MIN_PER_KIND = {"dev2": 2, "sealed": 4, "sealed2": 7, "sealed3": 7}
-MIN_PER_CONDITION = {"dev2": 20, "sealed": 50, "sealed2": 60, "sealed3": 60}
+PLANT_PHRASES = {
+    "sealed2": INJECTION_TEXT_SEALED2,
+    "sealed3": INJECTION_TEXT_SEALED3,
+    "sealed4": INJECTION_TEXT_SEALED4,
+}
+MIN_PER_KIND = {"dev2": 2, "sealed": 4, "sealed2": 7, "sealed3": 7, "sealed4": 7}
+MIN_PER_CONDITION = {"dev2": 20, "sealed": 50, "sealed2": 60, "sealed3": 60, "sealed4": 60}
 # Ten combinations, so a family of 20 or 50 documents holds each equally often: clean twice.
 COMBOS: tuple[tuple[str, str], ...] = (
     ("clean_pdf", "clean"), ("clean_pdf", "clean"),
@@ -87,7 +110,7 @@ SOURCE_KIND = {"clean_pdf": "digital_pdf", "scan_light": "scanned_pdf",
 
 
 class FreshItem(Item):
-    split: Literal["dev2", "sealed", "sealed2", "sealed3"]  # type: ignore[assignment]
+    split: Literal["dev2", "sealed", "sealed2", "sealed3", "sealed4"]  # type: ignore[assignment]
     level: Literal["clean", "mild", "typical", "harsh"]
     features: list[str]
 
@@ -103,7 +126,7 @@ def golden_path(suite: str) -> Path:
 
 
 def hash_path(suite: str = "sealed") -> Path:
-    version = {"sealed2": "v3", "sealed3": "v4"}.get(suite, "v2")
+    version = {"sealed2": "v3", "sealed3": "v4", "sealed4": "v5"}.get(suite, "v2")
     return GOLDEN_DIR / f"citetally_{version}_{suite}.sha256"
 
 

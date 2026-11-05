@@ -47,6 +47,7 @@ HELDOUT_LOCK = RUNS / "HELDOUT_RUN.lock"
 SEALED_LOCK = RUNS / "SEALED_RUN.lock"
 SEALED2_LOCK = RUNS / "SEALED2_RUN.lock"
 SEALED3_LOCK = RUNS / "SEALED3_RUN.lock"
+SEALED4_LOCK = RUNS / "SEALED4_RUN.lock"
 
 # What each variant changes, as environment names. Anything not listed is the default.
 VARIANTS: dict[str, dict[str, str]] = {
@@ -399,6 +400,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="open the third sealed split. Allowed once, after the third round of fixes.",
     )
+    parser.add_argument(
+        "--confirm-sealed4-once",
+        action="store_true",
+        help="open the fourth sealed split. Allowed once, after the fourth round of fixes.",
+    )
     args = parser.parse_args(argv)
 
     opens_once = args.split in OPENS_ONCE
@@ -417,6 +423,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "sealed": SEALED_LOCK,
             "sealed2": SEALED2_LOCK,
             "sealed3": SEALED3_LOCK,
+            "sealed4": SEALED4_LOCK,
         }[args.split]
         confirmed = getattr(args, f"confirm_{args.split}_once")
         if not confirmed:

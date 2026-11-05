@@ -25,6 +25,7 @@ from tools.evaluation.run import (
     RUNS,
     SEALED2_LOCK,
     SEALED3_LOCK,
+    SEALED4_LOCK,
     SEALED_LOCK,
     read_records,
 )
@@ -517,6 +518,11 @@ def render(report: dict[str, Any]) -> str:
             "- The third sealed set was run once, with the product's own settings and one pass, after the third round of fixes. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
         )
 
+    if split == "sealed4":
+        out.append(
+            "- The fifth sealed set was run once, with the product's own settings and one pass, after the fourth round of fixes. It is now spent: any further change made after reading it would have to be tested on a new sealed set."
+        )
+
     out += ["", "## Reading list", "", "Documents worth opening by hand (not a failure count):", ""]
     for name, ids in report["reading_list"].items():
         out.append(
@@ -541,6 +547,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "sealed": SEALED_LOCK,
         "sealed2": SEALED2_LOCK,
         "sealed3": SEALED3_LOCK,
+        "sealed4": SEALED4_LOCK,
     }.get(args.split)
     if lock is not None and not lock.exists():
         print(f"The {args.split} split has not been run, so there is nothing to score.")

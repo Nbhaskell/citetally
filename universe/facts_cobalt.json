@@ -1,0 +1,1238 @@
+{
+ "schema": 1,
+ "note": "SYNTHETIC TEST DATA. A fifth invented business for the evaluation, with vendors and names that appear nowhere in universe/facts.json, universe/facts_ridge.json, universe/facts_marigold.json or universe/facts_fernwick.json (a few generic line descriptions, such as utility charges, fuel and a policy fee, recur). Every name, address, phone number and email is invented. Phones use 555-01xx, emails use example.com, ZIP codes use the unassigned 00xxx range.",
+ "as_of": "2026-11-05",
+ "date_range": [
+  "2026-01-14",
+  "2026-11-03"
+ ],
+ "business": {
+  "name": "Cobalt Bay Marine Service Co.",
+  "kind": "boat repair and marine service yard",
+  "address": {
+   "street": "6 Cobalt Bay Landing",
+   "city": "Cobalt Bay",
+   "state": "ME",
+   "zip": "00548"
+  },
+  "phone": "555-0100",
+  "email": "office@example.com",
+  "default_currency": "USD",
+  "locale": "en-US",
+  "sales_tax_rate": "0.0950"
+ },
+ "categories": [
+  "SUPPLIES",
+  "FOOD",
+  "CLEANING",
+  "UTILITIES",
+  "REPAIRS",
+  "INSURANCE",
+  "SOFTWARE",
+  "PROFESSIONAL",
+  "VEHICLE",
+  "MARKETING",
+  "OTHER"
+ ],
+ "vendors": [
+  {
+   "id": "V01",
+   "name": "Mariner's Chandlery Wholesale",
+   "aliases": [
+    "Mariner's Chandlery",
+    "Mariners Chandlery Wholesale",
+    "MARINER'S CHANDLERY WHOLESALE"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "MC-",
+   "invoice_start": 52400,
+   "address": {
+    "street": "31 Cleat Street",
+    "city": "Pelican Cove",
+    "state": "ME",
+    "zip": "00583"
+   },
+   "phone": "555-0127",
+   "email": "accounts@marinerschandlery.example.com",
+   "items": [
+    {
+     "description": "Bottom paint, 1 gal",
+     "unit_price": "148.00",
+     "qty": [
+      2,
+      14
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Anchor line 3/8 in, per ft",
+     "unit_price": "1.8500",
+     "qty": [
+      50,
+      300
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Dock cleat, 6 in",
+     "unit_price": "12.40",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bilge pump, 500 gph",
+     "unit_price": "58.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Stainless shackle, 3/8 in",
+     "unit_price": "9.25",
+     "qty": [
+      6,
+      48
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fender, 10 x 26",
+     "unit_price": "34.50",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "name": "Saltmarsh Fiberglass & Resin",
+   "aliases": [
+    "Saltmarsh Fiberglass",
+    "Saltmarsh Resin",
+    "SALTMARSH FIBERGLASS & RESIN"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "SF-",
+   "invoice_start": 9100,
+   "address": {
+    "street": "8 Gelcoat Lane",
+    "city": "Wrack Harbor",
+    "state": "ME",
+    "zip": "00592"
+   },
+   "phone": "555-0133",
+   "email": "accounts@saltmarshfiberglass.example.com",
+   "items": [
+    {
+     "description": "Polyester resin, gallon",
+     "unit_price": "62.00",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fiberglass cloth 10 oz, per yard",
+     "unit_price": "7.20",
+     "qty": [
+      10,
+      80
+     ],
+     "taxable": true
+    },
+    {
+     "description": "White gelcoat, quart",
+     "unit_price": "41.00",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Sanding discs 5 in, 25-pack",
+     "unit_price": "21.50",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Mixing cups, pack",
+     "unit_price": "6.40",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "name": "Tern Point Marine Electric Supply",
+   "aliases": [
+    "Tern Point Electric",
+    "Tern Point Marine Electric",
+    "TERN POINT MARINE ELECTRIC SUPPLY"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "TP-",
+   "invoice_start": 118300,
+   "address": {
+    "street": "402 Breakwater Road",
+    "city": "Tideline",
+    "state": "ME",
+    "zip": "00571"
+   },
+   "phone": "555-0148",
+   "email": "accounts@ternpointelectric.example.com",
+   "items": [
+    {
+     "description": "Marine wire 14 AWG, per ft",
+     "unit_price": "0.6200",
+     "qty": [
+      50,
+      400
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fuse block, 6-circuit",
+     "unit_price": "32.00",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    },
+    {
+     "description": "LED navigation light",
+     "unit_price": "44.50",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Battery switch",
+     "unit_price": "38.90",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Heat-shrink connectors, box",
+     "unit_price": "17.25",
+     "qty": [
+      2,
+      16
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Marine battery, group 27",
+     "unit_price": "169.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "name": "Kittiwake Lumber & Teak",
+   "aliases": [
+    "Kittiwake Lumber",
+    "Kittiwake Teak",
+    "KITTIWAKE LUMBER & TEAK"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "KL-",
+   "invoice_start": 33800,
+   "address": {
+    "street": "77 Mill Pond Road",
+    "city": "Gull Point",
+    "state": "ME",
+    "zip": "00566"
+   },
+   "phone": "555-0159",
+   "email": "accounts@kittiwakelumber.example.com",
+   "items": [
+    {
+     "description": "Teak plank 1 in, per board foot",
+     "unit_price": "24.00",
+     "qty": [
+      4,
+      40
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Marine plywood 3/4 in, sheet",
+     "unit_price": "96.00",
+     "qty": [
+      1,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bronze screws, box",
+     "unit_price": "18.50",
+     "qty": [
+      2,
+      20
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Epoxy sealer, quart",
+     "unit_price": "29.00",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "name": "Gannet Harbor Power Co-op",
+   "aliases": [
+    "Gannet Harbor Power",
+    "Gannet Power Co-op",
+    "GANNET HARBOR POWER CO-OP"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 20,
+   "credit_notes": false,
+   "invoice_prefix": "GP-",
+   "invoice_start": 714600,
+   "tax_rate": "0.02",
+   "address": {
+    "street": "1 Substation Way",
+    "city": "Cobalt Bay",
+    "state": "ME",
+    "zip": "00548"
+   },
+   "phone": "555-0162",
+   "email": "accounts@gannetpower.example.com",
+   "items": [
+    {
+     "description": "Electric service, kWh",
+     "unit_price": "0.1260",
+     "qty": [
+      1200,
+      4200
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Customer charge, month",
+     "unit_price": "16.0000",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Demand charge, kW",
+     "unit_price": "9.2500",
+     "qty": [
+      5,
+      20
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V06",
+   "name": "Brinehaven Water & Sewer Authority",
+   "aliases": [
+    "Brinehaven Water",
+    "Brinehaven Authority",
+    "BRINEHAVEN WATER & SEWER AUTHORITY"
+   ],
+   "category": "UTILITIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 20,
+   "credit_notes": false,
+   "invoice_prefix": "BH-",
+   "invoice_start": 302700,
+   "address": {
+    "street": "12 Reservoir Drive",
+    "city": "Cobalt Bay",
+    "state": "ME",
+    "zip": "00548"
+   },
+   "phone": "555-0171",
+   "email": "accounts@brinehavenwater.example.com",
+   "items": [
+    {
+     "description": "Water, per 100 cubic feet",
+     "unit_price": "5.1200",
+     "qty": [
+      80,
+      420
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Sewer, per 100 cubic feet",
+     "unit_price": "5.9000",
+     "qty": [
+      80,
+      420
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Service charge, month",
+     "unit_price": "24.0000",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "name": "Skerry Crane & Haul",
+   "aliases": [
+    "Skerry Crane",
+    "Skerry Haul",
+    "SKERRY CRANE & HAUL"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "SC-",
+   "invoice_start": 14200,
+   "address": {
+    "street": "55 Slipway Road",
+    "city": "Pelican Cove",
+    "state": "ME",
+    "zip": "00583"
+   },
+   "phone": "555-0183",
+   "email": "accounts@skerrycrane.example.com",
+   "items": [
+    {
+     "description": "Travel lift, hour",
+     "unit_price": "210.00",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Boat trailer haul, trip",
+     "unit_price": "135.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Crane truck, hour",
+     "unit_price": "175.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Mast stepping",
+     "unit_price": "260.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fuel surcharge",
+     "unit_price": "22.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "name": "Bosun's Outboard & Engine Works",
+   "aliases": [
+    "Bosun's Outboard",
+    "Bosuns Engine Works",
+    "BOSUN'S OUTBOARD & ENGINE WORKS"
+   ],
+   "category": "REPAIRS",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "BO-",
+   "invoice_start": 71900,
+   "address": {
+    "street": "19 Propeller Street",
+    "city": "Tideline",
+    "state": "ME",
+    "zip": "00571"
+   },
+   "phone": "555-0194",
+   "email": "accounts@bosunsoutboard.example.com",
+   "items": [
+    {
+     "description": "Impeller replacement",
+     "unit_price": "54.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Outboard tune-up",
+     "unit_price": "189.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Spark plug",
+     "unit_price": "6.80",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Fuel filter",
+     "unit_price": "15.60",
+     "qty": [
+      2,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Lower unit service",
+     "unit_price": "145.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V09",
+   "name": "Wharf Road Fuel & Ice",
+   "aliases": [
+    "Wharf Road Fuel",
+    "Wharf Rd Fuel & Ice",
+    "WHARF ROAD FUEL & ICE"
+   ],
+   "category": "VEHICLE",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "WR-",
+   "invoice_start": 3100,
+   "address": {
+    "street": "2 Wharf Road",
+    "city": "Cobalt Bay",
+    "state": "ME",
+    "zip": "00548"
+   },
+   "phone": "555-0107",
+   "email": "accounts@wharfroadfuel.example.com",
+   "items": [
+    {
+     "description": "Diesel, gallons",
+     "unit_price": "4.1990",
+     "qty": [
+      15,
+      60
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Gasoline, gallons",
+     "unit_price": "3.7990",
+     "qty": [
+      8,
+      30
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Marine oil, quart",
+     "unit_price": "9.19",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Bagged ice",
+     "unit_price": "3.25",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V10",
+   "name": "Pilot House Workwear",
+   "aliases": [
+    "Pilot House",
+    "Pilot House Work Wear",
+    "PILOT HOUSE WORKWEAR"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "PW-",
+   "invoice_start": 40500,
+   "address": {
+    "street": "64 Net Loft Row",
+    "city": "Gull Point",
+    "state": "ME",
+    "zip": "00566"
+   },
+   "phone": "555-0116",
+   "email": "accounts@pilothousework.example.com",
+   "items": [
+    {
+     "description": "Work coverall",
+     "unit_price": "38.00",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Rain jacket",
+     "unit_price": "62.00",
+     "qty": [
+      2,
+      10
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Deck boots, pair",
+     "unit_price": "54.50",
+     "qty": [
+      2,
+      12
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Knit cap",
+     "unit_price": "11.50",
+     "qty": [
+      4,
+      24
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V11",
+   "name": "Muddy Creek Waste Haulers",
+   "aliases": [
+    "Muddy Creek Waste",
+    "Muddy Creek Haulers",
+    "MUDDY CREEK WASTE HAULERS"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "MD-",
+   "invoice_start": 6200,
+   "address": {
+    "street": "90 Landfill Road",
+    "city": "Wrack Harbor",
+    "state": "ME",
+    "zip": "00592"
+   },
+   "phone": "555-0125",
+   "email": "accounts@muddycreekwaste.example.com",
+   "items": [
+    {
+     "description": "Bilge water disposal, gallon",
+     "unit_price": "0.8500",
+     "qty": [
+      60,
+      400
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Hazardous waste drum",
+     "unit_price": "85.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Dumpster haul, load",
+     "unit_price": "140.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V12",
+   "name": "Lanternfish Marine Underwriters",
+   "aliases": [
+    "Lanternfish Marine",
+    "Lanternfish Underwriters",
+    "LANTERNFISH MARINE UNDERWRITERS"
+   ],
+   "category": "INSURANCE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": true,
+   "invoice_prefix": "LM-",
+   "invoice_start": 905100,
+   "address": {
+    "street": "5 Assurance Plaza",
+    "city": "Tideline",
+    "state": "ME",
+    "zip": "00571"
+   },
+   "phone": "555-0136",
+   "email": "accounts@lanternfishmarine.example.com",
+   "items": [
+    {
+     "description": "Hull coverage premium, month",
+     "unit_price": "342.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Liability premium, month",
+     "unit_price": "128.50",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Pollution rider premium, month",
+     "unit_price": "41.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Policy fee",
+     "unit_price": "18.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V13",
+   "name": "Chartwell Yard Software",
+   "aliases": [
+    "Chartwell Software",
+    "Chartwell Yard",
+    "CHARTWELL YARD SOFTWARE"
+   ],
+   "category": "SOFTWARE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 30,
+   "credit_notes": false,
+   "invoice_prefix": "CY-",
+   "invoice_start": 88100,
+   "address": {
+    "street": "14 Dataline Court",
+    "city": "Pelican Cove",
+    "state": "ME",
+    "zip": "00583"
+   },
+   "phone": "555-0147",
+   "email": "accounts@chartwellyard.example.com",
+   "items": [
+    {
+     "description": "Yard management, seat per month",
+     "unit_price": "52.00",
+     "qty": [
+      2,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Haul-out scheduler, month",
+     "unit_price": "36.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Owner text alerts, bundle of 250",
+     "unit_price": "24.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V14",
+   "name": "Foghorn Sign & Decal",
+   "aliases": [
+    "Foghorn Sign",
+    "Foghorn Decal",
+    "FOGHORN SIGN & DECAL"
+   ],
+   "category": "MARKETING",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": true,
+   "invoice_prefix": "FS-",
+   "invoice_start": 21800,
+   "address": {
+    "street": "40 Harbor Spur",
+    "city": "Cobalt Bay",
+    "state": "ME",
+    "zip": "00548"
+   },
+   "phone": "555-0158",
+   "email": "accounts@foghornsign.example.com",
+   "items": [
+    {
+     "description": "Hull lettering set",
+     "unit_price": "64.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Business cards, box of 500",
+     "unit_price": "38.00",
+     "qty": [
+      1,
+      5
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Vinyl banner, 3 x 8 ft",
+     "unit_price": "72.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Window decals, 25-pack",
+     "unit_price": "33.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "V15",
+   "name": "Galley Door Sandwich Shop",
+   "aliases": [
+    "Galley Door",
+    "Galley Door Sandwiches",
+    "GALLEY DOOR SANDWICH SHOP"
+   ],
+   "category": "FOOD",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "GD-",
+   "invoice_start": 700,
+   "address": {
+    "street": "3 Dockside Walk",
+    "city": "Cobalt Bay",
+    "state": "ME",
+    "zip": "00548"
+   },
+   "phone": "555-0169",
+   "email": "accounts@galleydoor.example.com",
+   "items": [
+    {
+     "description": "Chowder bowl",
+     "unit_price": "7.75",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Fish sandwich",
+     "unit_price": "11.50",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Lemonade, large",
+     "unit_price": "3.25",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Brownie",
+     "unit_price": "2.95",
+     "qty": [
+      1,
+      8
+     ],
+     "taxable": false
+    },
+    {
+     "description": "Side salad",
+     "unit_price": "4.95",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": false
+    }
+   ]
+  },
+  {
+   "id": "V16",
+   "name": "Compass Rose Hardware",
+   "aliases": [
+    "Compass Rose",
+    "Compass Rose Hardware & Marine",
+    "COMPASS ROSE HARDWARE"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "receipt",
+   "terms_days": 0,
+   "credit_notes": false,
+   "invoice_prefix": "CR-",
+   "invoice_start": 6100,
+   "address": {
+    "street": "26 Anchor Street",
+    "city": "Tideline",
+    "state": "ME",
+    "zip": "00571"
+   },
+   "phone": "555-0170",
+   "email": "accounts@compassrose.example.com",
+   "items": [
+    {
+     "description": "Rope 3/8 in, 50 ft",
+     "unit_price": "19.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Boat hook",
+     "unit_price": "24.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Hose clamps, 8-pack",
+     "unit_price": "8.49",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Duct tape, roll",
+     "unit_price": "6.49",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Deck brush",
+     "unit_price": "14.99",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ],
+ "unlisted_vendors": [
+  {
+   "id": "X01",
+   "name": "Piersgate Dock Builders",
+   "aliases": [
+    "Piersgate Docks",
+    "PIERSGATE DOCK BUILDERS",
+    "PIERSGATE DOCK BUILDERS"
+   ],
+   "category": "SUPPLIES",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "PD-",
+   "invoice_start": 9700,
+   "address": {
+    "street": "210 Piling Road",
+    "city": "Gull Point",
+    "state": "ME",
+    "zip": "00566"
+   },
+   "phone": "555-0181",
+   "email": "accounts@piersgatedocks.example.com",
+   "items": [
+    {
+     "description": "Dock section, 8 ft",
+     "unit_price": "385.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Piling cap",
+     "unit_price": "14.50",
+     "qty": [
+      4,
+      24
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Galvanized bolt kit",
+     "unit_price": "27.00",
+     "qty": [
+      1,
+      6
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X02",
+   "name": "Seabright Rodent & Pest Control",
+   "aliases": [
+    "Seabright Pest",
+    "SEABRIGHT RODENT & PEST CONTROL",
+    "SEABRIGHT RODENT & PEST CONTROL"
+   ],
+   "category": "OTHER",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "SR-",
+   "invoice_start": 4400,
+   "address": {
+    "street": "8 Trap Lane",
+    "city": "Wrack Harbor",
+    "state": "ME",
+    "zip": "00592"
+   },
+   "phone": "555-0192",
+   "email": "accounts@seabrightpest.example.com",
+   "items": [
+    {
+     "description": "Boatyard bait station service",
+     "unit_price": "75.00",
+     "qty": [
+      1,
+      3
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Rodent exclusion, hour",
+     "unit_price": "58.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Inspection",
+     "unit_price": "45.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  },
+  {
+   "id": "X03",
+   "name": "Pennant Trailer & Tire",
+   "aliases": [
+    "Pennant Tire",
+    "PENNANT TRAILER & TIRE",
+    "PENNANT TRAILER & TIRE"
+   ],
+   "category": "VEHICLE",
+   "currency": "USD",
+   "entry_type": "invoice",
+   "terms_days": 14,
+   "credit_notes": false,
+   "invoice_prefix": "PT-",
+   "invoice_start": 7300,
+   "address": {
+    "street": "118 Axle Road",
+    "city": "Tideline",
+    "state": "ME",
+    "zip": "00571"
+   },
+   "phone": "555-0103",
+   "email": "accounts@pennanttire.example.com",
+   "items": [
+    {
+     "description": "Trailer tire, mounted",
+     "unit_price": "142.00",
+     "qty": [
+      1,
+      4
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Wheel bearing repack",
+     "unit_price": "68.00",
+     "qty": [
+      1,
+      2
+     ],
+     "taxable": true
+    },
+    {
+     "description": "Tire rotation",
+     "unit_price": "25.00",
+     "qty": [
+      1,
+      1
+     ],
+     "taxable": true
+    }
+   ]
+  }
+ ]
+}
