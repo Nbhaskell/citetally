@@ -18,7 +18,7 @@ import ChecksPanel, { type Pending } from "../review/ChecksPanel";
 import { ReviewContext, type ReviewApi } from "../review/context";
 import DuplicateDialog from "../review/DuplicateDialog";
 import EntryForm from "../review/EntryForm";
-import { linesWithoutQuantity } from "../review/emptyQuantity";
+import { linesWithNoNumbers, linesWithoutQuantity } from "../review/emptyQuantity";
 import { evidenceKey, inputId, type FieldKey } from "../review/fields";
 import PagePane from "../review/PagePane";
 import PictureCheckDialog from "../review/PictureCheckDialog";
@@ -37,7 +37,7 @@ import { useToast } from "../ui/Toast";
 type Dialog =
   | { kind: "vendor" | "reject" | "duplicate" | "reprocess" | "history" | "help" }
   | { kind: "override" | "picture"; check: CheckOut }
-  | { kind: "quantity"; lines: EntryLine[] }
+  | { kind: "quantity"; lines: EntryLine[]; bare: EntryLine[] }
   | null;
 
 type Saved = { kind: "idle" } | { kind: "saving" } | { kind: "saved"; note: string } | { kind: "error"; message: string };
@@ -179,7 +179,8 @@ export default function Review({ id }: { id: number }) {
   /** Approve, but first ask about lines with no quantity: nothing else flags them. */
   const requestApprove = () => {
     const empty = entry ? linesWithoutQuantity(entry.lines) : [];
-    if (empty.length > 0) setDialog({ kind: "quantity", lines: empty });
+    const bare = entry ? linesWithNoNumbers(entry.lines) : [];
+    if (empty.length > 0 || bare.length > 0) setDialog({ kind: "quantity", lines: empty, bare });
     else void approve();
   };
 
@@ -432,6 +433,7 @@ export default function Review({ id }: { id: number }) {
       {dialog?.kind === "quantity" && (
         <QuantityGateDialog
           lines={dialog.lines}
+          bare={dialog.bare}
           onBack={() => setDialog(null)}
           onApprove={() => {
             setDialog(null);

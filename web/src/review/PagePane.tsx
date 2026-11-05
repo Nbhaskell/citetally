@@ -6,6 +6,25 @@ import { evidenceKey, labelFor, type FieldKey } from "./fields";
 
 type Zoom = "fit" | "actual" | number;
 
+const BOX_KEY = "citetally.page-boxes";
+
+/** Whether to draw a box over every located value. A remembered preference; shown by default. */
+function readBoxPreference(): boolean {
+  try {
+    return window.localStorage.getItem(BOX_KEY) !== "hidden";
+  } catch {
+    return true;
+  }
+}
+
+function writeBoxPreference(shown: boolean): void {
+  try {
+    window.localStorage.setItem(BOX_KEY, shown ? "shown" : "hidden");
+  } catch {
+    /* the preference is a convenience; the page works without it */
+  }
+}
+
 /**
  * The page, with a box over each value that was found on it. Click a box to go to its field.
  * Everything the boxes show is also a list underneath, so nobody depends on the picture.
@@ -25,6 +44,7 @@ export default function PagePane({
 }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [zoom, setZoom] = useState<Zoom>("fit");
+  const [showBoxes, setShowBoxes] = useState<boolean>(readBoxPreference);
   const [seen, setSeen] = useState<FieldKey | null>(null);
   const sheet = useRef<HTMLDivElement>(null);
 
@@ -52,6 +72,8 @@ export default function PagePane({
   const onThisPage = evidence.filter(
     (e) => e.found && e.x0 !== null && e.page_number === page?.page_number,
   );
+  // With the boxes hidden, the one value being pointed at is still outlined.
+  const drawn = showBoxes ? onThisPage : onThisPage.filter((e) => evidenceKey(e) === activeKey);
 
   if (!page) {
     return (
@@ -105,6 +127,17 @@ export default function PagePane({
         <button type="button" className="button button-small" aria-label="Zoom in" onClick={() => step(0.25)}>
           +
         </button>
+        <button
+          type="button"
+          className="button button-small"
+          aria-pressed={showBoxes}
+          onClick={() => {
+            setShowBoxes(!showBoxes);
+            writeBoxPreference(!showBoxes);
+          }}
+        >
+          {showBoxes ? "Hide boxes" : "Show boxes"}
+        </button>
       </div>
 
       <div className="page-scroll" tabIndex={0} role="region" aria-label="Page picture, scrollable">
@@ -116,7 +149,7 @@ export default function PagePane({
             height={page.height_px}
           />
           <div className="boxes" aria-hidden="true">
-            {onThisPage.map((e) => {
+            {drawn.map((e) => {
               const key = evidenceKey(e);
               return (
                 <div
