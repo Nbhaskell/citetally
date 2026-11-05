@@ -29,6 +29,7 @@ from tools.synthetic.render import business_block
 FACTS = load_facts(fb.FACTS_RIDGE)
 FACTS_MARIGOLD = load_facts(fb.FACTS_MARIGOLD)
 FACTS_FERNWICK = load_facts(fb.FACTS_FERNWICK)
+FACTS_COBALT = load_facts(fb.FACTS_COBALT)
 SQUASH = re.compile(r"\s+")
 
 
@@ -83,10 +84,29 @@ def test_the_fourth_business_is_invented_labelled_and_shares_no_vendor() -> None
     assert not earlier & {v.name for v in vendors}
 
 
-def test_twenty_layouts_five_per_set_and_all_use_listed_vendors() -> None:
-    assert [f.id for f in FRESH_FAMILIES] == [f"T{n}" for n in range(16, 36)]
+def test_the_fifth_business_is_invented_labelled_and_shares_no_vendor() -> None:
+    assert "SYNTHETIC TEST DATA" in FACTS_COBALT.note
+    vendors = [*FACTS_COBALT.vendors, *FACTS_COBALT.unlisted_vendors]
+    assert len({v.id for v in vendors}) == len(vendors) == 19
+    for vendor in vendors:
+        assert re.fullmatch(r"555-01\d\d", vendor.phone), vendor.phone
+        assert vendor.email == "" or vendor.email.endswith(".example.com"), vendor.email
+        assert vendor.address.zip.startswith("00"), vendor.address.zip
+        assert vendor.category in FACTS_COBALT.categories
+    assert FACTS_COBALT.business.email.endswith("@example.com")
+    earlier = {
+        v.name
+        for f in (load_facts(), FACTS, FACTS_MARIGOLD, FACTS_FERNWICK)
+        for v in [*f.vendors, *f.unlisted_vendors]
+    }
+    assert not earlier & {v.name for v in vendors}
+
+
+def test_twenty_five_layouts_five_per_set_and_all_use_listed_vendors() -> None:
+    assert [f.id for f in FRESH_FAMILIES] == [f"T{n}" for n in range(16, 41)]
     assert len(families_of("dev2")) == len(families_of("sealed")) == 5
     assert len(families_of("sealed2")) == len(families_of("sealed3")) == 5
+    assert len(families_of("sealed4")) == 5
     for family in FRESH_FAMILIES:
         facts = load_facts(fb.FACTS_OF[family.split])
         listed = {v.id for v in facts.vendors}
@@ -100,7 +120,7 @@ def test_twenty_layouts_five_per_set_and_all_use_listed_vendors() -> None:
                 assert vendor.credit_notes
 
 
-@pytest.mark.parametrize("suite", ["dev2", "sealed", "sealed2", "sealed3"])
+@pytest.mark.parametrize("suite", ["dev2", "sealed", "sealed2", "sealed3", "sealed4"])
 def test_every_clean_pdf_carries_its_printed_values_in_the_text_layer(suite: str) -> None:
     facts = load_facts(fb.FACTS_OF[suite])
     block = business_block(facts)
@@ -122,7 +142,7 @@ def test_every_clean_pdf_carries_its_printed_values_in_the_text_layer(suite: str
                 assert word in text, (doc.id, "note", word)
 
 
-@pytest.mark.parametrize("suite", ["dev2", "sealed", "sealed2", "sealed3"])
+@pytest.mark.parametrize("suite", ["dev2", "sealed", "sealed2", "sealed3", "sealed4"])
 def test_a_set_is_valid_has_every_kind_and_reproduces_exactly(suite: str) -> None:
     first, digest = fb.build(suite, files=False)
     second, again = fb.build(suite, files=False)
@@ -162,9 +182,15 @@ def test_the_third_sealed_key_matches_the_hash_committed_before_its_fixes() -> N
     assert digest == committed
 
 
-@pytest.mark.parametrize("suite", ["sealed", "sealed2", "sealed3"])
+def test_the_fourth_sealed_key_matches_the_hash_committed_before_its_fixes() -> None:
+    committed = fb.hash_path("sealed4").read_text(encoding="utf-8").split()[0]
+    _, digest = fb.build("sealed4", files=False)
+    assert digest == committed
+
+
+@pytest.mark.parametrize("suite", ["sealed", "sealed2", "sealed3", "sealed4"])
 def test_a_sealed_answer_key_is_not_in_the_repository(suite: str) -> None:
-    for version in ("v2", "v3", "v4"):
+    for version in ("v2", "v3", "v4", "v5"):
         assert not (fb.GOLDEN_DIR / f"citetally_{version}_{suite}.json").exists()
     assert fb.golden_path(suite).is_relative_to(fb.DATA_ROOT)  # data/ is git-ignored
 
@@ -193,6 +219,24 @@ def test_the_third_sealed_set_leans_on_tax_and_instruction_text_and_uses_new_phr
     assert not set(INJECTION_TEXT_SEALED3) & (set(INJECTION_TEXT_SEALED2) | set(_INJECTION_TEXT))
     assert fb.PREFIX["sealed3"] not in {fb.PREFIX[s] for s in ("dev2", "sealed", "sealed2")}
     assert all(i.id.startswith(fb.PREFIX["sealed3"]) for i in built.items)
+
+
+def test_the_fourth_sealed_set_leans_on_tax_and_instruction_text_and_uses_new_phrasings() -> None:
+    from tools.synthetic.injection_sealed2 import INJECTION_TEXT_SEALED2
+    from tools.synthetic.injection_sealed3 import INJECTION_TEXT_SEALED3
+    from tools.synthetic.injection_sealed4 import INJECTION_TEXT_SEALED4
+    from tools.synthetic.planting import _INJECTION_TEXT
+
+    built, _ = fb.build("sealed4", files=False)
+    kinds = built.header.counts["by_planted_kind"]
+    assert kinds["tax_mismatch"] >= 12 and kinds["injection_text"] >= 12
+    assert len(set(INJECTION_TEXT_SEALED4)) == len(INJECTION_TEXT_SEALED4) == 14
+    earlier = set(INJECTION_TEXT_SEALED3) | set(INJECTION_TEXT_SEALED2) | set(_INJECTION_TEXT)
+    assert not set(INJECTION_TEXT_SEALED4) & earlier
+    assert fb.PREFIX["sealed4"] not in {
+        fb.PREFIX[s] for s in ("dev2", "sealed", "sealed2", "sealed3")
+    }
+    assert all(i.id.startswith(fb.PREFIX["sealed4"]) for i in built.items)
 
 
 @pytest.mark.parametrize(
