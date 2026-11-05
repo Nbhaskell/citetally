@@ -221,3 +221,21 @@ def test_the_sealed2_and_sealed3_figures_quoted_in_words_match() -> None:
         f"fails {pct(block['false_alarm_by_check']['VALUE_IN_DOCUMENT']['rate'])} of clean",
     ):
         assert text in README, text
+
+
+def test_the_second_pilot_figures_match_its_report() -> None:
+    pilot = json.loads(
+        (ROOT / "eval" / "reports" / "pilot_sealed2.json").read_text(encoding="utf-8")
+    )
+    phone = pilot["by_condition"]["phone_photo"]
+    for text in (
+        f"{pilot['approved']} of {pilot['documents']} were approved and typed",
+        f"median review took {round(pilot['review_median'])} seconds",
+        f"median typing took {round(pilot['typed_median'])} seconds",
+        f"a ratio of {pilot['ratio']:.2f}",
+        f"{phone['ratio']:.2f} on phone photos",
+        f"{len(pilot['wrong_core_approved_without_override'])} of the {pilot['approved']} approved",
+        f"{len(pilot['wrong_core_approved_with_override'])} held one with an override",
+        f"{pilot['typed_with_errors']} of the {pilot['typed_total']} typed records",
+    ):
+        assert text in README, text
