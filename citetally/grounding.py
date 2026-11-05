@@ -21,8 +21,14 @@ from typing import Literal
 
 from citetally.dates import parse_date
 from citetally.models import ExtractedFields, HeaderField, LineField, Word
-from citetally.money import parse_decimal, parse_money, parse_rate, to_minor
-from citetally.reading.layout import clean_token, line_indices
+from citetally.money import (
+    currencies_beside_amounts,
+    parse_decimal,
+    parse_money,
+    parse_rate,
+    to_minor,
+)
+from citetally.reading.layout import build_text, clean_token, line_indices
 
 Method = Literal["exact", "fuzzy", "numeric"]
 Kind = Literal["text", "money", "decimal", "date", "rate"]
@@ -285,8 +291,13 @@ def ground(
             and (parsed := parse_money(text, locale, currency)) is not None
             and parsed.currency is not None
         ),
-        currency,
+        None,
     )
+    if document_currency is None:
+        # The model copied the amounts without their currency. The page may still print it
+        # ("CAD 548.50"); one currency printed against the amounts is the document's.
+        printed = set().union(*(currencies_beside_amounts(build_text(words)) for words in pages))
+        document_currency = next(iter(printed)) if len(printed) == 1 else currency
 
     values = []
     for field, line_index, text in wanted:

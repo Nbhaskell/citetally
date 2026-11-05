@@ -350,3 +350,24 @@ def test_percentages_become_exact_fractions(text: str, expected: str) -> None:
 @pytest.mark.parametrize("text", ["7", "0.07", "", "%", "seven %", "-%", "7%%", "1,2,3%"])
 def test_a_rate_without_a_percent_sign_is_not_guessed(text: str) -> None:
     assert parse_rate(text) is None
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Pay this amount     CAD  548.50", {"CAD"}),
+        ("CA$13.75 and CA$11.34", {"CAD"}),
+        ("548.50 CAD", {"CAD"}),
+        ("US$12.00", {"USD"}),
+        ("USD 5.00 and CAD 4.00", {"USD", "CAD"}),
+        ("Total $548.50", set()),
+        ("All amounts are shown in USD", set()),
+        ("ABA 000-000-000", set()),
+        ("SCAD 5", set()),
+        ("£12.50 and ¥300 and €4,00", set()),  # a scan often reads a "$" as one of these
+    ],
+)
+def test_currencies_beside_amounts_reads_codes_and_prefixed_symbols_only(
+    text: str, expected: set[str]
+) -> None:
+    assert money.currencies_beside_amounts(text) == expected
