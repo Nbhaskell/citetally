@@ -1094,3 +1094,18 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Checked.** Web tests (230, five new), lint, typecheck and the build; the screen was looked at in the browser on a copy of the second pilot's database (boxes drawn clear of the lettering, hidden and shown, and a line with its numbers removed showing the amber note). Not measured: whether either change reduces wrong values approved or review time; that is for a later pilot, on documents the reviewer has not seen.
 
 **What it does not do.** It cannot make anyone look at the page, and a hidden box is only a view setting: the located values are still listed under the picture. Lines with all numbers missing are only the web view's reading of the entry; no check code was added, so exports and the API are unchanged.
+
+
+### D-084. Scope of this round: heavy-scan reading is left out
+
+**Decision.** Heavy-scan reading is not part of this round. Invoices now come mostly from software, as digital PDFs, so scanned invoices are a small share of what a business enters, and the few badly damaged ones are unreadable to a person as well, where the right outcome is a quick rejection. Photos of receipts are a different case: receipts are often paper, so the photo condition stays in scope.
+
+**Order.**
+1. The currency check: read the currency from the printed total and compare it with the vendor's usual currency.
+2. A way to confirm or correct a misread tax rate on the review screen.
+3. Photos of receipts: the rate at which clean photos are blocked because a returned value cannot be located on the page.
+4. One run of `sealed4` (D-080), once these are merged.
+
+**Assumptions.** The mix of documents a business receives is assumed here, not measured. The evaluation sets hold the four conditions in roughly equal numbers so that each can be measured, so a pooled figure is not a forecast for a typical business; the per-condition figures are the ones to read. A weighted estimate would need a stated mix.
+
+**Revisit** if real use shows many scanned documents, or a way to read the worst of them becomes cheap.
