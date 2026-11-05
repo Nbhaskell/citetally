@@ -1081,3 +1081,16 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Limits.** The phrasings and the patterns share an author, and the `sealed3` phrasings were read before the patterns were written, so matching them proves little about wording written by someone else; `sealed4` is the test, and the author wrote those lines earlier and remembers them. Known false-flag risk: a clean document that says "process the payment today", or uses "take / consider ... the total as ..." in ordinary terms, would be flagged; none of 1,050 clean documents did, and all of them are invented. `SUSPICIOUS_TEXT` stays a warning for a person; the extraction prompt still treats page text as data.
 
 **Next.** Merge, then the other changes of this round (D-081's findings), then one run of `sealed4`.
+
+
+### D-083. Review-screen aids from the second pilot: boxes on the page, and lines with no numbers
+
+**Why.** The second pilot (D-081) turned up two things on the review screen that did not need a new test set to improve: the green boxes over located values sit tight against the lettering and could not be turned off, which made a small or blurred value harder to read; and a line that kept its description but lost its quantity, price and amount (a credit note's five lines) was marked only with a small grey "Not checked" note, and approval was not slowed down, although no check fires on such a line. The "checked against the picture" dialog covering the page was reported too, and was judged workable and left as it is.
+
+**What changed** (web only; no API, schema or check change).
+- **Boxes.** Each box is drawn a few pixels outside the value instead of on it, with a thinner outline and a lighter fill, and the value being pointed at gets a ring instead of a thicker border. A "Hide boxes" / "Show boxes" button sits with the zoom buttons; with the boxes hidden, the value being pointed at ("Show on page", a click in the list) is still outlined. The choice is remembered in the browser (`localStorage`, with the page working without it).
+- **Lines with no numbers.** A line with a description and no quantity, no unit price and no amount shows an amber "No numbers read for this line. Check the page; enter them if it prints any." Approving then asks first, in the same dialog as lines with no quantity (titled "Lines with missing numbers" when such lines are present), naming the lines and asking for a tick that the page prints no numbers or that they were entered. A flat fee that prints an amount is left alone, as before. As in D-071 the tick is not stored.
+
+**Checked.** Web tests (230, five new), lint, typecheck and the build; the screen was looked at in the browser on a copy of the second pilot's database (boxes drawn clear of the lettering, hidden and shown, and a line with its numbers removed showing the amber note). Not measured: whether either change reduces wrong values approved or review time; that is for a later pilot, on documents the reviewer has not seen.
+
+**What it does not do.** It cannot make anyone look at the page, and a hidden box is only a view setting: the located values are still listed under the picture. Lines with all numbers missing are only the web view's reading of the entry; no check code was added, so exports and the API are unchanged.

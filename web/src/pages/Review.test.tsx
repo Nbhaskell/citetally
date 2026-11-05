@@ -207,6 +207,41 @@ describe("the page and the values", () => {
     expect(screen.getByAltText("Page 1 of the document")).toHaveAttribute("src", "/api/documents/5/pages/1/image");
   });
 
+  it("hides the boxes on request, still outlines the value being pointed at, and shows them again", async () => {
+    window.localStorage.removeItem("citetally.page-boxes");
+    install(
+      detailFixture({
+        evidence: [
+          evidenceRow("total", "$236.50", [0.6, 0.8, 0.8, 0.83]),
+          evidenceRow("invoice_number", "INV-2042", [0.1, 0.1, 0.3, 0.13]),
+        ],
+      }),
+    );
+    const { container } = renderReview();
+    await screen.findByRole("heading", { level: 1 });
+    expect(container.querySelectorAll(".box")).toHaveLength(2);
+    fireEvent.click(screen.getByRole("button", { name: "Hide boxes" }));
+    // Only the value being pointed at, if any, is still outlined.
+    expect(container.querySelectorAll(".box:not(.box-active)")).toHaveLength(0);
+    expect(screen.getByRole("button", { name: "Show boxes" })).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(screen.getByRole("button", { name: /Total\s*found on page 1/ }));
+    await waitFor(() => expect(container.querySelectorAll(".box")).toHaveLength(1));
+    expect(container.querySelector(".box")?.getAttribute("data-key")).toBe("total");
+    fireEvent.click(screen.getByRole("button", { name: "Show boxes" }));
+    expect(container.querySelectorAll(".box")).toHaveLength(2);
+    window.localStorage.removeItem("citetally.page-boxes");
+  });
+
+  it("remembers that the boxes were hidden", async () => {
+    window.localStorage.setItem("citetally.page-boxes", "hidden");
+    install(detailFixture({ evidence: [evidenceRow("total", "$236.50", [0.6, 0.8, 0.8, 0.83])] }));
+    const { container } = renderReview();
+    await screen.findByRole("heading", { level: 1 });
+    expect(container.querySelectorAll(".box:not(.box-active)")).toHaveLength(0);
+    expect(screen.getByRole("button", { name: "Show boxes" })).toBeInTheDocument();
+    window.localStorage.removeItem("citetally.page-boxes");
+  });
+
   it("offers the page text as read, as plain text", async () => {
     install(detailFixture());
     renderReview();
@@ -537,6 +572,46 @@ describe("approving", () => {
       fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
       await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
       expect(screen.queryByText(/No quantity read/)).toBeNull();
+    });
+
+    const noNumbers = () =>
+      detailFixture({
+        entry: entryFixture({
+          lines: [
+            { ...entryFixture().lines[0], quantity: null, unit_price: null, amount_minor: null, description: "Film cassette" },
+            { ...entryFixture().lines[0], id: 12, line_number: 4, description: "Elbow", quantity: "2" },
+          ],
+        }),
+      });
+
+    it("marks a line that has only a description as having no numbers read", async () => {
+      install(noNumbers());
+      renderReview();
+      expect(await screen.findByText(/No numbers read for this line/)).toBeInTheDocument();
+    });
+
+    it("asks about lines with no numbers before approving, naming them", async () => {
+      const fake = install(noNumbers(), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      const dialog = screen.getByRole("dialog", { name: "Lines with missing numbers" });
+      expect(within(dialog).getByText(/Line 3/)).toBeInTheDocument();
+      expect(within(dialog).queryByText(/Line 4/)).toBeNull();
+      expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(0);
+      const go = within(dialog).getByRole("button", { name: "Approve anyway" });
+      expect(go).toBeDisabled();
+      fireEvent.click(within(dialog).getByRole("checkbox"));
+      fireEvent.click(go);
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+    });
+
+    it("does not treat a flat fee that prints an amount as having no numbers", async () => {
+      const fee = { ...entryFixture().lines[0], quantity: null, unit_price: null, description: "Fee" };
+      const fake = install(detailFixture({ entry: entryFixture({ lines: [fee] }) }), { queue: [5], responders: [approveResponder] });
+      renderReview();
+      fireEvent.click(await screen.findByRole("button", { name: "Approve entry" }));
+      await waitFor(() => expect(fake.sent("POST", "/api/documents/5/approve")).toHaveLength(1));
+      expect(screen.queryByText(/No numbers read/)).toBeNull();
     });
 
     it("marks the line in the form as having no quantity read", async () => {

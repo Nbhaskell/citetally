@@ -104,15 +104,19 @@
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  border: 2px solid var(--accent);
-  background: rgba(31, 90, 63, 0.14);
+  /* Drawn outside the value's own area, so the lettering is not covered or crowded. */
+  border: 1px solid var(--accent);
+  background: rgba(31, 90, 63, 0.07);
   border-radius: 2px;
+  margin: -4px; /* 3px of padding and a 1px border, all outside the value */
+  padding: 3px;
+  box-sizing: content-box;
 }
 
 .box-active {
-  border-width: 3px;
   border-color: var(--focus);
-  background: rgba(27, 86, 166, 0.22);
+  box-shadow: 0 0 0 2px var(--focus);
+  background: rgba(27, 86, 166, 0.12);
   animation: pulse 0.9s ease-out 1;
 }
 
@@ -134,7 +138,7 @@
 @media (prefers-color-scheme: dark) {
   .box {
     border-color: #6fc08f;
-    background: rgba(111, 192, 143, 0.2);
+    background: rgba(111, 192, 143, 0.1);
   }
 }
 
