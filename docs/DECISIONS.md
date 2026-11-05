@@ -1030,3 +1030,35 @@ A diagnostic, not a test, on the spent `sealed2` run, worked out after reading i
 **The hash.** The answer key is written under `data/synthetic/sealed4/` (git-ignored) and its SHA-256, `f3337be68def5a0f…` in full in `eval/golden/citetally_v5_sealed4.sha256`, is committed with this entry. The generator reproduces it (`--verify`; a test fails if it stops). The documents and the key have not been opened. A test checks that every planted line is printed on the page in this set, so the layout fault of D-078 cannot recur unseen.
 
 **How it will be used.** Run once, with the product's own settings and one pass, after the fixes of the next round are merged, each tested first on the development sets. The runner needs `--confirm-sealed4-once` and writes a lock; nothing is tuned on the set; it is spent once read.
+
+
+### D-081. The second pilot (`sealed2` documents): result against targets 3 and 4
+
+**What was run.** 40 documents from `sealed2` (10 per condition, fixed seed), reviewed in the app with the review aids of D-071 in place, then typed by hand. 36 were approved and 4 were rejected as unreadable (p05, a phone photo; p10, p11 and p32, heavy scans). Typing covered the 36 approved documents. Report: `eval/reports/pilot_sealed2.md` and `.json`. The method is that of D-067 and D-068.
+
+| Target | Result |
+|---|---|
+| 3. Reviewer under half the time of typing | **Met**: median review 39 s, median typing 89 s, ratio **0.44** on 36 documents. Median of the per-document ratios 0.48. |
+| 4. No wrong value approved without a recorded override | **Not met**: 1 of 36 approved entries held a wrong value with no override; 0 held one with an override. |
+
+**By condition** (median review, median typing, ratio): clean PDF 57 s, 93 s, 0.61 (10 documents); light scan 25 s, 81 s, 0.31 (10); heavy scan 63 s, 87 s, 0.72 (7); phone photo 96 s, 95 s, **1.01** (9). The overall ratio is under half, and it is the clean PDFs and light scans that carry it: on phone photos reviewing took as long as typing, and on heavy scans it took most of the time. The first pilot (D-068) had a ratio of 0.26 on other documents; this one is slower, and the two sets of documents are not the same, so the difference is not attributed to anything.
+
+**Wrong values.** Core values (vendor, number, date, total, lines) differing from the key: 1.
+- p09: the invoice number was read as "Al-780310" and approved; the key has "AI-780310". Capital I and lower-case l look the same in the typeface, so a reviewer comparing with the page could not tell them apart, and no check can. It counts as a wrong value because the stored text differs.
+- Compared with D-068 (5 wrong, 3 without an override), the empty-quantity cases and the changed-total case did not recur. Whether D-071 caused that is not shown: different documents, and the reviewer knew what to look for.
+
+Other header values differing from the key, on 2 documents: p25 (approved with an override and edited; the due date is 2026-08-08, the key 2026-09-07), and p39, a planted currency mismatch (the document is in Canadian dollars, the entry was approved as USD with no override, and `CURRENCY_CHECK` did not fire), approved with a subtotal and zero tax, shipping and discount that the key records as not printed.
+
+**Other counts.** 13 of 36 approvals carried an accepted check (override). 7 entries were edited in the review screen. 15 of 36 typed records differed from the key in at least one place.
+
+**Findings, not fixed here.** From the numbers above and from what the reviewer ran into on screen:
+1. Phone photos take as long to review as to type (ratio 1.01), and heavy scans are near it. This is where the reading is weakest (D-079), and a review aid cannot make up for values that have to be re-entered.
+2. The "checked against the picture" dialog covers the page image, so a value cannot be compared with the page while it is open.
+3. The green boxes over located values sit against the lettering and cannot be hidden, which makes a small or blurred value harder to read.
+4. Lines whose quantity, price and amount were all left empty (a credit note's five lines) show only a small "Not checked" note in the form; no red check marks the document.
+5. A tax check whose printed rate was misread offers no field for the rate; the reviewer can only override with a reason, which records the misreading as an accepted check.
+6. `CURRENCY_CHECK` missed a document printed in another currency (p39), the same 5 of 7 planted currency mismatches caught as in `sealed2` and `sealed3`; the page printed the total as "CAD 647.00".
+
+Findings 2, 3 and 4 are screen changes and can be tested without a sealed set. Findings 1, 5 and 6 are about reading and checking and would need one (`sealed4`, D-080).
+
+**Limits.** One reviewer who built the system and knows how it fails; someone who does not would likely be slower. 36 approved documents; per-condition rows have 7 to 10 documents and are indications. Review seconds include any pause with the screen open. One typing restart (a document was begun again after a mistake at the prompt). The typing helper asks for vendor, number, date, lines and total, not subtotal or tax, which makes typing look slightly faster than a full entry. The documents are invented.
