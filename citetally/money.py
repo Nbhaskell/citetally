@@ -44,6 +44,15 @@ _AMOUNT = re.compile(
     rf"^\s*(?P<open>\()?\s*(?P<s1>[+]|{_MINUS})?\s*(?P<c1>{_TOKEN})?\s*(?P<s2>[+]|{_MINUS})?\s*"
     rf"(?P<num>{_NUMBER})\s*(?P<s3>{_MINUS})?\s*(?P<c2>{_TOKEN})?\s*(?P<close>\))?\s*$"
 )
+_CODE_ALTERNATIVES = "|".join(sorted(_CODES))
+# A currency code, or a symbol with a letter prefix, printed against a number: before it ("CAD
+# 548.50", "CA$13.75") or after it ("548.50 CAD"). A bare "$" names no currency, and the lone
+# symbols for euro, pound and yen are left out: a scan reads a "$" as one of them often enough that
+# they cannot be trusted.
+_BESIDE_AMOUNT = re.compile(
+    rf"(?<![A-Za-z$])(?P<c1>US\$|CA\$|C\$|AU\$|{_CODE_ALTERNATIVES})[ \t]{{0,4}}(?=[0-9])"
+    rf"|(?<=[0-9])[ \t]{{0,4}}(?P<c2>{_CODE_ALTERNATIVES})(?![A-Za-z])"
+)
 _RATE = re.compile(rf"^\s*(?P<num>{_NUMBER})\s*%\s*$")
 
 
@@ -64,6 +73,17 @@ def _check_decimal(value: object, what: str) -> Decimal:
     if isinstance(value, bool) or not isinstance(value, Decimal | int):
         raise TypeError(f"{what} must be a Decimal or an integer, not {type(value).__name__}")
     return Decimal(value)
+
+
+def currencies_beside_amounts(text: str) -> set[str]:
+    """The currencies this text prints next to numbers, by their codes or unambiguous symbols."""
+    found: set[str] = set()
+    for match in _BESIDE_AMOUNT.finditer(text):
+        token = match["c1"] or match["c2"]
+        code = _SYMBOLS.get(token) or (token if token in _CODES else None)
+        if code:
+            found.add(code)
+    return found
 
 
 def exponent(currency: str) -> int:

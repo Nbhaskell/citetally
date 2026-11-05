@@ -1109,3 +1109,16 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Assumptions.** The mix of documents a business receives is assumed here, not measured. The evaluation sets hold the four conditions in roughly equal numbers so that each can be measured, so a pooled figure is not a forecast for a typical business; the per-condition figures are the ones to read. A weighted estimate would need a stated mix.
 
 **Revisit** if real use shows many scanned documents, or a way to read the worst of them becomes cheap.
+
+
+### D-085. The currency a page prints is used when the copied amounts do not carry it
+
+**Why.** `CURRENCY_CHECK` caught 5 of 7 planted currency mismatches in `sealed2` and in `sealed3` (D-072, D-079), and the second pilot approved a page printing "CAD 647.00" as USD (D-081). The document's currency was taken only from the currency symbol or code in the amounts the model copied, and fell back to the business default when the copied amounts carried none. A copy that drops "CAD" leaves the entry at USD, and the check compares USD with USD.
+
+**What changed.**
+- `citetally/money.py`: `currencies_beside_amounts(text)` returns the currencies a text prints against numbers, by code ("CAD 548.50", "548.50 CAD") or a symbol with a letter prefix ("CA$13.75", "US$12.00"). A bare "$" names no currency. The lone symbols for euro, pound and yen are not used: a scan reads a "$" as one of them often enough (23 non-planted documents in the saved runs) that they cannot be trusted.
+- `citetally/grounding.py`: when none of the copied amounts names a currency, the page's own words are searched, and exactly one printed currency is taken as the document's; none, or more than one, leaves the business default. A currency the copy kept still wins. Amounts are then read with that currency's minor units, as before for a copied code.
+
+**Evidence** (saved runs of the development sets and the spent sets, no model run). Of 25 planted currency mismatches, 7 had been left at USD; 3 are now caught (two clean PDFs in `sealed2` and a heavy scan in the first development set), and 0 of 1,065 other documents change currency. The other four have no currency code in the page words (photos and scans that lost it), so no rule over the page text can reach them.
+
+**Limits.** A scan that drops the code is not helped. A real invoice in the default currency that also prints another currency beside amounts (a foreign-currency line) is left at the default, because two are printed; one that prints only a foreign code is read as that currency, which is the intent. The development figures use spent sets, so the effect on new documents is for `sealed4`.

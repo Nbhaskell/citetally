@@ -397,3 +397,30 @@ def test_printings_found_by_different_readings_are_all_counted() -> None:
     second = page("Subtotal $140.00", "Notes")
     result = ground(fields(subtotal="$140.00", total="$140.00"), [first], alternatives=[[second]])
     assert one(result, HeaderField.SUBTOTAL).found and one(result, HeaderField.TOTAL).found
+
+
+# --- the currency the page prints -------------------------------------------------------------
+
+
+def test_a_currency_printed_against_the_amounts_is_used_when_the_copy_dropped_it() -> None:
+    words = page("Pay this amount CAD 548.50", "Subtotal CAD 548.50")
+    result = ground(fields(total="548.50", subtotal="548.50"), [words])
+    assert result.currency == "CAD"
+    assert one(result, HeaderField.TOTAL).amount_minor == 54850
+
+
+def test_a_currency_the_copy_kept_wins_over_the_page_scan() -> None:
+    words = page("Pay this amount CAD 548.50")
+    assert ground(fields(total="USD 548.50"), [words]).currency == "USD"
+
+
+def test_no_printed_currency_or_two_of_them_leave_the_default() -> None:
+    assert ground(fields(total="548.50"), [page("Total 548.50")]).currency == "USD"
+    mixed = page("Total CAD 548.50", "Shipping USD 10.00")
+    assert ground(fields(total="548.50"), [mixed]).currency == "USD"
+    assert ground(fields(total="548.50"), [mixed], currency="EUR").currency == "EUR"
+
+
+def test_a_scan_that_reads_a_dollar_sign_as_a_pound_does_not_change_the_currency() -> None:
+    words = page("Total £548.50", "Tax £45.25")
+    assert ground(fields(total="548.50"), [words]).currency == "USD"
