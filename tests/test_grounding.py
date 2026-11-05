@@ -424,3 +424,68 @@ def test_no_printed_currency_or_two_of_them_leave_the_default() -> None:
 def test_a_scan_that_reads_a_dollar_sign_as_a_pound_does_not_change_the_currency() -> None:
     words = page("Total £548.50", "Tax £45.25")
     assert ground(fields(total="548.50"), [words]).currency == "USD"
+
+
+# --- a name whose words are all there, out of order ----------------------------------------------
+
+
+def test_a_vendor_name_in_the_wrong_reading_order_is_found_when_close_together() -> None:
+    """A photo taken at an angle can list the words of one block bottom to top."""
+    words = page("WHOLESALE", "NURSERY", "BRAMBLEWOOD", "Invoice INV-1")
+    result = ground(fields(vendor_name="Bramblewood Nursery Wholesale"), [words])
+    vendor = one(result, HeaderField.VENDOR_NAME)
+    assert vendor.found and vendor.method == "unordered" and vendor.match_score == 0.75
+    assert vendor.y0 == min(w.y0 for w in words[:3]) and vendor.y1 == max(w.y1 for w in words[:3])
+
+
+def test_a_description_in_the_wrong_order_is_found_and_a_name_in_order_is_still_exact() -> None:
+    words = page("tune-up Chainsaw", "Total 16.80")
+    description = one(
+        ground(fields(lines=[{"description": "Chainsaw tune-up"}]), [words]),
+        LineField.DESCRIPTION,
+        0,
+    )
+    assert description.found and description.method == "unordered"
+    ordered = ground(fields(vendor_name="Chainsaw tune-up"), [page("Chainsaw tune-up")])
+    assert one(ordered, HeaderField.VENDOR_NAME).method == "exact"
+
+
+def test_words_that_are_far_apart_are_not_a_name() -> None:
+    rows = ["BRAMBLEWOOD"] + [f"filler {n}" for n in range(1, 24)] + ["NURSERY WHOLESALE"]
+    words = page(*rows)
+    assert not one(
+        ground(fields(vendor_name="Bramblewood Nursery Wholesale"), [words]),
+        HeaderField.VENDOR_NAME,
+    ).found
+
+
+def test_a_missing_word_or_a_changed_digit_is_not_found_out_of_order() -> None:
+    words = page("WHOLESALE", "NURSERY", "BRAMBLEWOOD")
+    assert not one(
+        ground(fields(vendor_name="Bramblewood Nursery Wholesale Co"), [words]),
+        HeaderField.VENDOR_NAME,
+    ).found
+    rows = page("Pipe 3/4 in", "Copper")
+    description = one(
+        ground(fields(lines=[{"description": "Copper pipe 3/8 in"}]), [rows]),
+        LineField.DESCRIPTION,
+        0,
+    )
+    assert not description.found
+
+
+def test_a_name_copied_with_a_quantity_in_it_is_not_found_out_of_order() -> None:
+    words = page("Sandwich, turkey 1 x $8.50")
+    description = one(
+        ground(fields(lines=[{"description": "Sandwich, 1 x turkey"}]), [words]),
+        LineField.DESCRIPTION,
+        0,
+    )
+    assert not description.found
+
+
+def test_only_names_and_descriptions_may_be_found_out_of_order() -> None:
+    words = page("2026 14 March", "INV 77")
+    result = ground(fields(entry_date="March 14, 2026", invoice_number="77 INV"), [words])
+    assert not one(result, HeaderField.ENTRY_DATE).found
+    assert not one(result, HeaderField.INVOICE_NUMBER).found
