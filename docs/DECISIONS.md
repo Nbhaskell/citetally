@@ -1061,3 +1061,23 @@ Other header values differing from the key, on 2 documents: p25 (approved with a
 Findings 2 and 3 are screen changes and can be tested without a sealed set. Findings 1, 4 and 5 are about reading and checking and would need one (`sealed4`, D-080). The "checked against the picture" dialog covers the page image while it is open; the reviewer found it workable (the values to compare are in the form beside the page) and it is not on the list to change.
 
 **Limits.** One reviewer who built the system and knows how it fails; someone who does not would likely be slower. 36 approved documents; per-condition rows have 7 to 10 documents and are indications. Review seconds include any pause with the screen open. One typing restart (a document was begun again after a mistake at the prompt). The typing helper asks for vendor, number, date, lines and total, not subtotal or tax, which makes typing look slightly faster than a full entry. The documents are invented.
+
+
+### D-082. Instruction-text detection: three more forms, from the `sealed3` misses
+
+**Why.** `sealed3` flagged 10 of 14 planted instruction texts (D-079). One of the four misses was a heavy scan too damaged to read; the other three were readable pages with wordings the categories of D-078 did not cover. `sealed3` is spent, so its phrasings are development cases now, and this round is developed on them and the earlier lists only (`planting`, `sealed2`, `sealed3`). The `sealed4` phrasings (D-080) were not opened or run against the detector for this change.
+
+**What changed** (`citetally/checks/injection.py`; three forms, each written as a form of request and not as a phrase):
+- **Setting aside what the reader was told:** "forget / ignore / disregard what you were told" (added to `ignore_instructions`).
+- **A line that presents itself as an instruction about payment:** an "Action:" header followed by release, approve, pay, post, transfer or process, and release, authorise or process the payment now, today or at once (added to `approval_directive`).
+- **Asking for a value to be rounded or read as something else:** rounding the total, amount, balance or subtotal up, down or to a nearest figure, and treating, considering, regarding or taking a date, number, total, amount, price or quantity "as" something (added to `value_control`).
+
+**Evidence** (development only).
+- As plain text, the detector matches all 4 of the first list, 14 of 14 `sealed2` phrasings and 14 of 14 `sealed3` phrasings (10 of 14 before). A test now holds the `sealed3` list.
+- No document without a planted instruction is flagged: 0 of 1,050 across the saved runs of the development sets, `sealed`, `sealed2` and `sealed3`, on the merged text and every stored reading (0 of 764 in D-078, before `sealed3` was added).
+- Documents with a planted instruction that are flagged on the saved page texts: 28 of 40, against 25 of 40 with the detector of D-078. The 12 that are not flagged were not examined here; earlier sets include documents whose layout never printed the line (D-078) and heavy scans too damaged to read.
+- Ordinary wording stays quiet in tests: rounding notes ("totals are rounded to the nearest cent"), payment terms, "payment is due today".
+
+**Limits.** The phrasings and the patterns share an author, and the `sealed3` phrasings were read before the patterns were written, so matching them proves little about wording written by someone else; `sealed4` is the test, and the author wrote those lines earlier and remembers them. Known false-flag risk: a clean document that says "process the payment today", or uses "take / consider ... the total as ..." in ordinary terms, would be flagged; none of 1,050 clean documents did, and all of them are invented. `SUSPICIOUS_TEXT` stays a warning for a person; the extraction prompt still treats page text as data.
+
+**Next.** Merge, then the other changes of this round (D-081's findings), then one run of `sealed4`.
