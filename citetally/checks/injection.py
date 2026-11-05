@@ -70,6 +70,11 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         + r"|\b(?:ignore|disregard|forget)\b"
         + _GAP
         + rf"\b(?:{_BEFORE}\s+{_FIGURES}|(?:{_FIGURES}|everything|anything)\b{_GAP}\b{_BEFORE})\b"
+        # setting aside what the reader was told earlier
+        + r"|\b(?:ignore|disregard|forget)\b"
+        + _GAP
+        + r"\bwhat (?:you|they|i|we) (?:were |was |have been |had been |are |is )?"
+        + r"(?:told|said|asked|instructed|taught)\b"
     ),
     "role_change": re.compile(
         r"\byou are (?:now |no longer )?(?:an? |the )?"
@@ -96,6 +101,13 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         r"|\bskip (?:(?:the|all|any|every|further|these|this|those) )*"
         r"(?:checks?|review|verification|validation)\b"
         r"|\bwithout (?:any )?(?:review|checking|verification)\b"
+        # a line that presents itself as an instruction to whoever handles payment
+        r"|\baction\s*:\s*(?:release|approve|pay|post|transfer|process)\b"
+        r"|\b(?:release|authori[sz]e|process)\b"
+        + _GAP
+        + r"\bpayments?\b"
+        + _GAP
+        + r"\b(?:now|today|immediately|at once|straight away|right away)\b"
     ),
     "system_markers": re.compile(
         r"<\s*/?\s*(?:system|assistant|instructions?|prompt)\b|\[/?(?:inst|system)\]"
@@ -130,6 +142,15 @@ PATTERNS: dict[str, re.Pattern[str]] = {
         r"name|vendor|payee|supplier|total|balance|amount due)\b" + _GAP + r"\b(?:as|to|with)\b"
         r"|\bleave\b" + _GAP + r"\b(?:the )?(?:vendor(?: name)?|payee|total|balance|amount due"
         r"|invoice number)\b" + _GAP + r"\b(?:blank|empty|unset)\b"
+        # rounding a figure, or reading a field as something it is not
+        r"|\bround\b"
+        + _GAP
+        + r"\b(?:the )?(?:total|amount|balance|subtotal|figures?)\b"
+        + _GAP
+        + r"\b(?:up|down|to the nearest)\b"
+        r"|\bround (?:up|down)\b" + _GAP + r"\b(?:total|amount|balance|subtotal)\b"
+        r"|\b(?:treat|consider|regard|take)\b" + _GAP + r"\b(?:the )?(?:due date|date"
+        r"|invoice number|total|amount|balance|quantity|price)\b" + _GAP + r"\bas\b"
     ),
     # Handing the reader a different job, or asking it to hand over what it holds.
     "new_task": re.compile(
