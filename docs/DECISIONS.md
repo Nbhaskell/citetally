@@ -1122,3 +1122,21 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Evidence** (saved runs of the development sets and the spent sets, no model run). Of 25 planted currency mismatches, 7 had been left at USD; 3 are now caught (two clean PDFs in `sealed2` and a heavy scan in the first development set), and 0 of 1,065 other documents change currency. The other four have no currency code in the page words (photos and scans that lost it), so no rule over the page text can reach them.
 
 **Limits.** A scan that drops the code is not helped. A real invoice in the default currency that also prints another currency beside amounts (a foreign-currency line) is left at the default, because two are printed; one that prints only a foreign code is read as that currency, which is the intent. The development figures use spent sets, so the effect on new documents is for `sealed4`.
+
+
+### D-086. The tax-rate field is not built
+
+**Decision.** A way to confirm or correct a misread printed tax rate on the review screen is left out. The rate is read from the page text, and the entry stores a tax rate only per line, where the check treats every line with a rate as taxed, so entering the rate on each line would fail documents with untaxed lines. A document-level rate would need a stored field, a migration, API and screen changes and schema documentation. A misread rate causes a false alarm on roughly 1 to 2% of clean documents, and the reviewer can already keep the printed figures and accept the check with a reason.
+
+**Revisit** if misread rates become a larger share of the false alarms, or if the printed rate is needed elsewhere.
+
+
+### D-087. Names and descriptions found out of reading order
+
+**Why.** On clean phone photos, 31 of the values not located in `sealed3` were vendor names (8) and line descriptions (6), among dates, quantities and amounts. In several the words of the name were all on the page but listed in the wrong order, because a photograph taken at an angle sorts the words of one block bottom to top ("WHOLESALE", "NURSERY", "BRAMBLEWOOD"), so no contiguous run spelled the name and `VALUE_IN_DOCUMENT` failed.
+
+**What changed** (`citetally/grounding.py`; TRD 4.4 step 4). A vendor name or line description that is not found as a run is accepted when each of its words is on the page, on distinct words, with the same tolerance for letter slips as before and none for digits, and all of them lie within one small part of the page (no more than 10% of its height or 80% of its width). A name of fewer than two or more than eight words, or with a lone digit or letter in it ("1", "x"), is not eligible: such a token is a quantity or a mark from the same row, and a description copied with one in it was not copied as printed. Amounts, dates, quantities, numbers and rates are never matched this way, because a value with the right digits in the wrong place is a different value. The match is recorded with method `unordered` and the lower score of a value printed another way (0.75).
+
+**Evidence** (saved runs of the development and spent sets; the same code with the rule off against on, nothing read again). 124 values are newly located, 77 on phone photos and 47 on heavy scans, and none on clean PDFs or light scans. In every case checked against the answer key the model's text is the key's vendor name or one of its line descriptions: 0 of 124 were not. The first form of the rule, without the exclusions above, located 175, four of them not the key's text (a long run of table text, and three descriptions copied with a quantity in them); the exclusions were added for that reason. Of the clean documents with at least one value not located, 14 of 108 phone photos and 1 of 101 heavy scans are now fully located. The rest still have a date, quantity, unit price or amount that the reading misread.
+
+**Limits.** A small gain and a safe one, not a fix for photos: most unlocated values are numbers and dates with a misread digit, and the rule that a digit must match is not loosened. Developed on spent sets, so the effect on new documents is for `sealed4`.

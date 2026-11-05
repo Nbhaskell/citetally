@@ -30,11 +30,17 @@ from citetally.money import (
 )
 from citetally.reading.layout import build_text, clean_token, line_indices
 
-Method = Literal["exact", "fuzzy", "numeric"]
+Method = Literal["exact", "fuzzy", "numeric", "unordered"]
 Kind = Literal["text", "money", "decimal", "date", "rate"]
 
 DEFAULT_THRESHOLD = 0.85
 NUMERIC_SCORE = 0.75  # the score of an amount or date found printed another way
+UNORDERED_SCORE = 0.75  # the score of a name whose words are all there, out of order
+# A name found as separate words has to sit in one small part of the page: a photograph taken at
+# an angle can put the words of one line in the wrong order, but not far apart.
+_UNORDERED_MAX_HEIGHT = 0.10
+_UNORDERED_MAX_WIDTH = 0.8
+_UNORDERED_MAX_WORDS = 8
 _MAX_FUZZY_CHARS = 400  # a longer printed string must match exactly
 _MAX_DATE_WORDS = 4  # "14 March 2026" and "March 14, 2026" are three words
 
@@ -52,6 +58,8 @@ _KINDS: dict[HeaderField | LineField, Kind] = {
     LineField.TAX_RATE: "rate",
 }
 _HEADER_ORDER = tuple(HeaderField)
+# Names and descriptions: words, not numbers. Only these may be found out of reading order.
+_NAME_FIELDS = frozenset({HeaderField.VENDOR_NAME, LineField.DESCRIPTION})
 _MONEY_FIELDS = frozenset(f for f, kind in _KINDS.items() if kind == "money")
 _LINE_ORDER = (
     LineField.DESCRIPTION,
@@ -204,6 +212,70 @@ def _search(
             if best is None or candidate.rank < best.rank:
                 best = candidate
     return best
+
+
+def _search_unordered(page: _Page, text: str, threshold: float) -> _Candidate | None:
+    """A name whose every word is on the page, close together, but not in reading order.
+
+    A page photographed at an angle can sort the words of one printed line or block in the wrong
+    order ("WHOLESALE NURSERY BRAMBLEWOOD"), so no run of consecutive words spells the name. Each
+    word of the name still has to be found (letters may slip as in `_search`, digits may not),
+    on distinct page words, and all of them within one small part of the page. A single word is
+    left to `_search`.
+    """
+    tokens = [token for raw in text.split() if (token := _trim(_normalise(raw)))]
+    if not 2 <= len(tokens) <= _UNORDERED_MAX_WORDS:
+        return None
+    if any(len(token) < 2 or token.isdigit() for token in tokens):
+        # A lone digit or letter ("1", "x") is a quantity or a mark on the same row, not part of a
+        # name, and a name copied with one in it was not copied as printed.
+        return None
+    options: list[list[int]] = []
+    for token in tokens:
+        limit = int((1 - threshold) * len(token)) if len(token) > 2 else 0
+        digits = _digits(token)
+        near = [
+            position
+            for position in page.order
+            if _digits(page.loose[position]) == digits
+            and _distance(page.loose[position], token, limit) <= limit
+        ]
+        if not near:
+            return None
+        options.append(near)
+
+    def centre(position: int) -> tuple[float, float]:
+        word = page.words[position]
+        return ((word.x0 + word.x1) / 2, (word.y0 + word.y1) / 2)
+
+    rarest = min(range(len(tokens)), key=lambda index: len(options[index]))
+    best: tuple[float, tuple[int, ...]] | None = None
+    for anchor in options[rarest]:
+        chosen = {rarest: anchor}
+        for index in range(len(tokens)):
+            if index == rarest:
+                continue
+            ax, ay = centre(anchor)
+            free = [p for p in options[index] if p not in chosen.values()]
+            if not free:
+                chosen = {}
+                break
+            chosen[index] = min(
+                free, key=lambda p: (centre(p)[0] - ax) ** 2 + (centre(p)[1] - ay) ** 2
+            )
+        if not chosen:
+            continue
+        words = [page.words[p] for p in chosen.values()]
+        height = max(w.y1 for w in words) - min(w.y0 for w in words)
+        width = max(w.x1 for w in words) - min(w.x0 for w in words)
+        if height > _UNORDERED_MAX_HEIGHT or width > _UNORDERED_MAX_WIDTH:
+            continue
+        area = height * width
+        if best is None or area < best[0]:
+            best = (area, tuple(sorted(chosen.values())))
+    if best is None:
+        return None
+    return _Candidate(page, best[1], UNORDERED_SCORE, "unordered")
 
 
 def _inside_word(page: _Page, target: str) -> _Candidate | None:
@@ -475,6 +547,12 @@ def _ground_one(
         )
     if candidate is None and value is not None and kind not in ("text", "rate"):
         candidate = _numeric(pages, kind, value, locale, currency)
+    if candidate is None and field in _NAME_FIELDS:
+        candidate = min(
+            (c for page in pages if (c := _search_unordered(page, text, threshold)) is not None),
+            key=lambda c: c.rank,
+            default=None,
+        )
 
     minor = None
     if kind == "money" and isinstance(value, Decimal):
