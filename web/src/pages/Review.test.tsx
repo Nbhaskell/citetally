@@ -221,7 +221,8 @@ describe("the page and the values", () => {
     await screen.findByRole("heading", { level: 1 });
     expect(container.querySelectorAll(".box")).toHaveLength(2);
     fireEvent.click(screen.getByRole("button", { name: "Hide boxes" }));
-    expect(container.querySelectorAll(".box")).toHaveLength(0);
+    // Only the value being pointed at, if any, is still outlined.
+    expect(container.querySelectorAll(".box:not(.box-active)")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Show boxes" })).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(screen.getByRole("button", { name: /Total\s*found on page 1/ }));
     await waitFor(() => expect(container.querySelectorAll(".box")).toHaveLength(1));
@@ -236,7 +237,7 @@ describe("the page and the values", () => {
     install(detailFixture({ evidence: [evidenceRow("total", "$236.50", [0.6, 0.8, 0.8, 0.83])] }));
     const { container } = renderReview();
     await screen.findByRole("heading", { level: 1 });
-    expect(container.querySelectorAll(".box")).toHaveLength(0);
+    expect(container.querySelectorAll(".box:not(.box-active)")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Show boxes" })).toBeInTheDocument();
     window.localStorage.removeItem("citetally.page-boxes");
   });
