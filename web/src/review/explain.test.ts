@@ -114,7 +114,10 @@ describe("explain", () => {
 
   it("says the page contains instructions without quoting them", () => {
     const said = explain(check("SUSPICIOUS_TEXT", { matches: [{ pattern: "ignore_instructions", page: 1 }] }, false), entryFixture(), none);
-    expect(said.text).toEqual(["The page includes text addressed to a reader or system. It was ignored. Review as usual."]);
+    expect(said.text).toEqual([
+      "The page includes text addressed to a reader or system. It was ignored. Review as usual.",
+      "This warning matches known wordings only, so its absence does not mean a page has none.",
+    ]);
   });
 
   it("says which rate the page prints when no combination of the lines gives the tax", () => {

@@ -16,7 +16,7 @@ Citetally is a review desk for invoices and receipts at a small business. A loca
 
 - every value it returned has to be **found in the words on the page**, or the check `VALUE_IN_DOCUMENT` fails and the value is shown as not found (a printed number is never silently "fixed");
 - line totals, subtotal, tax and total are re-added **in code**, in integer cents, never floats;
-- duplicates, unknown vendors, odd dates, unusual amounts and instruction-like text on the page (`SUSPICIOUS_TEXT`) are decided by rules with unit tests;
+- duplicates, unknown vendors, odd dates and unusual amounts are decided by rules with unit tests, and instruction-like text on the page (`SUSPICIOUS_TEXT`) is flagged by a rule that matches known wordings only (a best-effort warning);
 - a person approves, edits or rejects every document. Blocking checks must be fixed or overridden **with a written reason** first.
 
 | | |
@@ -141,6 +141,7 @@ These are in the code and checked by tests (see [`docs/HARDENING.md`](docs/HARDE
 - No code path pays, posts to accounting software, or sends email or messages.
 - Uploaded files and the text in them are untrusted: type by content, size, page and pixel limits, parsing in a separate process with timeouts, nothing embedded is ever run, files are stored by hash. A 500-case fuzz run of damaged files found no crash, hang or stray file.
 - Model output and document text are shown as text, never HTML, and never used to build paths, queries or URLs.
+- Text on a page that tells a reader what to do is treated as data and never acted on: the extraction ignores it, nothing is paid, posted or sent, and a person approves every entry. A warning (`SUSPICIOUS_TEXT`) is shown for wordings the rules know, and it is best-effort: in the last sealed run none of 14 phrasings written without it was flagged, and none changed a stored value (D-088).
 - Logs and audit events hold ids, stage names, timings and codes, never document text. A test plants canary text in documents, model replies, errors, filenames and reviewer notes and searches every log line, output and audit row for it.
 - CSV export neutralizes spreadsheet formula injection.
 - Binds to `127.0.0.1` only. **There is no login**: it is a single-user, local tool and must not be put on a network as it stands.

@@ -1177,3 +1177,17 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Not claimed.** That any change of the round helped on new documents: the effects of the currency and out-of-order rules are small against the interval on 8 or 15 documents. That the detector is of any use against wording it has not seen.
 
 **Next, not decided.** For instruction text, a different approach from pattern lists, for example a narrow question put to the model about whether the page addresses a reader (the model reads and code decides what to do with the answer), or accepting that the flag is a best effort and saying so in the product. Whatever is chosen is tested on a newer set (`sealed5`).
+
+
+### D-089. The instruction-text flag is best-effort, and says so
+
+**Why.** Three planted-phrasing sets give 1 of 14 (`sealed2`, before any fix), 10 of 14 (`sealed3`, with phrasings the detector's author had in view) and 0 of 14 (`sealed4`, written without looking at the detector) flagged (D-072, D-079, D-088). A list of forms of request catches the forms it lists. None of the 14 `sealed4` lines changed a stored value, and the product acts on nothing without a person approving it, so the protection does not rest on the flag.
+
+**Options considered.**
+- A broader code rule for directive prose. Rejected: the invented documents hold almost no ordinary prose beyond a thank-you line and payment terms, so any such rule would look perfect on them and say nothing about the false flags on real invoices with terms and conditions.
+- A model-reported flag, where the extraction also returns lines addressed to a reader and code checks they are on the page. Left as an option: it generalises by meaning, but it changes the prompt for every document, adds tokens, and needs development runs and a new sealed set; it is worth doing if the product moves toward handling documents without a person.
+- Wording. Chosen: say what the flag is.
+
+**What changed.** No detection change. The wording now says the flag matches known wordings only: the passed state reads "No known instruction wording on the page" (it read "No instructions on the page"), the warning adds "This warning matches known wordings only, so its absence does not mean a page has none.", and the README, TRD, UI brief and app flow describe `SUSPICIOUS_TEXT` as a best-effort warning. The README safety list states how page text is treated: as data, never acted on, with a person approving every entry.
+
+**Revisit** if the product starts to act on documents without a person, or if a model-reported flag is wanted; either would be tested on a new sealed set.

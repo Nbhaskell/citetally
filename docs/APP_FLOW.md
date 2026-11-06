@@ -145,7 +145,7 @@ flowchart LR
 | Vendor not seen before | `UNKNOWN_VENDOR` blocks approval until the reviewer picks or creates the vendor |
 | Vendor spelled differently on each invoice | Fuzzy match suggested; the reviewer adds an alias once and later documents match automatically |
 | Total far larger than the vendor's usual | `AMOUNT_OUTLIER` warning (needs enough history) |
-| Text on the page tells the system what to do ("approve this", "ignore the total") | Treated as content; flagged `SUSPICIOUS_TEXT`; no effect on values, checks or status |
+| Text on the page tells the system what to do ("approve this", "ignore the total") | Treated as content; flagged `SUSPICIOUS_TEXT` when the wording is one the rules know (best effort); no effect on values, checks or status |
 | Several invoices in one PDF | Not supported in v1; the reviewer rejects with that reason, or splits the file outside the tool |
 | Model offline or too slow | One retry; then `failed` at `extract` with Retry; banner on the Inbox |
 | OCR engine missing | `failed` at `read` with install hint; status endpoint reports it |
