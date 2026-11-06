@@ -216,6 +216,7 @@ export function explain(check: CheckOut, entry: EntryOut, evidence: readonly Evi
     case "SUSPICIOUS_TEXT": {
       out.text.push(
         "The page includes text addressed to a reader or system. It was ignored. Review as usual.",
+        "This warning matches known wordings only, so its absence does not mean a page has none.",
       );
       break;
     }

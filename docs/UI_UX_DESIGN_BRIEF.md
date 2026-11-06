@@ -98,7 +98,7 @@ Plain words. No jargon like "grounding", "extraction", or "token" in the UI.
 | `CURRENCY_CHECK` | Different currency | "This invoice is in EUR. Your default is USD." |
 | `LOW_READ_QUALITY` | Hard to read | "This scan is blurry, so check every number against the page." |
 | `AMBIGUOUS_FORMAT` | Date or number could be read two ways | "03/04/2026 could be March 4 or April 3. We read it as March 4." |
-| `SUSPICIOUS_TEXT` | The page contains instructions | "The page includes text addressed to a reader or system. It was ignored. Review as usual." |
+| `SUSPICIOUS_TEXT` | The page contains instructions | "The page includes text addressed to a reader or system. It was ignored. Review as usual. This warning matches known wordings only, so its absence does not mean a page has none." Passed: "No known instruction wording on the page". |
 
 Buttons use verbs and objects: "Approve entry", "Reject document", "Export approved entries". Error messages say what happened and what to do next. Overrides: "I've checked this and it's correct because…".
 

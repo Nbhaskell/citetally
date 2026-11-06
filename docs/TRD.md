@@ -150,7 +150,7 @@ All checks are pure functions over the entry, its lines, its evidence and the da
 | `CURRENCY_CHECK` | Currency differs from the default or from the vendor's default |
 | `LOW_READ_QUALITY` | Mean OCR confidence below `CITETALLY_LOW_CONFIDENCE` (default 75), very few words, or large corrected skew |
 | `AMBIGUOUS_FORMAT` | Any parse flagged ambiguous in Ground |
-| `SUSPICIOUS_TEXT` | Page text contains instruction-like phrases aimed at an assistant or approver (patterns are configurable) |
+| `SUSPICIOUS_TEXT` | Page text contains instruction-like phrases aimed at an assistant or approver (patterns are configurable). Best effort: it matches known forms of request only, and its absence is not evidence that a page has none (D-088, D-089) |
 
 Because the model copies printed values and never recomputes, an invoice whose own arithmetic is wrong is flagged, not silently repaired.
 

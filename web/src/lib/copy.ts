@@ -73,7 +73,7 @@ export const PASSED_TITLE: Record<CheckCode, string> = {
   CURRENCY_CHECK: "Usual currency",
   LOW_READ_QUALITY: "Easy to read",
   AMBIGUOUS_FORMAT: "Dates and numbers read one way",
-  SUSPICIOUS_TEXT: "No instructions on the page",
+  SUSPICIOUS_TEXT: "No known instruction wording on the page",
 };
 
 export const NOT_FOUND_ADVICE = "Start the API with: python -m citetally";
