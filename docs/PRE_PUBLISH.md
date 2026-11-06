@@ -6,7 +6,7 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 
 - Visibility: **public** (MIT licence, description and eight topics set, read back with `gh repo view`).
 - `main`: 180 commits, 49 merged pull requests, none open; no open issues.
-- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. Branch protection is off and Dependabot security updates are off. "Delete branch on merge" was switched on on 6 Nov, after the 47 merged branches were deleted; `main` is the only branch.
+- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. "Delete branch on merge" was switched on on 6 Nov, after the 47 merged branches were deleted; `main` is the only branch. Later the same day branch protection and Dependabot security updates were switched on (below).
 
 ## Items that depend on a decision
 
@@ -15,8 +15,8 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 | Real name in `LICENSE` | Kept (confirmed 3 Nov) | `LICENSE` line 3 reads "Copyright (c) 2026" followed by a full name. It is the only real name in the working tree, and the same name is the commit author, with the GitHub no-reply address and not a personal one. A different name or an organization is a one-line change. |
 | Repository description and topics | Done | Description set; topics `invoices`, `receipts`, `document-ai`, `human-in-the-loop`, `fastapi`, `react`, `ocr`, `synthetic-data`. |
 | Private vulnerability reporting | On | `SECURITY.md` points reporters to GitHub's "Report a vulnerability" button, which works now. |
-| Branch protection on `main` | Not set | A single maintainer pushes through pull requests, and CI has passed on every merge. Protection (required checks, no force pushes) would stop an accidental direct push. |
-| Dependabot security updates | Off | Alerts are on and there are none open. Turning updates on would open a pull request when one appears. |
+| Branch protection on `main` | On (6 Nov) | Force pushes and deletion of `main` are blocked, and the `python` and `web` CI checks must pass before a merge. No approving review is required (a single maintainer), and administrators can bypass in an emergency. |
+| Dependabot security updates | On (6 Nov) | Alerts were already on, with none open. A pull request is now opened when a vulnerable dependency appears. A bump to a package that touches reading (Pillow, NumPy, pypdfium2) is read before merging, because the evaluation results depend on the pinned versions. |
 | Merged branches | Cleared (6 Nov) | All 47 were confirmed merged into `main` and deleted; `main` is the only branch, and "delete branch on merge" is on so new ones clear themselves. |
 
 ## All checks
@@ -55,5 +55,4 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 
 ## Follow-ups, if wanted
 
-1. Decide on branch protection for `main` and on Dependabot security updates.
-2. Refresh the screenshots and GIF so they show the current review screen.
+1. Refresh the screenshots and GIF so they show the current review screen.
