@@ -2,11 +2,15 @@
 
   python tools/check_personal_info.py --staged   what the git pre-commit hook runs
   python tools/check_personal_info.py --all      every tracked file (CI runs this)
+  python tools/check_personal_info.py --message FILE   a commit message (the commit-msg hook)
 
 Flags local user-profile paths, email addresses and phone numbers that are not invented ones,
-notes that describe the owner (experience, budget), assistant-instruction files, and (with
---staged) a commit email that is not a GitHub noreply address. Findings print the file, the
-line and a label, never the matched text, so CI logs do not repeat what was found.
+notes that describe the author (experience, budget), assistant-instruction files, and (with
+--staged) a commit email that is not a GitHub noreply address. In Markdown files and commit
+messages it also flags wording about a person where a decision or action should be described
+("the owner", first person), and in commit messages an assistant attribution line. Findings
+print the file, the line and a label, never the matched text, so CI logs do not repeat what
+was found.
 
 Standard library only. Turn the hook on once per clone: git config core.hooksPath .githooks
 """
@@ -37,6 +41,20 @@ _OWNER_NOTE = re.compile(
     r"|\bno (?:paid )?api account\b",
     re.IGNORECASE,
 )
+
+# Wording about a person, in Markdown and commit messages. Docs describe the action or the
+# decision, in one neutral voice: "accepted", not "the owner accepted"; "measured", not "I
+# measured". A role inside the product ("Owner-operator", "As an owner") is not matched.
+_PERSON_WORDING = re.compile(r"\bthe owner\b|\bowner['\u2019]s\b", re.IGNORECASE)
+_FIRST_PERSON = re.compile(
+    r"(?-i:\bI (?:[a-z]+ed|do|did|will|would|think|know|chose|decided|have|am|can|could|should"
+    r"|believe|recommend|found|looked|ran|wrote|made)\b)"
+    r"|\bmy\b|\bmine\b|\bwe (?:chose|decided|will|should|did)\b",
+    re.IGNORECASE,
+)
+# A user story keeps its first person: "As a bookkeeper, I ..." is the persona speaking.
+_USER_STORY = re.compile(r"^\s*(?:[-*]|\d+\.)?\s*As an? [^,]+, I ")
+_ATTRIBUTION = re.compile(r"co-authored-by:|generated with|claude code", re.IGNORECASE)
 
 _FAKE_EMAIL_DOMAINS = ("example.com", "example.org", "example.net")
 _NOREPLY_DOMAIN = "users.noreply.github.com"
@@ -89,8 +107,32 @@ def scan_text(path: str, text: str) -> list[Finding]:
                 labels.append("phone number")
                 break
         if _OWNER_NOTE.search(line):
-            labels.append("note about the owner")
+            labels.append("note about the author")
+        if path.lower().endswith(".md"):
+            if _PERSON_WORDING.search(line):
+                labels.append("wording about a person (describe the decision instead)")
+            if _FIRST_PERSON.search(line) and not _USER_STORY.match(line):
+                labels.append("first person (describe the action instead)")
         findings.extend(Finding(path, number, label) for label in labels)
+    return findings
+
+
+def scan_message(text: str) -> list[Finding]:
+    """A commit message: no assistant attribution, no wording about a person."""
+    findings: list[Finding] = []
+    for number, line in enumerate(text.splitlines(), start=1):
+        if line.startswith("#"):  # git's own comment lines
+            continue
+        if _ATTRIBUTION.search(line):
+            findings.append(Finding("commit message", number, "assistant attribution line"))
+        if _OWNER_NOTE.search(line):
+            findings.append(Finding("commit message", number, "note about the author"))
+        if _PERSON_WORDING.search(line):
+            findings.append(
+                Finding("commit message", number, "wording about a person (describe the decision)")
+            )
+        if _FIRST_PERSON.search(line):
+            findings.append(Finding("commit message", number, "first person (describe the action)"))
     return findings
 
 
@@ -154,7 +196,17 @@ def main(
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--staged", action="store_true", help="check files staged for commit")
     mode.add_argument("--all", action="store_true", help="check every tracked file")
+    mode.add_argument("--message", metavar="FILE", help="check a commit message file")
     args = parser.parse_args(argv)
+
+    if args.message:
+        found = scan_message(Path(args.message).read_text(encoding="utf-8"))
+        if found:
+            print("Commit message check failed:")
+            print("\n".join(f"  line {f.line}: {f.label}" for f in found))
+            print("Describe the action or the decision, in one neutral voice, and rewrite it.")
+            return 1
+        return 0
 
     files = (read_files or (_staged_files if args.staged else _tracked_files))()
     problems: list[str] = []

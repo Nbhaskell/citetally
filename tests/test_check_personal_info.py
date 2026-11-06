@@ -1,5 +1,7 @@
 """The personal-information guard: what it flags, what it allows, and what it never prints."""
 
+from pathlib import Path
+
 import pytest
 
 from tools.check_personal_info import (
@@ -7,6 +9,7 @@ from tools.check_personal_info import (
     check_author,
     is_excluded,
     main,
+    scan_message,
     scan_text,
 )
 
@@ -72,8 +75,8 @@ def test_flags_a_real_looking_phone_number_but_not_555_01xx() -> None:
         "Written for a beginner.",
     ],
 )
-def test_flags_notes_about_the_owner(text: str) -> None:
-    assert labels(text) == ["note about the owner"]
+def test_flags_notes_about_the_author(text: str) -> None:
+    assert "note about the author" in labels(text)
 
 
 def test_instructions_written_without_describing_the_person_pass() -> None:
@@ -145,3 +148,68 @@ def test_main_blocks_a_personal_commit_email_in_staged_mode_only() -> None:
     assert main(["--staged"], read_files=lambda: clean, author_email=PERSONAL_EMAIL) == 1
     # CI checks files, not who is committing.
     assert main(["--all"], read_files=lambda: clean, author_email=PERSONAL_EMAIL) == 0
+
+
+# --- wording about a person, in Markdown and commit messages ------------------------------------
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "The owner accepted the tool.",
+        "Confirmed by the owner on 3 Nov.",
+        "That is the owner's decision.",
+        "I measured the run and it took 30 seconds.",
+        "As far as I know the wheel is LGPL.",
+        "I do not know why the gap exists.",
+        "Compared in my check against the key.",
+        "We decided to leave it out.",
+    ],
+)
+def test_wording_about_a_person_is_flagged_in_markdown(text: str) -> None:
+    found = labels(text, "docs/NOTES.md")
+    assert found and all("describe the" in label for label in found)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "The tool was accepted.",
+        "Owner-operator (primary buyer): less retyping.",
+        "A bookkeeper or owner clearing a pile of invoices.",
+        "1. As a bookkeeper, I drag in a folder of PDFs and see them processed.",
+        "- As an owner, I am warned when the same invoice shows up twice.",
+        "A capital I and a lower-case l look the same.",
+        "Part I of the plan; the I/O layer.",
+        "Measured at 30 seconds per page.",
+    ],
+)
+def test_neutral_wording_and_product_roles_are_allowed(text: str) -> None:
+    assert labels(text, "docs/NOTES.md") == []
+
+
+def test_the_wording_rule_applies_to_markdown_only() -> None:
+    assert labels("I measured it; the owner decided.", "tools/notes.py") == []
+    assert labels("I measured it; the owner decided.", "README.md") != []
+
+
+def test_a_commit_message_is_checked_for_attribution_and_wording() -> None:
+    assert scan_message("Add the currency rule (D-085)\n\nThe page's currency is used.") == []
+    bad = scan_message(
+        "Fix it\n\nCo-Authored-By: someone\nGenerated with a tool\nI think this is right."
+    )
+    assert [f.label for f in bad] == [
+        "assistant attribution line",
+        "assistant attribution line",
+        "first person (describe the action)",
+    ]
+    assert scan_message("# a comment line from git\nTax rule") == []
+
+
+def test_main_checks_a_message_file(tmp_path: Path) -> None:
+    clean = tmp_path / "ok.txt"
+    clean.write_text("Add the rule\n", encoding="utf-8")
+    dirty = tmp_path / "bad.txt"
+    dirty.write_text("Add the rule\n\nCo-Authored-By: someone\n", encoding="utf-8")
+    assert main(["--message", str(clean)]) == 0
+    assert main(["--message", str(dirty)]) == 1
