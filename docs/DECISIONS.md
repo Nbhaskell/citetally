@@ -1191,3 +1191,17 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **What changed.** No detection change. The wording now says the flag matches known wordings only: the passed state reads "No known instruction wording on the page" (it read "No instructions on the page"), the warning adds "This warning matches known wordings only, so its absence does not mean a page has none.", and the README, TRD, UI brief and app flow describe `SUSPICIOUS_TEXT` as a best-effort warning. The README safety list states how page text is treated: as data, never acted on, with a person approving every entry.
 
 **Revisit** if the product starts to act on documents without a person, or if a model-reported flag is wanted; either would be tested on a new sealed set.
+
+
+### D-090. The `sealed4` slowdown was a passing event, most likely GPU memory
+
+**Question.** The median time per page in `sealed4` was 20.1 s against 18.6 s in `sealed3`, and the model stage of pages read from a picture took about twice as long (D-088).
+
+**Findings.**
+- **It was not the whole run.** In processing order, the median extract stage of the 240 picture-read documents was 22 to 44 s for the first 150 documents and 7 to 15 s from about the 176th on, against 6 to 12 s throughout `sealed3`. Reading, grounding and the checks did not change, and clean PDFs, which use the text model, did not slow down.
+- **The same settings are normal now.** 24 development documents (light scans and photos) with the same settings and the code of the run: median 18.4 s in total and 8.2 s in the extract stage, as in `sealed3`.
+- **Headroom is thin.** The vision model is 8.2 GB on a 10 GB card; with other programs using about 1 GB of GPU memory, `ollama ps` shows 8% of the model on the CPU. Any further use of the card (a browser, video, a game, an overlay) pushes more of it to the CPU, which would explain a stretch of slow extraction that later clears.
+
+**Conclusion.** Most likely other programs were using GPU memory during the first part of the run. This is an inference: GPU memory use was not recorded during the run, so it is not proven. The speed figures of `sealed4` are therefore pessimistic, and the steady state is about 17 to 18 s per page on this machine, as before.
+
+**Changes.** None to the code. The README states the cause as most likely. For a clean speed figure, runs should keep other GPU programs closed, and a run's report could record GPU memory use at the start, which is not done.
