@@ -53,4 +53,6 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 - Reading real documents. Nothing here was tried on one.
 - The GIF frames and two of the eight screenshots on 6 Nov (checked in earlier passes).
 
-## Follow-ups, if wanted
+## Follow-ups
+
+None open.
