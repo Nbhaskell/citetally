@@ -25,7 +25,7 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 |---|---|---|
 | **1. Secrets**: working tree and full history | PASS | `tools/secret_scan.py --history` (gitleaks, pinned), 6 Nov: 130 commits scanned, no leaks. GitHub secret scanning: 0 alerts. The commit hook runs the same scan on staged files. |
 | `.env` ignored, `.env.example` placeholders only | PASS | `.gitignore` excludes `.env`; `.env.example` is the only env file tracked and holds local addresses and model names only. |
-| Screenshots and GIF checked for keys, emails, paths | PASS | Earlier passes looked at all eight images and the GIF frames. On 6 Nov six of the eight screenshots were looked at again (inbox, review, picture check, failed upload, exports, insights): invented vendors and `example.com` addresses only, no file paths or account names. The screenshots predate the screen changes of D-083 (box outline, Hide boxes button); this is cosmetic. |
+| Screenshots and GIF checked for keys, emails, paths | PASS | Earlier passes looked at all eight images and the GIF frames. On 6 Nov six of the eight screenshots were looked at again (inbox, review, picture check, failed upload, exports, insights): invented vendors and `example.com` addresses only, no file paths or account names. On 6 Nov the three review screens (clean, picture check, blocked) were retaken from the demo documents in the current app, so they show the box outline and the Hide boxes button of D-083; they and the rebuilt GIF were looked at for paths, accounts and real data, and none was found. The other screenshots show screens that did not change. |
 | **2. Personal data and local traces** | PASS | `tools/check_personal_info.py --all`: no personal information in 299 files. A search of tracked files for the account name, local user-folder paths, machine names and personal email found only the `LICENSE` name, links to sibling projects and the guard's own test fixtures. Every commit's author and committer is the GitHub no-reply address, or GitHub for merges. No attribution lines in any commit or in pull-request descriptions 10 to 49. |
 | Wording about the author or first person in tracked docs | Fixed 6 Nov | The word "owner" used for a person (in this file and in `docs/DECISIONS.md`) and four first-person phrases (in `docs/DECISIONS.md` and `eval/reports/eval_heldout_analysis.md`) were reworded. "Owner" now appears only for roles inside the product. |
 | Private and local files ignored | PASS | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/`, `data/` (except the small demo set), databases, `eval/runs/`, `.venv`, `node_modules` and build output are in `.gitignore`. |
@@ -53,6 +53,6 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 - Reading real documents. Nothing here was tried on one.
 - The GIF frames and two of the eight screenshots on 6 Nov (checked in earlier passes).
 
-## Follow-ups, if wanted
+## Follow-ups
 
-1. Refresh the screenshots and GIF so they show the current review screen.
+None open.
