@@ -6,7 +6,7 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 
 - Visibility: **public** (MIT licence, description and eight topics set, read back with `gh repo view`).
 - `main`: 180 commits, 49 merged pull requests, none open; no open issues.
-- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. Branch protection is off, Dependabot security updates are off, and "delete branch on merge" is off, so the head branches of merged pull requests remain.
+- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. Branch protection is off and Dependabot security updates are off. "Delete branch on merge" was switched on on 6 Nov, after the 47 merged branches were deleted; `main` is the only branch.
 
 ## Items that depend on a decision
 
@@ -17,7 +17,7 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 | Private vulnerability reporting | On | `SECURITY.md` points reporters to GitHub's "Report a vulnerability" button, which works now. |
 | Branch protection on `main` | Not set | A single maintainer pushes through pull requests, and CI has passed on every merge. Protection (required checks, no force pushes) would stop an accidental direct push. |
 | Dependabot security updates | Off | Alerts are on and there are none open. Turning updates on would open a pull request when one appears. |
-| Merged branches | 45 remain on GitHub | All are merged into `main`. They can be deleted in one command, and "delete branch on merge" would stop new ones accumulating. |
+| Merged branches | Cleared (6 Nov) | All 47 were confirmed merged into `main` and deleted; `main` is the only branch, and "delete branch on merge" is on so new ones clear themselves. |
 
 ## All checks
 
@@ -55,6 +55,5 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 
 ## Follow-ups, if wanted
 
-1. Delete the 45 merged branches and switch on "delete branch on merge".
-2. Decide on branch protection for `main` and on Dependabot security updates.
-3. Refresh the screenshots and GIF so they show the current review screen.
+1. Decide on branch protection for `main` and on Dependabot security updates.
+2. Refresh the screenshots and GIF so they show the current review screen.
