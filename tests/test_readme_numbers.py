@@ -185,6 +185,7 @@ def test_the_sealed_comparison_table_matches_the_reports() -> None:
         ("`sealed`", sealed_final()),
         ("`sealed2`", sealed_run("sealed2", "final")),
         ("`sealed3`", sealed_run("sealed3", "final_hybrid")),
+        ("`sealed4`", sealed_run("sealed4", "final_hybrid")),
     )
     for label, report in runs:
         block = report["all"]
@@ -239,3 +240,26 @@ def test_the_second_pilot_figures_match_its_report() -> None:
         f"{pilot['typed_with_errors']} of the {pilot['typed_total']} typed records",
     ):
         assert text in README, text
+
+
+def test_the_sealed4_figures_quoted_in_words_match() -> None:
+    block = sealed_run("sealed4", "final_hybrid")["all"]
+    for text in (
+        f"Header fields {pct(block['header_field_exact']['rate'])} exact",
+        f"planted problems caught {pct(block['planted_recall']['rate'])}",
+        f"wrongly blocked {pct(block['clean_any_blocking_alarm']['rate'])}",
+        "fails " + pct(block["false_alarm_by_check"]["VALUE_IN_DOCUMENT"]["rate"]) + " of clean",
+        f"Median {block['seconds_per_page_median']:.1f} seconds per page",
+    ):
+        assert text in README, text
+    for kind, label in (
+        ("tax_mismatch", "Tax mismatch"),
+        ("currency_mismatch", "currency mismatch"),
+        ("injection_text", "Instruction text was missed entirely: 0 of 14"),
+    ):
+        found = block["planted_recall_by_kind"][kind]
+        if kind == "injection_text":
+            assert found["k"] == 0 and found["n"] == 14
+            assert label in README
+        else:
+            assert f"{found['k']} of {found['n']}" in README, (kind, found)

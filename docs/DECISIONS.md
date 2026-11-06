@@ -1140,3 +1140,40 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Evidence** (saved runs of the development and spent sets; the same code with the rule off against on, nothing read again). 124 values are newly located, 77 on phone photos and 47 on heavy scans, and none on clean PDFs or light scans. In every case checked against the answer key the model's text is the key's vendor name or one of its line descriptions: 0 of 124 were not. The first form of the rule, without the exclusions above, located 175, four of them not the key's text (a long run of table text, and three descriptions copied with a quantity in them); the exclusions were added for that reason. Of the clean documents with at least one value not located, 14 of 108 phone photos and 1 of 101 heavy scans are now fully located. The rest still have a date, quantity, unit price or amount that the reading misread.
 
 **Limits.** A small gain and a safe one, not a fix for photos: most unlocated values are numbers and dates with a misread digit, and the rule that a digit must match is not loosened. Developed on spent sets, so the effect on new documents is for `sealed4`.
+
+
+### D-088. The `sealed4` result: run once, read as it came out
+
+**What was run.** The fourth round of changes (D-082 to D-087) was merged first. `sealed4` (300 invented documents from a fifth business, answer-key hash `f3337be68def5a0f…`, verified again immediately before the run) was then run once, with the product's own settings and one pass: Tesseract text with RapidOCR locating values (`final_hybrid`), model `qwen3:8b`, prompt `extract-v3`, commit `3e31806`, a clean tree. Nothing was tuned on it. It is spent; a change made because of what follows is tested on a newer set. Report: `eval/reports/eval_sealed4.md`.
+
+**Result, all 300 documents** (against `sealed3`, different documents, so indicative).
+
+| | `sealed3` | `sealed4` |
+|---|---|---|
+| Header fields exact | 95.5% | 95.3% |
+| Money exact | 95.1% | 95.5% |
+| Line-item F1 | 87.1% | 89.4% |
+| Values found on the page | 95.2% | 96.1% |
+| Planted problems caught | 83.3% | 78.7% |
+| Clean documents with a blocking false alarm | 27.6% | 27.6% |
+| Median seconds per page | 18.6 | 20.1 |
+
+| Condition | Header fields exact | Line F1 | Planted caught | Clean documents blocked |
+|---|---|---|---|---|
+| clean PDF (60) | 94.8% | 98.7% | 87.0% | 0.0% |
+| light scan (90) | 100.0% | 91.2% | 76.5% | 5.4% |
+| heavy scan (60) | 89.7% | 70.3% | 72.7% | 57.9% |
+| phone photo (90) | 94.5% | 94.0% | 79.3% | 45.9% |
+
+**Against the aims.** Met: header fields on scans (85%), money on clean PDFs and scans, line F1 on clean PDFs and scans (heavy scans 70.3% against 70%), amount-outlier, date and unknown-vendor checks, and clean documents blocked at most 30% overall (27.6%). Missed: header fields exact on clean PDFs, 94.8% against 95% (the value-exact column, which counts a missing "$" as the same amount, is 99.3%); planted arithmetic errors (line math 8 of 8, total 8 of 8, tax 13 of 15, pooled 29 of 31, 93.5%, against 95%); planted duplicates (content 8 of 8, invoice number 6 of 8, pooled 87.5%); amount outliers 6 of 8 (80% aimed for, 75.0%); a value not located failing 17.2% of clean documents (against 10% for any one check; 22.9% in `sealed3`); median seconds per page 20.1 against under 20.
+
+**Instruction text: 0 of 14 flagged.** The `sealed4` phrasings were written without opening or running the detector (D-080), and the detector of D-082 matched none of them even as plain text. The line was printed on every one of the 14 pages. None of the 14 changed a stored value (the four that differ from the key are OCR slips: a digit in an invoice number, a missing date, and two vendor names compared with padding in my check; none carries anything from the planted line), because the extraction treats page text as data. So the defence that the system relies on held, and the warning that exists for a person did not fire. Taken with `sealed2` (1 of 14, before any fix) and `sealed3` (10 of 14, with phrasings the author of the detector had in view), this says that listing forms of request catches what its author thought of and little else.
+
+**Other findings.**
+- **Currency mismatch 5 of 7 again**, and tax mismatch 13 of 15 again; the changes of this round did not move either on new documents. The misses were not examined here.
+- **Speed.** The model stage of pages read from a picture took about twice as long as in `sealed3` (median extract stage 20.3 s for light scans and 21.3 s for photos, against 9.5 s and 8.9 s), while reading, grounding and the checks are unchanged and clean PDFs, read as text, are unchanged. The new code is not the cause (grounding takes under 0.1 s). The cause was not identified; the state of the machine during the run was not recorded.
+- **Photos and heavy scans** still carry the blocking: 45.9% and 57.9% of clean documents. Without `VALUE_IN_DOCUMENT` the figures are 31.1% and 36.8%, so other checks (required fields, subtotal, tax, total) block many of them too, which the out-of-order name rule of D-087 does not touch.
+
+**Not claimed.** That any change of the round helped on new documents: the effects of the currency and out-of-order rules are small against the interval on 8 or 15 documents. That the detector is of any use against wording it has not seen.
+
+**Next, not decided.** For instruction text, a different approach from pattern lists, for example a narrow question put to the model about whether the page addresses a reader (the model reads and code decides what to do with the answer), or accepting that the flag is a best effort and saying so in the product. Whatever is chosen is tested on a newer set (`sealed5`).
