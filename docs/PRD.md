@@ -87,7 +87,7 @@ Targets are starting hypotheses. Replace them with the measured baseline after t
 5. As a bookkeeper, I confirm or change the vendor and category in one click.
 6. As an owner, I am warned when the same invoice shows up twice or a charge is much bigger than usual.
 7. As an owner, I export approved entries to CSV and can see what I exported and when, so nothing is imported twice by accident.
-8. As the author, I run an evaluation and get a report of scores with limits, so I can publish honest results.
+8. As a maintainer, I run an evaluation and get a report of scores with limits, so I can publish honest results.
 
 ## 9. Functional requirements
 

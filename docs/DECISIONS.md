@@ -1205,3 +1205,16 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Conclusion.** Most likely other programs were using GPU memory during the first part of the run. This is an inference: GPU memory use was not recorded during the run, so it is not proven. The speed figures of `sealed4` are therefore pessimistic, and the steady state is about 17 to 18 s per page on this machine, as before.
 
 **Changes.** None to the code. The README states the cause as most likely. For a clean speed figure, runs should keep other GPU programs closed, and a run's report could record GPU memory use at the start, which is not done.
+
+
+### D-091. A wording check for Markdown and commit messages
+
+**Why.** Documents and decision entries describe actions and decisions in one neutral voice, not the people involved. Wording that named a person by role, and first-person phrases, had reached tracked documents and were removed in a later change (the pre-publish refresh, PR 50). Removing wording after the fact costs a change of its own, so the check moves to where the wording is written.
+
+**What changed** (`tools/check_personal_info.py`, `.githooks/commit-msg`).
+- In Markdown files, `--staged` and `--all` flag a person named by role as the decider or actor, and first-person pronouns used with a verb or as a possessive. A role inside the product (the business-owner persona) and a user story are not matched.
+- A new `commit-msg` hook runs `--message` on every commit message: an assistant attribution line (a co-author trailer, "Generated with", a tool name) and the same wording are refused before the commit is made.
+- Findings name the file, the line and the kind of problem, never the matched text. CI already runs `--all`, so a document that slips past a local hook still fails there.
+- One user story in the PRD named "the author" as its persona; it now says "a maintainer".
+
+**Limits.** The patterns are a list and catch what they list; a different phrasing for the same idea passes. The hook is enabled per clone (`git config core.hooksPath .githooks`), and CI is the backstop.
