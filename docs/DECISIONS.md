@@ -1218,3 +1218,15 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 - One user story in the PRD named "the author" as its persona; it now says "a maintainer".
 
 **Limits.** The patterns are a list and catch what they list; a different phrasing for the same idea passes. The hook is enabled per clone (`git config core.hooksPath .githooks`), and CI is the backstop.
+
+
+### D-092. Repository settings of the public repository
+
+**Why.** The projects in the suite were given one common baseline of GitHub settings on 13 November 2026. This entry records how this repository meets it.
+
+**Settings added on 13 November 2026.**
+- CodeQL default setup for Python, TypeScript and the GitHub Actions workflow.
+- A ruleset, "Protect main history", on the default branch. It blocks force pushes and deletion of `main`.
+- The Projects tab is off.
+
+**Settings kept.** Secret scanning with push protection, Dependabot alerts, private vulnerability reporting (the route `SECURITY.md` names) and automatic deletion of merged branches were already on. The branch protection of 6 November (the `python` and `web` checks must pass before a merge; administrators can bypass) and Dependabot security update pull requests also stay on. They are stricter than the baseline, which has no required check and no security update pull requests, so they were not removed. `docs/PRE_PUBLISH.md` records each setting.

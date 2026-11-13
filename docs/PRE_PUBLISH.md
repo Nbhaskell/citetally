@@ -6,7 +6,7 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 
 - Visibility: **public** (MIT licence, description and eight topics set, read back with `gh repo view`).
 - `main`: 180 commits, 49 merged pull requests, none open; no open issues.
-- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. "Delete branch on merge" was switched on on 6 Nov, after the 47 merged branches were deleted; `main` is the only branch. Later the same day branch protection and Dependabot security updates were switched on (below).
+- GitHub settings: secret scanning and push protection on, private vulnerability reporting on, Dependabot alerts on with 0 open. "Delete branch on merge" was switched on on 6 Nov, after the 47 merged branches were deleted; `main` is the only branch. Later the same day branch protection and Dependabot security updates were switched on (below). On 13 Nov a ruleset and CodeQL default setup were added, and the Projects tab was turned off (below and D-092).
 
 ## Items that depend on a decision
 
@@ -17,6 +17,9 @@ Run in Phase 10 (2 November 2026), again on 3 November 2026 after the sealed run
 | Private vulnerability reporting | On | `SECURITY.md` points reporters to GitHub's "Report a vulnerability" button, which works now. |
 | Branch protection on `main` | On (6 Nov) | Force pushes and deletion of `main` are blocked, and the `python` and `web` CI checks must pass before a merge. No approving review is required (a single maintainer), and administrators can bypass in an emergency. |
 | Dependabot security updates | On (6 Nov) | Alerts were already on, with none open. A pull request is now opened when a vulnerable dependency appears. A bump to a package that touches reading (Pillow, NumPy, pypdfium2) is read before merging, because the evaluation results depend on the pinned versions. |
+| Ruleset "Protect main history" on `main` | On (13 Nov) | Blocks force pushes and deletion of `main`, the same baseline as the other projects in the suite. It is added next to the branch protection of 6 Nov, which stays on. See D-092. |
+| CodeQL default setup | On (13 Nov) | Scans Python, TypeScript and the GitHub Actions workflow. |
+| Projects tab | Off (13 Nov) | Not used. |
 | Merged branches | Cleared (6 Nov) | All 47 were confirmed merged into `main` and deleted; `main` is the only branch, and "delete branch on merge" is on so new ones clear themselves. |
 
 ## All checks
