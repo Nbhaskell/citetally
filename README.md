@@ -6,6 +6,10 @@
 
 Citetally is a review desk for invoices and receipts at a small business. A local model reads each document and copies the printed values; plain code finds every value on the page, checks the arithmetic, duplicates and dates, and queues everything for a person to approve. **Nothing is ever paid, posted or sent automatically.** The only output is a CSV the person downloads and imports into their accounting software themselves.
 
+A 57-second recording of a local run with the demo data and the local models (`qwen3:8b` and `qwen3-vl:8b-instruct`): an invoice that is read and laid out for review, a wrong subtotal from the model that the arithmetic checks block, and the approval by a person with the CSV export. The waits for the model are cut; the first two scenes play at 1.15 times normal speed and the third at 1.3 times. All vendors, invoices and amounts are invented. The steps are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
+
+https://github.com/user-attachments/assets/bb17148d-8675-4a18-9866-de6a9b434209
+
 ![A walkthrough of the screens, from the inbox to the export](docs/images/walkthrough.gif)
 
 *A slide show of real screens, made from the invented demo documents. It is not a screen recording.*
