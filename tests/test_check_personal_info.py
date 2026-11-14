@@ -213,3 +213,78 @@ def test_main_checks_a_message_file(tmp_path: Path) -> None:
     dirty.write_text("Add the rule\n\nCo-Authored-By: someone\n", encoding="utf-8")
     assert main(["--message", str(clean)]) == 0
     assert main(["--message", str(dirty)]) == 1
+
+
+# --- wording findings warn; personal information blocks ------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "| 1 | Type: `I need the March invoices.` | The queue shows three entries. |",
+        "I need the report by Friday.",
+        "I feed the cat; I speed up; I heed it; I seed the data.",
+        "I proceed; I succeed; I exceed the limit.",
+    ],
+)
+def test_words_that_end_in_ed_but_are_not_past_tense_are_not_first_person(text: str) -> None:
+    assert labels(text, "docs/NOTES.md") == []
+    assert scan_message(text) == []
+
+
+@pytest.mark.parametrize(
+    "verb",
+    ["needed", "feeded", "speeded", "heeded", "seeded", "proceeded", "succeeded", "exceeded"],
+)
+def test_a_past_tense_verb_after_i_is_still_found(verb: str) -> None:
+    assert labels(f"I {verb} more data.", "docs/NOTES.md") != []
+
+
+def test_wording_findings_are_warnings_and_personal_information_is_not() -> None:
+    found = scan_text(
+        "docs/NOTES.md", f"I measured it.\nThe owner decided.\nmail {PERSONAL_EMAIL}\n"
+    )
+    assert [(f.line, f.warning) for f in found] == [(1, True), (2, True), (3, False)]
+    assert [f.warning for f in scan_text("docs/NOTES.md", "A beginner wrote this.")] == [False]
+
+
+def test_commit_message_wording_is_a_warning_and_attribution_is_not() -> None:
+    found = scan_message("Fix it\n\nCo-Authored-By: someone\nI think so.\nThe owner agreed.")
+    assert [(f.line, f.warning) for f in found] == [(3, False), (4, True), (5, True)]
+
+
+def test_main_prints_wording_warnings_and_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
+    files = {"docs/NOTES.md": "I measured the run.\n"}
+    code = main(["--staged"], read_files=lambda: files, author_email="a@users.noreply.github.com")
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "Doc wording warnings" in out
+    assert "docs/NOTES.md:1: first person" in out
+    assert "Personal information check failed" not in out
+    assert "No personal information found in 1 files." in out
+
+
+def test_main_blocks_on_personal_information_and_still_prints_the_warnings(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    files = {"docs/NOTES.md": f"I measured the run.\nmail {PERSONAL_EMAIL}\n"}
+    code = main(["--all"], read_files=lambda: files)
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "docs/NOTES.md:1: first person" in out.split("Personal information check failed")[0]
+    assert "docs/NOTES.md:2: email address" in out.split("Personal information check failed")[1]
+
+
+def test_a_commit_message_with_wording_only_warns(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    wording = tmp_path / "wording.txt"
+    wording.write_text("Add the rule\n\nI think this is right.\n", encoding="utf-8")
+    assert main(["--message", str(wording)]) == 0
+    out = capsys.readouterr().out
+    assert "Doc wording warnings" in out
+    assert "line 3: first person" in out
+    assert "Commit message check failed" not in out
+    note = tmp_path / "note.txt"
+    note.write_text("Add the rule\n\nWritten by a beginner.\n", encoding="utf-8")
+    assert main(["--message", str(note)]) == 1

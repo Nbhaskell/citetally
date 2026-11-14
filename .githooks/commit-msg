@@ -1,5 +1,5 @@
 #!/bin/sh
-# Blocks assistant attribution lines and wording about a person in a commit message.
+# Blocks assistant attribution lines in a commit message; wording about a person is a warning.
 # Enabled with the pre-commit hook: git config core.hooksPath .githooks
 for py in .venv/Scripts/python.exe .venv/bin/python python3 python; do
   if command -v "$py" >/dev/null 2>&1; then

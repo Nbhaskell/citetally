@@ -6,11 +6,16 @@
 
 Flags local user-profile paths, email addresses and phone numbers that are not invented ones,
 notes that describe the author (experience, budget), assistant-instruction files, and (with
---staged) a commit email that is not a GitHub noreply address. In Markdown files and commit
-messages it also flags wording about a person where a decision or action should be described
-("the owner", first person), and in commit messages an assistant attribution line. Findings
-print the file, the line and a label, never the matched text, so CI logs do not repeat what
-was found.
+--staged) a commit email that is not a GitHub noreply address, and in commit messages an
+assistant attribution line. These findings block the commit.
+
+In Markdown files and commit messages it also reports wording about a person where a decision
+or action should be described ("the owner", first person). These findings are warnings: they
+are printed and the commit continues, because a pattern cannot tell the voice of the docs from
+a quoted customer or model message.
+
+Findings print the file, the line and a label, never the matched text, so CI logs do not repeat
+what was found.
 
 Standard library only. Turn the hook on once per clone: git config core.hooksPath .githooks
 """
@@ -45,9 +50,12 @@ _OWNER_NOTE = re.compile(
 # Wording about a person, in Markdown and commit messages. Docs describe the action or the
 # decision, in one neutral voice: "accepted", not "the owner accepted"; "measured", not "I
 # measured". A role inside the product ("Owner-operator", "As an owner") is not matched.
+# These findings are warnings (Finding.warning). Present-tense verbs that end in "ed" ("I need")
+# are not first-person past tense and are not matched.
 _PERSON_WORDING = re.compile(r"\bthe owner\b|\bowner['\u2019]s\b", re.IGNORECASE)
 _FIRST_PERSON = re.compile(
-    r"(?-i:\bI (?:[a-z]+ed|do|did|will|would|think|know|chose|decided|have|am|can|could|should"
+    r"(?-i:\bI (?:(?!(?:need|feed|speed|heed|seed|proceed|succeed|exceed)\b)[a-z]+ed"
+    r"|do|did|will|would|think|know|chose|decided|have|am|can|could|should"
     r"|believe|recommend|found|looked|ran|wrote|made)\b)"
     r"|\bmy\b|\bmine\b|\bwe (?:chose|decided|will|should|did)\b",
     re.IGNORECASE,
@@ -73,6 +81,7 @@ class Finding:
     path: str
     line: int
     label: str
+    warning: bool = False  # doc wording: printed, does not block
 
 
 def is_excluded(path: str) -> bool:
@@ -95,6 +104,7 @@ def scan_text(path: str, text: str) -> list[Finding]:
         findings.append(Finding(path, 1, "assistant-instruction file"))
     for number, line in enumerate(text.splitlines(), start=1):
         labels: list[str] = []
+        wording: list[str] = []
         if any(m.group(1).lower() not in _GENERIC_NAMES for m in _LOCAL_PATH.finditer(line)):
             labels.append("local user path")
         for match in _EMAIL.finditer(line):
@@ -110,15 +120,16 @@ def scan_text(path: str, text: str) -> list[Finding]:
             labels.append("note about the author")
         if path.lower().endswith(".md"):
             if _PERSON_WORDING.search(line):
-                labels.append("wording about a person (describe the decision instead)")
+                wording.append("wording about a person (describe the decision instead)")
             if _FIRST_PERSON.search(line) and not _USER_STORY.match(line):
-                labels.append("first person (describe the action instead)")
+                wording.append("first person (describe the action instead)")
         findings.extend(Finding(path, number, label) for label in labels)
+        findings.extend(Finding(path, number, label, warning=True) for label in wording)
     return findings
 
 
 def scan_message(text: str) -> list[Finding]:
-    """A commit message: no assistant attribution, no wording about a person."""
+    """A commit message: attribution and notes about the author block; wording warns."""
     findings: list[Finding] = []
     for number, line in enumerate(text.splitlines(), start=1):
         if line.startswith("#"):  # git's own comment lines
@@ -129,10 +140,19 @@ def scan_message(text: str) -> list[Finding]:
             findings.append(Finding("commit message", number, "note about the author"))
         if _PERSON_WORDING.search(line):
             findings.append(
-                Finding("commit message", number, "wording about a person (describe the decision)")
+                Finding(
+                    "commit message",
+                    number,
+                    "wording about a person (describe the decision)",
+                    warning=True,
+                )
             )
         if _FIRST_PERSON.search(line):
-            findings.append(Finding("commit message", number, "first person (describe the action)"))
+            findings.append(
+                Finding(
+                    "commit message", number, "first person (describe the action)", warning=True
+                )
+            )
     return findings
 
 
@@ -187,6 +207,13 @@ def _author_email() -> str:
     return match.group(1) if match else ""
 
 
+def _print_warnings(lines: Sequence[str], where: str) -> None:
+    if lines:
+        print(f"Doc wording warnings in the {where} (not blocking):")
+        print("\n".join(f"  {line}" for line in lines))
+        print("Describe the action or the decision in one neutral voice.")
+
+
 def main(
     argv: Sequence[str] | None = None,
     read_files: Callable[[], Mapping[str, str]] | None = None,
@@ -201,26 +228,31 @@ def main(
 
     if args.message:
         found = scan_message(Path(args.message).read_text(encoding="utf-8"))
-        if found:
+        _print_warnings([f"line {f.line}: {f.label}" for f in found if f.warning], "commit message")
+        blocking = [f for f in found if not f.warning]
+        if blocking:
             print("Commit message check failed:")
-            print("\n".join(f"  line {f.line}: {f.label}" for f in found))
-            print("Describe the action or the decision, in one neutral voice, and rewrite it.")
+            print("\n".join(f"  line {f.line}: {f.label}" for f in blocking))
+            print("Remove the line and commit again.")
             return 1
         return 0
 
     files = (read_files or (_staged_files if args.staged else _tracked_files))()
     problems: list[str] = []
+    warnings: list[str] = []
     scanned = 0
     for path, text in sorted(files.items()):
         if is_excluded(path):
             continue
         scanned += 1
-        problems += [f"{f.path}:{f.line}: {f.label}" for f in scan_text(path, text)]
+        for f in scan_text(path, text):
+            (warnings if f.warning else problems).append(f"{f.path}:{f.line}: {f.label}")
     if args.staged:
         message = check_author(_author_email() if author_email is None else author_email)
         if message:
             problems.append(message)
 
+    _print_warnings(warnings, "docs")
     if problems:
         print("Personal information check failed:")
         print("\n".join(f"  {p}" for p in problems))

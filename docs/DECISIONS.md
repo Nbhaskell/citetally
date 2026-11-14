@@ -1230,3 +1230,15 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 - The Projects tab is off.
 
 **Settings kept.** Secret scanning with push protection, Dependabot alerts, private vulnerability reporting (the route `SECURITY.md` names) and automatic deletion of merged branches were already on. The branch protection of 6 November (the `python` and `web` checks must pass before a merge; administrators can bypass) and Dependabot security update pull requests also stay on. They are stricter than the baseline, which has no required check and no security update pull requests, so they were not removed. `docs/PRE_PUBLISH.md` records each setting.
+
+
+### D-093. The personal-information guard blocks on personal information only; doc wording is a warning
+
+**Why.** `tools/check_personal_info.py` did two jobs with one exit code. It found personal information (local user paths, real email addresses and phone numbers, notes about the author, assistant-instruction files, attribution lines, a commit email that is not a noreply address). It also found doc wording about a person (a named role where a decision should be described, or first person) in Markdown files and commit messages (D-091). A wording finding stopped a commit under the heading "Personal information check failed", although no personal information was present. A pattern cannot tell the voice of the docs from a quoted customer or model message, so a correct quotation, for example a typed message that starts with "I need" in a demo script, was refused.
+
+**What changed** (`tools/check_personal_info.py`, `.githooks/commit-msg`).
+- A finding now carries a `warning` flag. Personal-information findings block the commit, as before.
+- Wording findings are printed under "Doc wording warnings" with the file and line, and the commit continues. This applies to files (`--staged`, `--all`) and to commit messages (`--message`). CI prints the same warnings and passes.
+- The first-person pattern no longer matches present-tense verbs that end in "ed": "need", "feed", "speed", "heed", "seed", "proceed", "succeed", "exceed". Their past-tense forms still match.
+
+**Limits.** The one-voice rule for docs is unchanged; only its enforcement changed from a gate to a warning. A warning can be passed over, so wording about a person can now reach a tracked document. The list of present-tense verbs is a list; a verb that is not on it still gives a wrong warning, which now costs one line of output.
