@@ -54,6 +54,21 @@ Everything runs on the person's own machine. Hosted models are off by default (`
 
 ## How well it reads
 
+**The current system, on four sealed sets, each run once.** Every document is invented. Each set used a new invented business and five new layouts.
+
+| Run | Documents | Header fields exact | Money exact | Line-item F1 | Planted problems caught | Clean documents wrongly blocked |
+|---|---|---|---|---|---|---|
+| `sealed` | 250 | 96.7% | 95.9% | 91.8% | 84.0% | 46.9% |
+| `sealed2` | 300 | 93.1% | 91.7% | 87.6% | 73.2% | 42.2% |
+| `sealed3` | 300 | 95.5% | 95.1% | 87.1% | 83.3% | 27.6% |
+| `sealed4` | 300 | 95.3% | 95.5% | 89.4% | 78.7% | 27.6% |
+
+The system was changed between these runs, so each row measures the system as it stood then. Still weak in the newest run: instruction text hidden in a document was not flagged (0 of 14), and 27.6% of clean documents were blocked although nothing was wrong. What each run tested, and what the numbers cannot show, is in [Held-out against sealed, and two more sealed runs](#held-out-against-sealed-and-two-more-sealed-runs).
+
+The rest of this section gives the results in the order they were measured. It starts with the first system, which could not read scans and photos.
+
+### The first system: development and held-out runs
+
 Measured on invented documents in four conditions: clean digital PDFs, light scans, heavy scans and phone photos. The development split (140 documents) was used to look at errors. The held-out split (70 documents, 5 layouts never used while building) was run **once**, after the development numbers were written down, on the system as shipped. Share of printed header fields read exactly:
 
 | Documents | Development | Held-out (one run) |
@@ -193,7 +208,7 @@ Other settings (`forced_ocr`, `text_and_image`, `thinking`) and every developmen
 
 Planning documents are in [`docs/`](docs/): [`PRD.md`](docs/PRD.md) (what and why), [`TRD.md`](docs/TRD.md) (architecture, checks, API, evaluation design), [`APP_FLOW.md`](docs/APP_FLOW.md), [`UI_UX_DESIGN_BRIEF.md`](docs/UI_UX_DESIGN_BRIEF.md), [`BACKEND_SCHEMA.md`](docs/BACKEND_SCHEMA.md) (exact names), [`IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md), [`HARDENING.md`](docs/HARDENING.md) and [`DECISIONS.md`](docs/DECISIONS.md) (every decision the plans did not cover, with the reason).
 
-Part of a family of projects: [citedesk](https://github.com/Nbhaskell/citedesk), [citewise-markets](https://github.com/Nbhaskell/citewise-markets), [rag-project](https://github.com/Nbhaskell/rag-project), [citecheck](https://github.com/Nbhaskell/citecheck).
+Part of a family of projects: [citedesk](https://github.com/Nbhaskell/citedesk), [citebook](https://github.com/Nbhaskell/citebook), [citewise-markets](https://github.com/Nbhaskell/citewise-markets), [rag-project](https://github.com/Nbhaskell/rag-project), [citecheck](https://github.com/Nbhaskell/citecheck).
 
 ## License
 
