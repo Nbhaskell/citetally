@@ -43,7 +43,7 @@ export default function UploadArea({
         <p>Drop PDF, PNG or JPEG files here. Lay the page flat, fill the frame, good light, no glare.</p>
       </div>
       <div className="upload-buttons">
-        <button type="button" className="button" disabled={busy} onClick={() => choose.current?.click()}>
+        <button type="button" className="button button-primary" disabled={busy} onClick={() => choose.current?.click()}>
           <Icon name="upload" />
           Choose files
         </button>

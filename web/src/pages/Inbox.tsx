@@ -358,7 +358,7 @@ export default function Inbox() {
           <EmptyState
             title="Nothing here yet"
             actions={
-              <button type="button" className="button button-primary" disabled={uploading} onClick={loadDemo}>
+              <button type="button" className="button" disabled={uploading} onClick={loadDemo}>
                 Load demo documents
               </button>
             }

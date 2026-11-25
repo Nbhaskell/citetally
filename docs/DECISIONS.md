@@ -1242,3 +1242,18 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 - The first-person pattern no longer matches present-tense verbs that end in "ed": "need", "feed", "speed", "heed", "seed", "proceed", "succeed", "exceed". Their past-tense forms still match.
 
 **Limits.** The one-voice rule for docs is unchanged; only its enforcement changed from a gate to a warning. A warning can be passed over, so wording about a person can now reach a tracked document. The list of present-tense verbs is a list; a verb that is not on it still gives a wrong warning, which now costs one line of output.
+
+### D-094. The shared Cite design system replaces "ledger paper"
+
+**Why.** The four Cite apps (Citebrief, Citedesk, Citebook, Citetally) now share one look, "The Calm Control Room", defined in Citebrief (its D-034). Citetally is the pilot because its review desk (tables, amounts, statuses) is closest to the brief page. This replaces the visual direction of D-054.
+
+**What changed.**
+- `DESIGN.md` (repository root) and `web/src/cite-tokens.css` are copied unchanged from Citebrief. The tokens are imported once in `web/src/main.tsx`; the app CSS uses only `--cite-*` variables and has no hex values. A value changes in Citebrief first, then both files are copied again.
+- Grey canvas, white cards with the one card shadow, a top bar with the navy brand mark, system fonts only (the serif stack is gone), tabular numerals, pills with an icon and a word, tables per `DESIGN.md`, Label-type column headers, a print style.
+- One navy primary button per screen. On the Inbox, "Choose files" is the primary button and "Load demo documents" in the empty state is secondary; on Vendors, "Add a vendor" in the empty state is secondary because the page head already has the primary "Add vendor". "Merge into ..." uses the danger button: it removes a vendor record and its dialog names both vendors.
+- Failing checks are tinted cards (danger or warning tint, 1px line) instead of a 5px coloured left border, which `DESIGN.md` does not allow. "Nothing needs attention" is the all-clear panel.
+- The "Ready to export" figures are summary tiles.
+
+**Dark mode is dropped.** `cite-tokens.css` has light values only, so the dark theme of D-054 is removed and the page sets `color-scheme: light`. This departs from the UI brief ("Dark mode: supported if it does not cost the page image's legibility; light mode first"). A dark theme would need dark values in the shared tokens first.
+
+**Unchanged.** Behaviour, data flow, API calls and visible text.

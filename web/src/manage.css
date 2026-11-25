@@ -10,12 +10,12 @@
 
 .lead {
   max-width: 42rem;
-  margin: 0 0 1.25rem;
-  color: var(--ink-soft);
+  margin: 0 0 var(--cite-space-5);
+  color: var(--cite-muted);
 }
 
 .section-head {
-  margin-top: 2rem;
+  margin-top: var(--cite-space-6);
 }
 
 /* --- vendors ----------------------------------------------------------------------------- */
@@ -47,9 +47,11 @@
 
 .merge-preview {
   margin: 0.75rem 0;
-  padding: 0.75rem 1rem;
-  background: var(--warn-wash);
-  border-left: 3px solid var(--warn);
+  padding: var(--cite-space-3) var(--cite-space-4);
+  background: var(--cite-warning-bg);
+  color: var(--cite-warning-text);
+  border: 1px solid var(--cite-warning-line);
+  border-radius: var(--cite-radius-md);
 }
 
 .merge-preview p {
@@ -82,16 +84,16 @@
   display: flex;
   gap: 0.75rem;
   align-items: flex-start;
-  padding: 0.7rem 0.9rem;
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
+  padding: var(--cite-space-3) var(--cite-space-4);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-md);
   cursor: pointer;
 }
 
 .profile:has(input:checked) {
-  border-color: var(--ink);
-  box-shadow: inset 3px 0 0 var(--ink);
+  background: var(--cite-info-bg);
+  border-color: var(--cite-primary);
 }
 
 .profile input {
@@ -115,15 +117,12 @@
 .export-ready,
 .export-made {
   max-width: 100%;
-  margin: 1.25rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-}
-
-.export-made {
-  border-color: var(--ok, var(--ink));
+  margin: var(--cite-space-5) 0;
+  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
 }
 
 .export-ready h2,
@@ -132,26 +131,46 @@
 }
 
 .export-ready h3 {
-  margin: 1.25rem 0 0.5rem;
+  margin: var(--cite-space-5) 0 var(--cite-space-2);
   font-size: 1rem;
 }
 
 .export-ready .button-primary {
-  margin-top: 1rem;
+  margin-top: var(--cite-space-4);
 }
 
 .facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 2rem;
+  gap: var(--cite-space-3) var(--cite-space-6);
   margin: 0;
 }
 
 .facts dt {
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
+}
+
+/* Summary tiles: the export figures, read from code. */
+.export-ready .facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--cite-space-3);
+}
+
+.export-ready .facts > div {
+  padding: 14px var(--cite-space-4);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+}
+
+.export-ready .facts dd {
+  margin-top: var(--cite-space-1);
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .facts dd {
@@ -162,24 +181,27 @@
 .sample {
   width: 100%;
   border-collapse: collapse;
-  background: var(--paper);
-  border: 1px solid var(--rule);
 }
 
 .sample th,
 .sample td {
-  padding: 0.4rem 0.6rem;
+  padding: 10px var(--cite-space-3);
   text-align: left;
   white-space: nowrap;
-  font-size: 0.85rem;
-  border-bottom: 1px solid var(--rule);
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--cite-rule);
+}
+
+.sample tbody tr:last-child > * {
+  border-bottom: 0;
 }
 
 .sample thead th {
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
-  border-bottom: 2px solid var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--cite-muted);
+  border-bottom-color: var(--cite-border);
 }
 
 .history code {
@@ -190,16 +212,17 @@
 
 .insights-grid {
   display: grid;
-  gap: 1.25rem;
+  gap: var(--cite-space-4);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
   align-items: start;
 }
 
 .insight {
-  padding: 1rem 1.25rem;
-  background: var(--raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
 }
 
 .insight h2 {
@@ -207,18 +230,19 @@
 }
 
 .insight h3 {
-  margin: 1rem 0 0.25rem;
+  margin: var(--cite-space-4) 0 var(--cite-space-1);
   font-size: 1rem;
 }
 
 .headline {
-  margin: 0.25rem 0 0.75rem;
-  font-family: var(--serif);
-  font-size: 1.2rem;
+  margin: var(--cite-space-1) 0 var(--cite-space-3);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .headline-bad {
-  color: var(--block);
+  color: var(--cite-danger-text);
 }
 
 .bars-tools {
@@ -258,13 +282,13 @@
   display: block;
   height: 100%;
   min-width: 2px;
-  background: var(--accent);
-  border-radius: 0 4px 4px 0;
+  background: var(--cite-primary);
+  border-radius: 0 var(--cite-radius-sm) var(--cite-radius-sm) 0;
 }
 
 .bar-negative {
-  background: repeating-linear-gradient(135deg, var(--accent) 0 3px, transparent 3px 6px);
-  outline: 1px solid var(--accent);
+  background: repeating-linear-gradient(135deg, var(--cite-primary) 0 3px, transparent 3px 6px);
+  outline: 1px solid var(--cite-primary);
   outline-offset: -1px;
 }
 
@@ -296,7 +320,8 @@
 }
 
 .settings-form small {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
+  font-weight: 400;
 }
 
 .settings-form .link-button {
@@ -320,8 +345,12 @@
   display: grid;
   grid-template-columns: 9.5rem 1fr;
   gap: 0.75rem;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid var(--rule);
+  padding: var(--cite-space-2) 0;
+  border-bottom: 1px solid var(--cite-rule);
+}
+
+.selftest li:last-child {
+  border-bottom: 0;
 }
 
 .selftest-mark {
@@ -329,11 +358,19 @@
   align-items: center;
   gap: 0.35rem;
   font-weight: 600;
-  color: var(--ok);
+  color: var(--cite-success-text);
 }
 
 .selftest-bad .selftest-mark {
-  color: var(--block);
+  color: var(--cite-danger-text);
+}
+
+@media (max-width: 479px) {
+  .insight,
+  .export-ready,
+  .export-made {
+    padding: var(--cite-space-4);
+  }
 }
 
 @media (max-width: 767px) {

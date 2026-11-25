@@ -1,56 +1,13 @@
-/* Ledger paper: a calm bookkeeping desk. Warm paper, ink-dark text, hairline rules like a ledger,
-   a serif for names and headings, tabular figures for money. No web fonts, no outside requests.
-   Colour is never the only signal: every state also has an icon and a word. */
+/* The Cite design system ("The Calm Control Room", DESIGN.md at the repository root): a grey canvas,
+   white cards with one shadow, a deep navy main action, system fonts and tabular figures for money.
+   Every colour, radius and space comes from cite-tokens.css. Colour is never the only signal: every
+   state also has an icon and a word. */
 
 :root {
-  color-scheme: light dark;
-  --paper: #f5f1e6;
-  --raised: #fffdf7;
-  --ink: #1d211c;
-  --ink-soft: #4f5449;
-  --rule: #d9d2bf;
-  --rule-strong: #b3aa91;
-  --accent: #1f5a3f;
-  --accent-ink: #ffffff;
-  --accent-wash: #e1ede3;
-  --ok: #1d6638;
-  --ok-wash: #e0eddf;
-  --warn: #764a00;
-  --warn-wash: #f8e9c6;
-  --block: #962a1b;
-  --block-wash: #f6ddd6;
-  --info: #284c78;
-  --info-wash: #e0e8f2;
-  --focus: #1b56a6;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --radius: 4px;
-  font-family: var(--sans);
+  color-scheme: light;
+  font-family: var(--cite-font);
   font-size: 100%;
-  line-height: 1.45;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #181a17;
-    --raised: #20231f;
-    --ink: #ece8da;
-    --ink-soft: #b4b09f;
-    --rule: #383b33;
-    --rule-strong: #565a4d;
-    --accent: #86c9a2;
-    --accent-ink: #10231a;
-    --accent-wash: #1f3328;
-    --ok: #8fd3a3;
-    --ok-wash: #1e3324;
-    --warn: #efc66b;
-    --warn-wash: #3a2f13;
-    --block: #ff9d8c;
-    --block-wash: #44211b;
-    --info: #9cc0ee;
-    --info-wash: #1f2e44;
-    --focus: #7db2ff;
-  }
+  line-height: 1.55;
 }
 
 * {
@@ -59,8 +16,8 @@
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--cite-canvas);
+  color: var(--cite-text);
   min-height: 100vh;
 }
 
@@ -72,27 +29,30 @@ body {
 
 h1,
 h2 {
-  font-family: var(--serif);
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
+/* Headline type: one page title. */
 h1 {
   font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   margin: 0 0 1rem;
 }
 
+/* Title type: card titles and section headings. */
 h2 {
-  font-size: 1.15rem;
-  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  margin: 0 0 var(--cite-space-3);
 }
 
 a {
-  color: var(--accent);
+  color: var(--cite-link);
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--cite-focus);
   outline-offset: 2px;
 }
 
@@ -116,10 +76,10 @@ main:focus {
   position: absolute;
   left: 0.5rem;
   top: -4rem;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--cite-primary);
+  color: var(--cite-on-primary);
   padding: 0.5rem 0.75rem;
-  border-radius: var(--radius);
+  border-radius: var(--cite-radius-md);
   z-index: 20;
 }
 
@@ -133,7 +93,16 @@ main:focus {
 }
 
 .quiet {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
+}
+
+/* A card: white on the canvas, one border, the one shadow. */
+.card {
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
+  padding: 18px var(--cite-space-5) var(--cite-space-5);
 }
 
 /* --- frame ------------------------------------------------------------------------------- */
@@ -141,26 +110,34 @@ main:focus {
 .masthead {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem 2rem;
-  padding: 0.9rem 1.25rem 0.6rem;
-  border-bottom: 2px solid var(--ink);
-  background: var(--raised);
+  align-items: center;
+  gap: var(--cite-space-2) var(--cite-space-6);
+  padding: var(--cite-space-3) max(1.25rem, (100% - 72rem) / 2 + 1.25rem);
+  border-bottom: 1px solid var(--cite-border);
+  background: var(--cite-surface);
 }
 
 .brand {
-  font-family: var(--serif);
-  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cite-space-2);
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--ink);
+  color: var(--cite-text);
   text-decoration: none;
+}
+
+.brand-mark {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: var(--cite-radius-md);
+  background: var(--cite-primary);
 }
 
 .masthead ul {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+  gap: var(--cite-space-1) var(--cite-space-5);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -168,119 +145,167 @@ main:focus {
 
 .masthead nav a {
   display: inline-block;
-  padding: 0.35rem 0.1rem;
-  color: var(--ink-soft);
+  padding: var(--cite-space-2) 0;
+  color: var(--cite-link);
   text-decoration: none;
   border-bottom: 2px solid transparent;
 }
 
 .masthead nav a:hover {
-  color: var(--ink);
+  text-decoration: underline;
 }
 
 .masthead nav a[aria-current="page"] {
-  color: var(--ink);
+  color: var(--cite-text);
   font-weight: 600;
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--cite-primary);
 }
 
 main {
   flex: 1;
   width: 100%;
-  max-width: 76rem;
+  max-width: 72rem;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 2.5rem;
+  padding: var(--cite-space-6) 1.25rem 2.5rem;
 }
 
 .demo-footer {
-  padding: 0.9rem 1.25rem;
+  padding: var(--cite-space-4) 1.25rem;
   text-align: center;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--rule);
-  font-size: 0.9rem;
+  color: var(--cite-muted);
+  border-top: 1px solid var(--cite-border);
+  font-size: 0.875rem;
 }
 
+/* Page notices: the warning banner (and its danger form for lost contact). */
 .banner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 0.55rem 1.25rem;
-  font-size: 0.95rem;
+  gap: var(--cite-space-2);
+  padding: var(--cite-space-2) 1.25rem;
+  border-bottom: 1px solid var(--cite-warning-line);
+  font-size: 0.9375rem;
 }
 
 .banner-warn {
-  background: var(--warn-wash);
-  color: var(--warn);
+  background: var(--cite-warning-bg);
+  color: var(--cite-warning-text);
 }
 
 .banner-block {
-  background: var(--block-wash);
-  color: var(--block);
+  background: var(--cite-danger-bg);
+  color: var(--cite-danger-text);
+  border-bottom-color: var(--cite-danger-line);
 }
 
 /* --- controls ---------------------------------------------------------------------------- */
 
+/* Secondary is the default; .button-primary is the one main action on a screen. */
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  min-height: 2.5rem;
-  padding: 0.4rem 0.9rem;
+  gap: var(--cite-space-2);
+  min-height: 36px;
+  padding: 0 var(--cite-space-4);
   font: inherit;
-  color: var(--ink);
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cite-text);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-md);
   cursor: pointer;
   text-decoration: none;
 }
 
 .button:hover:not(:disabled) {
-  background: var(--accent-wash);
+  background: var(--cite-canvas);
 }
 
 .button:disabled {
-  opacity: 0.55;
+  background: var(--cite-rule);
+  color: var(--cite-muted);
   cursor: not-allowed;
 }
 
 .button-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
+  background: var(--cite-primary);
+  color: var(--cite-on-primary);
+  border-color: var(--cite-primary);
 }
 
 .button-primary:hover:not(:disabled) {
-  background: var(--accent);
-  filter: brightness(1.1);
+  background: var(--cite-primary-hover);
+}
+
+.button-danger {
+  background: var(--cite-danger-solid);
+  color: var(--cite-on-primary);
+  border-color: var(--cite-danger-solid);
+}
+
+.button-danger:hover:not(:disabled) {
+  background: var(--cite-danger-text);
+}
+
+.button-primary:disabled,
+.button-danger:disabled {
+  border-color: var(--cite-rule);
 }
 
 .button-small {
   min-height: 2rem;
-  padding: 0.2rem 0.65rem;
-  font-size: 0.9rem;
+  padding: 0 var(--cite-space-3);
 }
 
 .link-button {
   background: none;
   border: 0;
-  padding: 0.25rem 0.4rem;
+  padding: var(--cite-space-1) var(--cite-space-2);
   font: inherit;
-  color: inherit;
+  color: var(--cite-link);
   text-decoration: underline;
   cursor: pointer;
 }
 
 input,
-select {
+select,
+textarea {
   font: inherit;
-  color: var(--ink);
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  min-height: 2.5rem;
-  padding: 0.3rem 0.6rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--cite-text);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-md);
+  min-height: 36px;
+  padding: 0 var(--cite-space-3);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: var(--cite-primary);
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--cite-danger-solid);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--cite-canvas);
+  color: var(--cite-muted);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 0;
+  accent-color: var(--cite-primary);
 }
 
 /* --- upload ------------------------------------------------------------------------------ */
@@ -290,49 +315,59 @@ select {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem 2rem;
-  padding: 1.1rem 1.25rem;
-  margin-bottom: 1.25rem;
-  background: var(--raised);
-  border: 2px dashed var(--rule-strong);
-  border-radius: var(--radius);
+  gap: var(--cite-space-4) var(--cite-space-6);
+  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  margin-bottom: var(--cite-space-4);
+  background: var(--cite-surface);
+  border: 1px dashed var(--cite-input-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
 }
 
 .upload-over {
-  border-color: var(--accent);
-  background: var(--accent-wash);
+  border-style: solid;
+  border-color: var(--cite-primary);
+  background: var(--cite-info-bg);
 }
 
 .upload-copy {
   max-width: 38rem;
 }
 
+.upload-copy h2 {
+  margin-bottom: var(--cite-space-1);
+}
+
 .upload-copy p {
   margin: 0;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .upload-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: var(--cite-space-2);
 }
 
+/* Notices inside the content: banners with 6px corners. */
 .notice {
-  margin: 0 0 1rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: var(--radius);
+  margin: 0 0 var(--cite-space-4);
+  padding: var(--cite-space-2) var(--cite-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--cite-radius-md);
   list-style: none;
 }
 
 .notice-block {
-  background: var(--block-wash);
-  color: var(--block);
+  background: var(--cite-danger-bg);
+  color: var(--cite-danger-text);
+  border-color: var(--cite-danger-line);
 }
 
 .notice-warn {
-  background: var(--warn-wash);
-  color: var(--warn);
+  background: var(--cite-warning-bg);
+  color: var(--cite-warning-text);
+  border-color: var(--cite-warning-line);
 }
 
 /* --- filters ----------------------------------------------------------------------------- */
@@ -340,100 +375,130 @@ select {
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--cite-space-2);
+  margin-bottom: var(--cite-space-4);
 }
 
+/* A filter toggle: a secondary button with round ends; the chosen one is tinted and bold. */
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 2.5rem;
-  padding: 0.3rem 0.9rem;
+  gap: var(--cite-space-2);
+  min-height: 36px;
+  padding: 0 var(--cite-space-4);
   font: inherit;
-  color: var(--ink);
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cite-text);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-pill);
   cursor: pointer;
 }
 
+.filter-chip:hover {
+  background: var(--cite-canvas);
+}
+
 .filter-chip[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-  font-weight: 600;
+  background: var(--cite-info-bg);
+  color: var(--cite-info-text);
+  border-color: var(--cite-primary);
 }
 
 .count {
   font-variant-numeric: tabular-nums;
-  opacity: 0.8;
+  font-weight: 400;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  gap: var(--cite-space-3) var(--cite-space-4);
+  margin-bottom: var(--cite-space-4);
 }
 
+/* Label above the field: 0.8125rem, 600, ink. */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
+  gap: var(--cite-space-1);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cite-text);
 }
 
 .search {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding-left: 0.5rem;
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
+  gap: var(--cite-space-2);
+  padding-left: var(--cite-space-3);
+  color: var(--cite-muted);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-md);
+}
+
+.search:focus-within {
+  border-color: var(--cite-primary);
 }
 
 .search input {
   border: 0;
+  padding-left: 0;
   min-width: 15rem;
   background: transparent;
 }
 
 .processing-note {
   margin: 0 0 0.75rem;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 /* --- queue table ------------------------------------------------------------------------- */
 
+/* Tables per DESIGN.md: a card, Label-type headers over a Border line, Rule lines between rows. */
 .queue {
   width: 100%;
-  border-collapse: collapse;
-  background: var(--raised);
-  border: 1px solid var(--rule);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
 }
 
 .queue th,
 .queue td {
-  padding: 0.65rem 0.6rem;
+  padding: 10px var(--cite-space-3);
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--cite-rule);
+}
+
+.queue tbody tr:last-child > * {
+  border-bottom: 0;
 }
 
 .queue thead th {
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-soft);
-  border-bottom: 2px solid var(--ink);
-  background: var(--paper);
+  color: var(--cite-muted);
+  border-bottom-color: var(--cite-border);
+}
+
+.queue tbody th {
+  font-weight: 600;
 }
 
 .queue tbody tr:hover {
-  background: var(--accent-wash);
+  background: var(--cite-canvas);
+}
+
+.queue td {
+  font-variant-numeric: tabular-nums;
 }
 
 .queue .num {
@@ -451,15 +516,14 @@ select {
 
 .cell-file {
   max-width: 17rem;
-  font-weight: 500;
 }
 
 .file-link {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: var(--cite-space-2);
   max-width: 100%;
-  color: var(--ink);
+  color: var(--cite-link);
 }
 
 .clip {
@@ -474,20 +538,24 @@ select {
 
 .row-note {
   margin: 0.25rem 0 0;
-  color: var(--block);
+  color: var(--cite-danger-text);
   font-weight: 400;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   overflow-wrap: anywhere;
 }
 
+/* Group label: Label type, 4px corners. */
 .tag {
   display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0 0.4rem;
-  font-size: 0.75rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  color: var(--ink-soft);
+  margin-left: var(--cite-space-2);
+  padding: 1px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--cite-radius-sm);
+  color: var(--cite-muted);
+  background: var(--cite-canvas);
 }
 
 .actions {
@@ -505,41 +573,42 @@ select {
 
 /* --- chips, money, checks ---------------------------------------------------------------- */
 
+/* Pills: a status dot and a word, never colour alone (here the dot is the status icon). */
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.1rem 0.55rem;
-  font-size: 0.85rem;
+  gap: var(--cite-space-1);
+  padding: 1px 9px;
+  font-size: 0.8rem;
   font-weight: 600;
-  border-radius: 999px;
-  border: 1px solid currentColor;
+  line-height: 1.55;
+  border-radius: var(--cite-radius-pill);
   white-space: nowrap;
 }
 
 .chip-ok {
-  color: var(--ok);
-  background: var(--ok-wash);
+  color: var(--cite-success-text);
+  background: var(--cite-success-bg);
 }
 
 .chip-warn {
-  color: var(--warn);
-  background: var(--warn-wash);
+  color: var(--cite-warning-text);
+  background: var(--cite-warning-bg);
 }
 
 .chip-block {
-  color: var(--block);
-  background: var(--block-wash);
+  color: var(--cite-danger-text);
+  background: var(--cite-danger-bg);
 }
 
 .chip-info {
-  color: var(--info);
-  background: var(--info-wash);
+  color: var(--cite-info-text);
+  background: var(--cite-info-bg);
 }
 
 .chip-quiet {
-  color: var(--ink-soft);
-  background: transparent;
+  color: var(--cite-muted);
+  background: var(--cite-canvas);
 }
 
 .money {
@@ -552,30 +621,29 @@ select {
 }
 
 .money-figure {
-  font-family: var(--serif);
-  font-size: 1.05rem;
   font-weight: 600;
 }
 
 .money-tag {
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-soft);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  padding: 0 0.3rem;
+  color: var(--cite-muted);
+  background: var(--cite-canvas);
+  border-radius: var(--cite-radius-sm);
+  padding: 0 var(--cite-space-1);
 }
 
 .money-none {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .check-sum {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 0.2rem 0.75rem;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .check-sum > span {
@@ -585,16 +653,16 @@ select {
 }
 
 .check-sum-ok {
-  color: var(--ok);
+  color: var(--cite-success-text);
 }
 
 .check-sum-block {
-  color: var(--block);
+  color: var(--cite-danger-text);
   font-weight: 600;
 }
 
 .check-sum-warn {
-  color: var(--warn);
+  color: var(--cite-warning-text);
 }
 
 .progress-note {
@@ -603,14 +671,14 @@ select {
   gap: 0.5rem;
   margin-top: 0.35rem;
   font-size: 0.85rem;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
   flex-wrap: wrap;
 }
 
 .progress {
   width: 3rem;
   height: 4px;
-  background: var(--rule);
+  background: var(--cite-rule);
   border-radius: 2px;
   overflow: hidden;
   position: relative;
@@ -621,7 +689,7 @@ select {
   position: absolute;
   inset: 0;
   width: 40%;
-  background: var(--accent);
+  background: var(--cite-primary);
   animation: slide 1.4s ease-in-out infinite;
 }
 
@@ -644,42 +712,45 @@ select {
 
 /* --- states ------------------------------------------------------------------------------ */
 
+/* Empty and error states: a card with a title, one plain sentence in Slate, and the next step. */
 .empty {
-  padding: 2.5rem 1.5rem;
+  padding: var(--cite-space-6) var(--cite-space-5);
   text-align: center;
-  background: var(--raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
+}
+
+.empty h2 {
+  margin-bottom: var(--cite-space-1);
 }
 
 .empty p {
   max-width: 34rem;
-  margin: 0.25rem auto 0;
-  color: var(--ink-soft);
+  margin: 0 auto;
+  color: var(--cite-muted);
 }
 
 .empty-actions {
-  margin-top: 1.1rem;
+  margin-top: var(--cite-space-4);
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 0.6rem;
+  gap: var(--cite-space-2);
 }
 
 .skeleton-row {
   height: 3.2rem;
   margin-bottom: 0.5rem;
-  border-radius: var(--radius);
-  background: linear-gradient(90deg, var(--rule) 0%, var(--raised) 50%, var(--rule) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s linear infinite;
+  border-radius: var(--cite-radius-lg);
+  background: var(--cite-rule);
+  animation: breathe 1.6s ease-in-out infinite alternate;
 }
 
-@keyframes shimmer {
-  from {
-    background-position: 200% 0;
-  }
+@keyframes breathe {
   to {
-    background-position: -200% 0;
+    opacity: 0.5;
   }
 }
 
@@ -703,12 +774,12 @@ select {
 .toast {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--ink);
-  color: var(--paper);
-  border-radius: var(--radius);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  gap: var(--cite-space-3);
+  padding: var(--cite-space-2) var(--cite-space-4);
+  background: var(--cite-text);
+  color: var(--cite-surface);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
 }
 
 .toast .link-button {
@@ -719,7 +790,11 @@ select {
 
 @media (max-width: 767px) {
   main {
-    padding: 1rem 0.9rem 2rem;
+    padding: var(--cite-space-5) var(--cite-space-4) 2rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
   }
 
   .search input {
@@ -728,11 +803,12 @@ select {
   }
 
   .masthead {
-    padding: 0.7rem 0.9rem 0.4rem;
+    padding: var(--cite-space-3) var(--cite-space-4) var(--cite-space-1);
+    gap: var(--cite-space-1) var(--cite-space-6);
   }
 
   .masthead ul {
-    gap: 0.2rem 0.95rem;
+    gap: 0 var(--cite-space-4);
   }
 
   .filters {
@@ -766,22 +842,26 @@ select {
 
   .queue {
     border: 0;
+    border-radius: 0;
+    box-shadow: none;
     background: transparent;
   }
 
   .queue tr {
-    margin-bottom: 0.75rem;
-    background: var(--raised);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
+    margin-bottom: var(--cite-space-3);
+    padding: var(--cite-space-2) 0;
+    background: var(--cite-surface);
+    border: 1px solid var(--cite-border);
+    border-radius: var(--cite-radius-lg);
+    box-shadow: var(--cite-shadow-card);
   }
 
   .queue th,
   .queue td {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--cite-space-3);
     justify-content: space-between;
-    padding: 0.45rem 0.8rem;
+    padding: var(--cite-space-2) var(--cite-space-4);
     border: 0;
     text-align: right;
   }
@@ -790,10 +870,11 @@ select {
   .queue th[data-label]::before {
     content: attr(data-label);
     flex: none;
-    color: var(--ink-soft);
-    font-size: 0.8rem;
+    color: var(--cite-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     text-align: left;
   }
 
@@ -813,5 +894,33 @@ select {
     left: 1rem;
     right: 1rem;
     bottom: 9.5rem;
+  }
+}
+
+/* --- print: one column, dark text on white, no shadows or tints, each link followed by its address */
+
+@media print {
+  body,
+  .masthead,
+  .card,
+  .empty,
+  .queue,
+  .insight,
+  .export-ready,
+  .export-made {
+    background: none;
+    box-shadow: none;
+    color: var(--cite-text);
+  }
+
+  .skip,
+  .toasts,
+  .action-bar,
+  .upload {
+    display: none;
+  }
+
+  main a[href]::after {
+    content: " (" attr(href) ")";
   }
 }

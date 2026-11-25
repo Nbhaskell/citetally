@@ -86,6 +86,7 @@ export default function Shell({ children }: { children: ReactNode }) {
       )}
       <header className="masthead">
         <a className="brand" href={hrefFor({ name: "inbox" })}>
+          <span className="brand-mark" aria-hidden="true" />
           Citetally
         </a>
         <nav aria-label="Main">
