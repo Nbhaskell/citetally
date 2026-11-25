@@ -322,6 +322,7 @@
 .settings-form small {
   color: var(--cite-muted);
   font-weight: 400;
+  font-size: 0.8125rem;
 }
 
 .settings-form .link-button {
