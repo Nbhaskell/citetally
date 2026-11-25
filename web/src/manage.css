@@ -118,7 +118,7 @@
 .export-made {
   max-width: 100%;
   margin: var(--cite-space-5) 0;
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-card-padding);
   background: var(--cite-surface);
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
@@ -147,7 +147,7 @@
 }
 
 .facts dt {
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -162,7 +162,7 @@
 }
 
 .export-ready .facts > div {
-  padding: 14px var(--cite-space-4);
+  padding: var(--cite-tile-padding);
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
 }
@@ -185,7 +185,7 @@
 
 .sample th,
 .sample td {
-  padding: 10px var(--cite-space-3);
+  padding: var(--cite-row-padding-y) var(--cite-space-3);
   text-align: left;
   white-space: nowrap;
   font-size: 0.875rem;
@@ -197,7 +197,7 @@
 }
 
 .sample thead th {
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--cite-muted);
@@ -218,7 +218,7 @@
 }
 
 .insight {
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-card-padding);
   background: var(--cite-surface);
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
@@ -322,7 +322,7 @@
 .settings-form small {
   color: var(--cite-muted);
   font-weight: 400;
-  font-size: 0.8125rem;
+  font-size: var(--cite-text-small);
 }
 
 .settings-form .link-button {

@@ -1,10 +1,10 @@
 /* The Cite design system ("The Calm Control Room", DESIGN.md at the repository root): a grey canvas,
-   white cards with one shadow, a deep navy main action, system fonts and tabular figures for money.
+   cards with one shadow, light and dark themes from the tokens, a deep navy main action, system
+   fonts and tabular figures for money.
    Every colour, radius and space comes from cite-tokens.css. Colour is never the only signal: every
    state also has an icon and a word. */
 
 :root {
-  color-scheme: light;
   font-family: var(--cite-font);
   font-size: 100%;
   line-height: 1.55;
@@ -35,7 +35,7 @@ h2 {
 
 /* Headline type: one page title. */
 h1 {
-  font-size: 1.75rem;
+  font-size: var(--cite-text-headline);
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 1rem;
@@ -43,7 +43,7 @@ h1 {
 
 /* Title type: card titles and section headings. */
 h2 {
-  font-size: 1rem;
+  font-size: var(--cite-text-title);
   margin: 0 0 var(--cite-space-3);
 }
 
@@ -102,7 +102,7 @@ main:focus {
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
   box-shadow: var(--cite-shadow-card);
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-card-padding);
 }
 
 /* --- frame ------------------------------------------------------------------------------- */
@@ -185,7 +185,7 @@ main {
   gap: var(--cite-space-2);
   padding: var(--cite-space-2) 1.25rem;
   border-bottom: 1px solid var(--cite-warning-line);
-  font-size: 0.9375rem;
+  font-size: var(--cite-text-body);
 }
 
 .banner-warn {
@@ -206,10 +206,10 @@ main {
   display: inline-flex;
   align-items: center;
   gap: var(--cite-space-2);
-  min-height: 36px;
+  min-height: var(--cite-control-height);
   padding: 0 var(--cite-space-4);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--cite-text-button);
   font-weight: 600;
   color: var(--cite-text);
   background: var(--cite-surface);
@@ -246,7 +246,7 @@ main {
 }
 
 .button-danger:hover:not(:disabled) {
-  background: var(--cite-danger-text);
+  background: var(--cite-danger-solid-hover);
 }
 
 .button-primary:disabled,
@@ -255,7 +255,7 @@ main {
 }
 
 .button-small {
-  min-height: 2rem;
+  min-height: var(--cite-control-height-small);
   padding: 0 var(--cite-space-3);
 }
 
@@ -273,13 +273,13 @@ input,
 select,
 textarea {
   font: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--cite-text-body);
   font-weight: 400;
   color: var(--cite-text);
   background: var(--cite-surface);
   border: 1px solid var(--cite-input-border);
   border-radius: var(--cite-radius-md);
-  min-height: 36px;
+  min-height: var(--cite-control-height);
   padding: 0 var(--cite-space-3);
 }
 
@@ -316,7 +316,7 @@ input[type="radio"] {
   align-items: center;
   justify-content: space-between;
   gap: var(--cite-space-4) var(--cite-space-6);
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-card-padding);
   margin-bottom: var(--cite-space-4);
   background: var(--cite-surface);
   border: 1px dashed var(--cite-input-border);
@@ -384,10 +384,10 @@ input[type="radio"] {
   display: inline-flex;
   align-items: center;
   gap: var(--cite-space-2);
-  min-height: 36px;
+  min-height: var(--cite-control-height);
   padding: 0 var(--cite-space-4);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--cite-text-button);
   font-weight: 600;
   color: var(--cite-text);
   background: var(--cite-surface);
@@ -423,7 +423,7 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   gap: var(--cite-space-1);
-  font-size: 0.8125rem;
+  font-size: var(--cite-text-small);
   font-weight: 600;
   color: var(--cite-text);
 }
@@ -470,7 +470,7 @@ input[type="radio"] {
 
 .queue th,
 .queue td {
-  padding: 10px var(--cite-space-3);
+  padding: var(--cite-row-padding-y) var(--cite-space-3);
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--cite-rule);
@@ -481,7 +481,7 @@ input[type="radio"] {
 }
 
 .queue thead th {
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -549,13 +549,13 @@ input[type="radio"] {
   display: inline-block;
   margin-left: var(--cite-space-2);
   padding: 1px 7px;
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   border-radius: var(--cite-radius-sm);
-  color: var(--cite-muted);
-  background: var(--cite-canvas);
+  color: var(--cite-neutral-text);
+  background: var(--cite-neutral-bg);
 }
 
 .actions {
@@ -579,7 +579,7 @@ input[type="radio"] {
   align-items: center;
   gap: var(--cite-space-1);
   padding: 1px 9px;
-  font-size: 0.8rem;
+  font-size: var(--cite-text-small);
   font-weight: 600;
   line-height: 1.55;
   border-radius: var(--cite-radius-pill);
@@ -606,9 +606,10 @@ input[type="radio"] {
   background: var(--cite-info-bg);
 }
 
+/* Neutral: a state that needs no action. */
 .chip-quiet {
-  color: var(--cite-muted);
-  background: var(--cite-canvas);
+  color: var(--cite-neutral-text);
+  background: var(--cite-neutral-bg);
 }
 
 .money {
@@ -625,7 +626,7 @@ input[type="radio"] {
 }
 
 .money-tag {
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -762,7 +763,8 @@ input[type="radio"] {
 
 .toasts {
   position: fixed;
-  right: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 4.5rem; /* above the decision bar on the Review screen */
   display: flex;
   flex-direction: column;
@@ -775,11 +777,11 @@ input[type="radio"] {
   display: flex;
   align-items: center;
   gap: var(--cite-space-3);
-  padding: var(--cite-space-2) var(--cite-space-4);
+  padding: 10px var(--cite-space-4);
   background: var(--cite-text);
   color: var(--cite-surface);
-  border-radius: var(--cite-radius-lg);
-  box-shadow: var(--cite-shadow-card);
+  border-radius: var(--cite-radius-md);
+  box-shadow: var(--cite-shadow-overlay);
 }
 
 .toast .link-button {
@@ -871,7 +873,7 @@ input[type="radio"] {
     content: attr(data-label);
     flex: none;
     color: var(--cite-muted);
-    font-size: 0.72rem;
+    font-size: var(--cite-text-label);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -893,6 +895,7 @@ input[type="radio"] {
   .toasts {
     left: 1rem;
     right: 1rem;
+    transform: none;
     bottom: 9.5rem;
   }
 }
@@ -900,6 +903,10 @@ input[type="radio"] {
 /* --- print: one column, dark text on white, no shadows or tints, each link followed by its address */
 
 @media print {
+  :root {
+    color-scheme: light;
+  }
+
   body,
   .masthead,
   .card,
@@ -910,7 +917,7 @@ input[type="radio"] {
   .export-made {
     background: none;
     box-shadow: none;
-    color: var(--cite-text);
+    color: CanvasText; /* black on white in the light scheme, whatever the screen theme */
   }
 
   .skip,
@@ -920,7 +927,7 @@ input[type="radio"] {
     display: none;
   }
 
-  main a[href]::after {
+  main a[href^="http"]::after {
     content: " (" attr(href) ")";
   }
 }

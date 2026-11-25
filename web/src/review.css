@@ -93,7 +93,7 @@
   display: block;
   width: 100%;
   height: auto;
-  background: var(--cite-surface); /* the page keeps its own white */
+  background: var(--cite-surface); /* the scan itself is opaque, so it keeps its own colours in either theme */
 }
 
 .boxes {
@@ -203,7 +203,7 @@
 
 .review h4 {
   margin: var(--cite-space-4) 0 var(--cite-space-2);
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -217,7 +217,7 @@
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
   box-shadow: var(--cite-shadow-card);
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-card-padding);
 }
 
 .entry-form {
@@ -248,7 +248,7 @@
 }
 
 .rfield > label {
-  font-size: 0.8125rem;
+  font-size: var(--cite-text-small);
   font-weight: 600;
 }
 
@@ -348,7 +348,7 @@
   color: var(--cite-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.72rem;
+  font-size: var(--cite-text-label);
   font-weight: 700;
 }
 
@@ -496,7 +496,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 0.6rem;
-  padding: var(--cite-space-3) 1.25rem;
+  padding: var(--cite-space-3) var(--cite-space-5);
   background: var(--cite-surface);
   border-top: 1px solid var(--cite-border);
 }
@@ -520,11 +520,11 @@
   background: var(--cite-surface);
   border: 1px solid var(--cite-border);
   border-radius: var(--cite-radius-lg);
-  box-shadow: var(--cite-shadow-card);
+  box-shadow: var(--cite-shadow-overlay);
 }
 
 .dialog::backdrop {
-  background: color-mix(in srgb, var(--cite-text) 55%, transparent);
+  background: var(--cite-scrim);
 }
 
 .dialog-wide {
@@ -540,7 +540,7 @@
 }
 
 .dialog-body {
-  padding: 18px var(--cite-space-5) var(--cite-space-5);
+  padding: var(--cite-space-5);
   overflow-wrap: anywhere;
 }
 

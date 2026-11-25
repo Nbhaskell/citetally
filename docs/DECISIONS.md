@@ -1257,3 +1257,23 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 **Dark mode is dropped.** `cite-tokens.css` has light values only, so the dark theme of D-054 is removed and the page sets `color-scheme: light`. This departs from the UI brief ("Dark mode: supported if it does not cost the page image's legibility; light mode first"). A dark theme would need dark values in the shared tokens first.
 
 **Unchanged.** Behaviour, data flow, API calls and visible text.
+
+### D-095. Cite design system v1.1: dark mode back, and the pilot patterns
+
+**Why.** Citebrief released `DESIGN.md` and `cite-tokens.css` v1.1 (its D-035, commit fbaab7f). The new version adds dark values and the patterns the D-094 pilot was missing. This supersedes the "Dark mode is dropped" part of D-094.
+
+**What changed.**
+- `DESIGN.md` and `web/src/cite-tokens.css` are copied again, unchanged.
+- Dark mode is back. The dark tokens apply when the system asks for dark; the app sets no `color-scheme` of its own and defines no dark colours. This again meets the UI brief line "Dark mode: supported". The scan on the Review screen is an opaque image, so the theme does not change its legibility.
+- Typed sizes are now tokens: control heights, card, tile and row padding, and the Label, Small, Body, Button, Title and Headline type sizes.
+- Dialogs and toasts use the overlay shadow; dialog backdrops use `--cite-scrim`; dialog body padding is 20px. Toasts are 6px corners, 10px 16px padding, bottom centre (full width on a phone).
+- The danger button hover is Danger Solid Deep. Neutral pills and plain tags use the Neutral tint and text.
+- Print uses the light scheme and system text colour, so a dark screen theme never prints light text. Only external links (`http`) print their address.
+
+**Differences from `DESIGN.md` v1.1, kept on purpose.**
+- **No theme switch.** `DESIGN.md` says an app with its own switch sets `data-theme` on the root. Citetally has no switch (it followed the system before D-094 too), so nothing sets `data-theme`. A switch would be a new control and a new setting, which is a flow change.
+- **Toast lifetime 8 seconds, not 5.** A toast can carry an "Undo" link, and the timer stops on hover and focus. A shorter time gives less time to undo.
+- **Wide dialogs.** `DESIGN.md` allows at most 32rem. The duplicate comparison dialog (44rem) and the side drawer (30rem, full height) are kept, because they show two documents or a long history.
+- **Breakpoints** stay at 767px and 1279px, which `DESIGN.md` v1.1 now allows for existing layouts.
+- **Demo notice** stays as the full sentence in the footer (rule 9), which `DESIGN.md` v1.1 now allows.
+- **Top bar** keeps its 5 links; v1.1 allows 6.
