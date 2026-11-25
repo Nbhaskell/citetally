@@ -8,7 +8,7 @@ colors:
   canvas: "#f3f4f6"
   border: "#e1e4e8"
   rule: "#eceef1"
-  input-border: "#8a9099"
+  input-border: "#858b94"
   neutral-text: "#565b62"
   neutral-tint: "#f3f4f6"
   harbor-navy: "#173f6b"
@@ -215,7 +215,7 @@ A neutral grey base with one deep navy and five status families; every text pair
 - **Surface** (`surface`): cards, tiles, dialogs, the top bar, inputs.
 - **Canvas** (`canvas`): the page behind the cards; also read-only inputs.
 - **Border** (`border`): the 1px edge of cards and tiles. **Rule** (`rule`): dividers between rows inside a card.
-- **Input Border** (`input-border`): the edge of inputs, secondary buttons, and drop zones (3:1, WCAG 1.4.11).
+- **Input Border** (`input-border`): the edge of inputs, secondary buttons, and drop zones (3:1 on Surface and on Canvas, WCAG 1.4.11).
 - **Neutral** (`neutral-text`, `neutral-tint`): pills and tags for states that need no action ("Waiting",
   "Rejected", "Duplicate").
 
