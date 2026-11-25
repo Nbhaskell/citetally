@@ -25,7 +25,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
 }
 
 .clip-wrap {
@@ -35,11 +35,11 @@
 .save-state {
   margin: 0;
   min-height: 1.4em;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .save-error {
-  color: var(--block);
+  color: var(--cite-danger-text);
   font-weight: 600;
 }
 
@@ -55,10 +55,11 @@
   top: 0.5rem;
   max-height: calc(100vh - 7rem);
   overflow-y: auto;
-  background: var(--raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 0.6rem;
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
+  padding: var(--cite-space-3);
 }
 
 .page-tools {
@@ -70,16 +71,17 @@
 }
 
 .button[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  background: var(--cite-info-bg);
+  color: var(--cite-info-text);
+  border-color: var(--cite-primary);
 }
 
 .page-scroll {
   overflow: auto;
   max-height: 70vh;
-  background: #e8e4d6;
-  border: 1px solid var(--rule);
+  background: var(--cite-canvas);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-md);
 }
 
 .page-sheet {
@@ -91,7 +93,7 @@
   display: block;
   width: 100%;
   height: auto;
-  background: #fff; /* the page keeps its own white, in either theme */
+  background: var(--cite-surface); /* the scan itself is opaque, so it keeps its own colours in either theme */
 }
 
 .boxes {
@@ -105,8 +107,8 @@
   pointer-events: auto;
   cursor: pointer;
   /* Drawn outside the value's own area, so the lettering is not covered or crowded. */
-  border: 1px solid var(--accent);
-  background: rgba(31, 90, 63, 0.07);
+  border: 1px solid var(--cite-primary);
+  background: color-mix(in srgb, var(--cite-primary) 7%, transparent);
   border-radius: 2px;
   margin: -4px; /* 3px of padding and a 1px border, all outside the value */
   padding: 3px;
@@ -114,31 +116,22 @@
 }
 
 .box-active {
-  border-color: var(--focus);
-  box-shadow: 0 0 0 2px var(--focus);
-  background: rgba(27, 86, 166, 0.12);
+  border-color: var(--cite-focus);
+  outline: 2px solid var(--cite-focus);
+  outline-offset: 0;
+  background: color-mix(in srgb, var(--cite-focus) 12%, transparent);
   animation: pulse 0.9s ease-out 1;
 }
 
 @keyframes pulse {
   from {
-    box-shadow: 0 0 0 6px rgba(27, 86, 166, 0.45);
-  }
-  to {
-    box-shadow: 0 0 0 0 rgba(27, 86, 166, 0);
+    outline-offset: 6px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .box-active {
     animation: none;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .box {
-    border-color: #6fc08f;
-    background: rgba(111, 192, 143, 0.1);
   }
 }
 
@@ -170,7 +163,7 @@
 }
 
 .evidence-missing .link-button {
-  color: var(--warn);
+  color: var(--cite-warning-text);
 }
 
 .evidence-missing .link-button .quiet {
@@ -186,10 +179,11 @@
   overflow-wrap: anywhere;
   max-height: 16rem;
   overflow: auto;
-  background: var(--paper);
-  padding: 0.6rem;
-  border: 1px solid var(--rule);
-  font-size: 0.85rem;
+  background: var(--cite-canvas);
+  padding: var(--cite-space-3);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-md);
+  font-size: 0.875rem;
 }
 
 /* --- the form ---------------------------------------------------------------------------- */
@@ -202,23 +196,34 @@
 }
 
 .review h3 {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  margin: 0 0 var(--cite-space-3);
 }
 
 .review h4 {
-  margin: 0.9rem 0 0.4rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
+  margin: var(--cite-space-4) 0 var(--cite-space-2);
+  font-size: var(--cite-text-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
+}
+
+/* The form and the checks sit in cards beside the page. */
+.entry-form > section,
+.checks {
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-card);
+  padding: var(--cite-card-padding);
 }
 
 .entry-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--cite-space-4);
 }
 
 .header-fields {
@@ -237,14 +242,14 @@
   flex-direction: column;
   gap: 0.2rem;
   padding: 0.35rem 0.45rem;
-  border-radius: var(--radius);
+  border-radius: var(--cite-radius-md);
   border: 1px solid transparent;
   min-width: 0;
 }
 
 .rfield > label {
-  font-size: 0.82rem;
-  color: var(--ink-soft);
+  font-size: var(--cite-text-small);
+  font-weight: 600;
 }
 
 .rfield input,
@@ -255,13 +260,13 @@
 
 .rfield input[readonly],
 .rfield select:disabled {
-  background: transparent;
-  border-color: var(--rule);
+  background: var(--cite-canvas);
+  border-color: var(--cite-border);
 }
 
 .rfield-active {
-  border-color: var(--focus);
-  background: var(--info-wash);
+  border-color: var(--cite-focus);
+  background: var(--cite-info-bg);
 }
 
 .rfield-status {
@@ -273,11 +278,10 @@
 
 .rfield-status .link-button {
   padding: 0;
-  color: var(--accent);
 }
 
 .rfield-missing {
-  color: var(--warn);
+  color: var(--cite-warning-text);
   display: inline-flex;
   gap: 0.25rem;
   align-items: center;
@@ -285,7 +289,7 @@
 
 .rfield-error {
   margin: 0;
-  color: var(--block);
+  color: var(--cite-danger-text);
   font-size: 0.85rem;
 }
 
@@ -302,9 +306,8 @@
 }
 
 .vendor-name {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
@@ -314,12 +317,12 @@
   list-style: none;
   margin: 0 0 0.6rem;
   padding: 0;
-  border-top: 2px solid var(--ink);
+  border-top: 1px solid var(--cite-border);
 }
 
 .line {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--rule);
+  padding: var(--cite-space-2) 0;
+  border-bottom: 1px solid var(--cite-rule);
 }
 
 .line-cells {
@@ -342,10 +345,11 @@
 }
 
 .line-number {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  font-size: var(--cite-text-label);
+  font-weight: 700;
 }
 
 .arith {
@@ -356,16 +360,16 @@
 }
 
 .arith-ok {
-  color: var(--ok);
+  color: var(--cite-success-text);
 }
 
 .arith-bad {
-  color: var(--block);
+  color: var(--cite-danger-text);
   font-weight: 600;
 }
 
 .arith-warn {
-  color: var(--warn);
+  color: var(--cite-warning-text);
   font-weight: 600;
 }
 
@@ -374,7 +378,7 @@
   grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
   gap: 0.5rem 1rem;
   align-items: center;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--cite-rule);
 }
 
 .total-row .calc {
@@ -392,20 +396,23 @@
   gap: 0.6rem;
 }
 
+/* A failing check is tinted (it needs action) and always carries its word: "Must be resolved" or
+   "Worth a look". */
 .check {
-  padding: 0.7rem 0.9rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--rule);
-  border-left-width: 5px;
-  background: var(--raised);
+  padding: var(--cite-space-3) var(--cite-space-4);
+  border-radius: var(--cite-radius-md);
+  border: 1px solid var(--cite-border);
+  background: var(--cite-surface);
 }
 
 .check-block {
-  border-left-color: var(--block);
+  background: var(--cite-danger-bg);
+  border-color: var(--cite-danger-line);
 }
 
 .check-warn {
-  border-left-color: var(--warn);
+  background: var(--cite-warning-bg);
+  border-color: var(--cite-warning-line);
 }
 
 .check-head {
@@ -416,11 +423,11 @@
 }
 
 .check-block .check-head .icon {
-  color: var(--block);
+  color: var(--cite-danger-text);
 }
 
 .check-warn .check-head .icon {
-  color: var(--warn);
+  color: var(--cite-warning-text);
 }
 
 .check-text {
@@ -437,14 +444,19 @@
 
 .check-accepted {
   margin: 0.6rem 0 0;
-  color: var(--ok);
+  color: var(--cite-success-text);
 }
 
+/* The all-clear panel. */
 .checks-clear {
   display: flex;
-  gap: 0.4rem;
+  gap: var(--cite-space-2);
   align-items: center;
-  color: var(--ok);
+  padding: var(--cite-space-3) var(--cite-space-4);
+  background: var(--cite-success-bg);
+  color: var(--cite-success-text);
+  font-weight: 600;
+  border-radius: var(--cite-radius-md);
   margin: 0;
 }
 
@@ -456,7 +468,7 @@
   list-style: none;
   padding-left: 0.2rem;
   columns: 2;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .doc-link {
@@ -464,8 +476,12 @@
 }
 
 .notice-info {
-  background: var(--info-wash);
-  color: var(--info);
+  background: var(--cite-info-bg);
+  color: var(--cite-info-text);
+}
+
+.review-side > .notice {
+  margin: 0;
 }
 
 /* --- decisions --------------------------------------------------------------------------- */
@@ -480,13 +496,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 0.6rem;
-  padding: 0.6rem 1.25rem;
-  background: var(--raised);
-  border-top: 2px solid var(--ink);
+  padding: var(--cite-space-3) var(--cite-space-5);
+  background: var(--cite-surface);
+  border-top: 1px solid var(--cite-border);
 }
 
 .action-reason {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
   font-size: 0.9rem;
 }
 
@@ -500,15 +516,15 @@
   width: min(32rem, calc(100vw - 2rem));
   max-height: calc(100vh - 3rem);
   padding: 0;
-  color: var(--ink);
-  background: var(--raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  color: var(--cite-text);
+  background: var(--cite-surface);
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-lg);
+  box-shadow: var(--cite-shadow-overlay);
 }
 
 .dialog::backdrop {
-  background: rgba(20, 22, 18, 0.55);
+  background: var(--cite-scrim);
 }
 
 .dialog-wide {
@@ -524,7 +540,7 @@
 }
 
 .dialog-body {
-  padding: 1.1rem 1.25rem 1rem;
+  padding: var(--cite-space-5);
   overflow-wrap: anywhere;
 }
 
@@ -550,8 +566,8 @@
 .picture-value {
   margin: 0;
   padding: 0.4rem 0.7rem 0.5rem;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
+  border: 1px solid var(--cite-border);
+  border-radius: var(--cite-radius-md);
 }
 
 .picture-value legend {
@@ -569,7 +585,7 @@
   flex-basis: 100%;
   margin: 0 0 0.3rem;
   font-size: 0.9em;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .check-confirm {
@@ -596,12 +612,7 @@
 }
 
 textarea {
-  font: inherit;
-  color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  padding: 0.5rem 0.6rem;
+  padding: var(--cite-space-2) var(--cite-space-3);
   width: 100%;
   resize: vertical;
 }
@@ -651,7 +662,7 @@ textarea {
 }
 
 .compare dt {
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .compare dd {
@@ -684,13 +695,13 @@ textarea {
 .history li {
   display: flex;
   flex-direction: column;
-  border-left: 3px solid var(--rule-strong);
-  padding-left: 0.7rem;
+  border-left: 1px solid var(--cite-border);
+  padding-left: var(--cite-space-3);
 }
 
 .history time {
   font-size: 0.8rem;
-  color: var(--ink-soft);
+  color: var(--cite-muted);
 }
 
 .shortcuts {
@@ -701,7 +712,7 @@ textarea {
   display: flex;
   gap: 1rem;
   padding: 0.3rem 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--cite-rule);
 }
 
 .shortcuts dt {
@@ -713,12 +724,11 @@ textarea {
 }
 
 kbd {
-  font-family: var(--sans);
-  padding: 0.05rem 0.4rem;
-  border: 1px solid var(--rule-strong);
-  border-bottom-width: 2px;
-  border-radius: var(--radius);
-  background: var(--paper);
+  font-family: var(--cite-font);
+  padding: 0 var(--cite-space-1);
+  border: 1px solid var(--cite-input-border);
+  border-radius: var(--cite-radius-sm);
+  background: var(--cite-canvas);
 }
 
 /* --- screen sizes ------------------------------------------------------------------------ */
@@ -753,7 +763,8 @@ kbd {
 
   .review-tabs .button {
     flex: 1;
-    min-height: 2.75rem;
+    justify-content: center;
+    min-height: 44px;
   }
 
   .review[data-tab="page"] .review-side,
@@ -771,6 +782,11 @@ kbd {
 
   .header-fields {
     grid-template-columns: 1fr;
+  }
+
+  .entry-form > section,
+  .checks {
+    padding: var(--cite-space-4);
   }
 
   .total-row {

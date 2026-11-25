@@ -1,0 +1,143 @@
+/* Cite design tokens, v1.1 (DESIGN.md "Calm Control Room").
+   Source of truth: citebrief/design/cite-tokens.css. Copy this file unchanged into each Cite app;
+   change a value here first, then copy it again. Each text pair is tested for 4.5:1 contrast in
+   the light and the dark theme (citebrief/tests/test_render.py).
+   Theme: the dark values apply when the system asks for dark, unless the page root has
+   data-theme="light"; data-theme="dark" forces them. */
+:root {
+  color-scheme: light;
+
+  /* Neutral */
+  --cite-text: #1a1d21;
+  --cite-muted: #565b62;
+  --cite-surface: #ffffff;
+  --cite-canvas: #f3f4f6;
+  --cite-border: #e1e4e8;
+  --cite-rule: #eceef1;
+  --cite-input-border: #8a9099;
+  --cite-neutral-text: #565b62;
+  --cite-neutral-bg: #f3f4f6;
+
+  /* Primary: deep navy for the main action and the brand mark */
+  --cite-primary: #173f6b;
+  --cite-primary-hover: #0f2f52;
+  --cite-on-primary: #ffffff;
+  --cite-link: #0b4fa3;
+  --cite-focus: #0b4fa3;
+
+  /* Status: each has a text color, a tint, and a line color */
+  --cite-danger-text: #8a1c1c;
+  --cite-danger-bg: #fdeeee;
+  --cite-danger-line: #efc4c4;
+  --cite-danger-solid: #b42318;
+  --cite-danger-solid-hover: #912018;
+  --cite-success-text: #1f5130;
+  --cite-success-bg: #e6f3ea;
+  --cite-info-text: #173f6b;
+  --cite-info-bg: #e6eef8;
+  --cite-warning-text: #5c3b00;
+  --cite-warning-bg: #fff5d6;
+  --cite-warning-line: #ecd48f;
+
+  /* Depth */
+  --cite-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.05), 0 2px 6px rgba(16, 24, 40, 0.05);
+  --cite-shadow-overlay: 0 8px 24px rgba(16, 24, 40, 0.18);
+  --cite-scrim: rgba(16, 24, 40, 0.55);
+
+  /* Shape */
+  --cite-radius-sm: 4px;
+  --cite-radius-md: 6px;
+  --cite-radius-lg: 10px;
+  --cite-radius-pill: 999px;
+
+  /* Type */
+  --cite-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --cite-text-label: 0.72rem;
+  --cite-text-small: 0.8125rem;
+  --cite-text-button: 0.875rem;
+  --cite-text-body: 0.9375rem;
+  --cite-text-title: 1rem;
+  --cite-text-headline: 1.75rem;
+  --cite-text-figure: 1.75rem;
+
+  /* Space and size */
+  --cite-space-1: 0.25rem;
+  --cite-space-2: 0.5rem;
+  --cite-space-3: 0.75rem;
+  --cite-space-4: 1rem;
+  --cite-space-5: 1.25rem;
+  --cite-space-6: 1.75rem;
+  --cite-control-height: 2.25rem;
+  --cite-control-height-small: 2rem;
+  --cite-card-padding: 1.125rem 1.25rem 1.25rem;
+  --cite-tile-padding: 0.875rem 1rem;
+  --cite-row-padding-y: 0.6rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --cite-text: #e6e8eb;
+    --cite-muted: #a7adb5;
+    --cite-surface: #1b1e23;
+    --cite-canvas: #121418;
+    --cite-border: #2e333a;
+    --cite-rule: #262a31;
+    --cite-input-border: #6f7782;
+    --cite-neutral-text: #a7adb5;
+    --cite-neutral-bg: #262a31;
+    --cite-primary: #2f5f99;
+    --cite-primary-hover: #3b6dab;
+    --cite-on-primary: #ffffff;
+    --cite-link: #8ab4f8;
+    --cite-focus: #8ab4f8;
+    --cite-danger-text: #f4a6a6;
+    --cite-danger-bg: #3a1d1f;
+    --cite-danger-line: #6b3436;
+    --cite-danger-solid: #c0392b;
+    --cite-danger-solid-hover: #a93226;
+    --cite-success-text: #8fd1a4;
+    --cite-success-bg: #17301f;
+    --cite-info-text: #9cc1ee;
+    --cite-info-bg: #172a40;
+    --cite-warning-text: #f0cf7a;
+    --cite-warning-bg: #33290f;
+    --cite-warning-line: #6b5622;
+    --cite-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --cite-shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --cite-scrim: rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --cite-text: #e6e8eb;
+  --cite-muted: #a7adb5;
+  --cite-surface: #1b1e23;
+  --cite-canvas: #121418;
+  --cite-border: #2e333a;
+  --cite-rule: #262a31;
+  --cite-input-border: #6f7782;
+  --cite-neutral-text: #a7adb5;
+  --cite-neutral-bg: #262a31;
+  --cite-primary: #2f5f99;
+  --cite-primary-hover: #3b6dab;
+  --cite-on-primary: #ffffff;
+  --cite-link: #8ab4f8;
+  --cite-focus: #8ab4f8;
+  --cite-danger-text: #f4a6a6;
+  --cite-danger-bg: #3a1d1f;
+  --cite-danger-line: #6b3436;
+  --cite-danger-solid: #c0392b;
+  --cite-danger-solid-hover: #a93226;
+  --cite-success-text: #8fd1a4;
+  --cite-success-bg: #17301f;
+  --cite-info-text: #9cc1ee;
+  --cite-info-bg: #172a40;
+  --cite-warning-text: #f0cf7a;
+  --cite-warning-bg: #33290f;
+  --cite-warning-line: #6b5622;
+  --cite-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --cite-shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --cite-scrim: rgba(0, 0, 0, 0.6);
+}

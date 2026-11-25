@@ -1242,3 +1242,38 @@ Findings 2 and 3 are screen changes and can be tested without a sealed set. Find
 - The first-person pattern no longer matches present-tense verbs that end in "ed": "need", "feed", "speed", "heed", "seed", "proceed", "succeed", "exceed". Their past-tense forms still match.
 
 **Limits.** The one-voice rule for docs is unchanged; only its enforcement changed from a gate to a warning. A warning can be passed over, so wording about a person can now reach a tracked document. The list of present-tense verbs is a list; a verb that is not on it still gives a wrong warning, which now costs one line of output.
+
+### D-094. The shared Cite design system replaces "ledger paper"
+
+**Why.** The four Cite apps (Citebrief, Citedesk, Citebook, Citetally) now share one look, "The Calm Control Room", defined in Citebrief (its D-034). Citetally is the pilot because its review desk (tables, amounts, statuses) is closest to the brief page. This replaces the visual direction of D-054.
+
+**What changed.**
+- `DESIGN.md` (repository root) and `web/src/cite-tokens.css` are copied unchanged from Citebrief. The tokens are imported once in `web/src/main.tsx`; the app CSS uses only `--cite-*` variables and has no hex values. A value changes in Citebrief first, then both files are copied again.
+- Grey canvas, white cards with the one card shadow, a top bar with the navy brand mark, system fonts only (the serif stack is gone), tabular numerals, pills with an icon and a word, tables per `DESIGN.md`, Label-type column headers, a print style.
+- One navy primary button per screen. On the Inbox, "Choose files" is the primary button and "Load demo documents" in the empty state is secondary; on Vendors, "Add a vendor" in the empty state is secondary because the page head already has the primary "Add vendor". "Merge into ..." uses the danger button: it removes a vendor record and its dialog names both vendors.
+- Failing checks are tinted cards (danger or warning tint, 1px line) instead of a 5px coloured left border, which `DESIGN.md` does not allow. "Nothing needs attention" is the all-clear panel.
+- The "Ready to export" figures are summary tiles.
+
+**Dark mode is dropped.** `cite-tokens.css` has light values only, so the dark theme of D-054 is removed and the page sets `color-scheme: light`. This departs from the UI brief ("Dark mode: supported if it does not cost the page image's legibility; light mode first"). A dark theme would need dark values in the shared tokens first.
+
+**Unchanged.** Behaviour, data flow, API calls and visible text.
+
+### D-095. Cite design system v1.1: dark mode back, and the pilot patterns
+
+**Why.** Citebrief released `DESIGN.md` and `cite-tokens.css` v1.1 (its D-035, commit fbaab7f). The new version adds dark values and the patterns the D-094 pilot was missing. This supersedes the "Dark mode is dropped" part of D-094.
+
+**What changed.**
+- `DESIGN.md` and `web/src/cite-tokens.css` are copied again, unchanged.
+- Dark mode is back. The dark tokens apply when the system asks for dark; the app sets no `color-scheme` of its own and defines no dark colours. This again meets the UI brief line "Dark mode: supported". The scan on the Review screen is an opaque image, so the theme does not change its legibility.
+- Typed sizes are now tokens: control heights, card, tile and row padding, and the Label, Small, Body, Button, Title and Headline type sizes.
+- Dialogs and toasts use the overlay shadow; dialog backdrops use `--cite-scrim`; dialog body padding is 20px. Toasts are 6px corners, 10px 16px padding, bottom centre (full width on a phone).
+- The danger button hover is Danger Solid Deep. Neutral pills and plain tags use the Neutral tint and text.
+- Print uses the light scheme and system text colour, so a dark screen theme never prints light text. Only external links (`http`) print their address.
+
+**Differences from `DESIGN.md` v1.1, kept on purpose.**
+- **No theme switch.** `DESIGN.md` says an app with its own switch sets `data-theme` on the root. Citetally has no switch (it followed the system before D-094 too), so nothing sets `data-theme`. A switch would be a new control and a new setting, which is a flow change.
+- **Toast lifetime 8 seconds, not 5.** A toast can carry an "Undo" link, and the timer stops on hover and focus. A shorter time gives less time to undo.
+- **Wide dialogs.** `DESIGN.md` allows at most 32rem. The duplicate comparison dialog (44rem) and the side drawer (30rem, full height) are kept, because they show two documents or a long history.
+- **Breakpoints** stay at 767px and 1279px, which `DESIGN.md` v1.1 now allows for existing layouts.
+- **Demo notice** stays as the full sentence in the footer (rule 9), which `DESIGN.md` v1.1 now allows.
+- **Top bar** keeps its 5 links; v1.1 allows 6.

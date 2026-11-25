@@ -231,7 +231,7 @@ function MergeDialog({
         <button type="button" className="button" onClick={onCancel}>
           Cancel
         </button>
-        <button type="button" className="button button-primary" disabled={busy || !target} onClick={merge}>
+        <button type="button" className="button button-danger" disabled={busy || !target} onClick={merge}>
           {target ? `Merge into ${target.name}` : "Merge"}
         </button>
       </div>
@@ -329,7 +329,7 @@ export default function Vendors() {
         <EmptyState
           title="No vendors yet"
           actions={
-            <button type="button" className="button button-primary" onClick={() => setDialog({ kind: "add" })}>
+            <button type="button" className="button" onClick={() => setDialog({ kind: "add" })}>
               Add a vendor
             </button>
           }
