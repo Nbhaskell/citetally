@@ -1,0 +1,50 @@
+/* Cite design tokens, v1.0 (DESIGN.md "Calm Control Room").
+   Source of truth: citebrief/design/cite-tokens.css. Copy this file unchanged into each Cite app;
+   change a value here first, then copy it again. Each text pair is tested for 4.5:1 contrast
+   (citebrief/tests/test_render.py). */
+:root {
+  /* Neutral */
+  --cite-text: #1a1d21;
+  --cite-muted: #565b62;
+  --cite-surface: #ffffff;
+  --cite-canvas: #f3f4f6;
+  --cite-border: #e1e4e8;
+  --cite-rule: #eceef1;
+  --cite-input-border: #8a9099;
+
+  /* Primary: deep navy for the main action and the brand mark */
+  --cite-primary: #173f6b;
+  --cite-primary-hover: #0f2f52;
+  --cite-on-primary: #ffffff;
+  --cite-link: #0b4fa3;
+  --cite-focus: #0b4fa3;
+
+  /* Status: each has a text color, a tint, and a line color */
+  --cite-danger-text: #8a1c1c;
+  --cite-danger-bg: #fdeeee;
+  --cite-danger-line: #efc4c4;
+  --cite-danger-solid: #b42318;
+  --cite-success-text: #1f5130;
+  --cite-success-bg: #e6f3ea;
+  --cite-info-text: #173f6b;
+  --cite-info-bg: #e6eef8;
+  --cite-warning-text: #5c3b00;
+  --cite-warning-bg: #fff5d6;
+  --cite-warning-line: #ecd48f;
+
+  /* Shape and depth */
+  --cite-radius-sm: 4px;
+  --cite-radius-md: 6px;
+  --cite-radius-lg: 10px;
+  --cite-radius-pill: 999px;
+  --cite-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.05), 0 2px 6px rgba(16, 24, 40, 0.05);
+
+  /* Type and space */
+  --cite-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --cite-space-1: 0.25rem;
+  --cite-space-2: 0.5rem;
+  --cite-space-3: 0.75rem;
+  --cite-space-4: 1rem;
+  --cite-space-5: 1.25rem;
+  --cite-space-6: 1.75rem;
+}
