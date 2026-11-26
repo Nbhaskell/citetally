@@ -231,7 +231,8 @@ A neutral grey base with one deep navy and five status families; every text pair
 The dark values in `design/cite-tokens.css` apply when the system asks for dark, unless the page root has
 `data-theme="light"`; `data-theme="dark"` forces them, so an app with its own theme switch sets that attribute.
 Each light color has a dark value with the same role. Citebrief keeps `data-theme="light"`, because the approved
-brief and its print copy are light.
+brief and its print copy are light. Primary is also a line color (the current tab, the primary button edge), so it
+must reach 3:1 on Surface and on Canvas in both themes.
 
 ### Translucency
 For a tint over an image or a backdrop, mix a token with transparency
