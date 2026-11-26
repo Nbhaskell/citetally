@@ -1,4 +1,4 @@
-/* Cite design tokens, v1.1.1 (DESIGN.md "Calm Control Room").
+/* Cite design tokens, v1.1.2 (DESIGN.md "Calm Control Room").
    Source of truth: citebrief/design/cite-tokens.css. Copy this file unchanged into each Cite app;
    change a value here first, then copy it again. Each text pair is tested for 4.5:1 contrast in
    the light and the dark theme (citebrief/tests/test_render.py).
@@ -86,8 +86,8 @@
     --cite-input-border: #6f7782;
     --cite-neutral-text: #a7adb5;
     --cite-neutral-bg: #262a31;
-    --cite-primary: #2f5f99;
-    --cite-primary-hover: #3b6dab;
+    --cite-primary: #376fb3;
+    --cite-primary-hover: #3b77bf;
     --cite-on-primary: #ffffff;
     --cite-link: #8ab4f8;
     --cite-focus: #8ab4f8;
@@ -120,8 +120,8 @@
   --cite-input-border: #6f7782;
   --cite-neutral-text: #a7adb5;
   --cite-neutral-bg: #262a31;
-  --cite-primary: #2f5f99;
-  --cite-primary-hover: #3b6dab;
+  --cite-primary: #376fb3;
+  --cite-primary-hover: #3b77bf;
   --cite-on-primary: #ffffff;
   --cite-link: #8ab4f8;
   --cite-focus: #8ab4f8;
